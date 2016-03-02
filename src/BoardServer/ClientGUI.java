@@ -1,0 +1,200 @@
+package BoardServer;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.scene.Scene;
+import javafx.scene.Group;
+
+/**
+ * Created by Bryan on 2/28/2016.
+ */
+public class ClientGUI extends Application {
+
+    private ClientGUI self;
+    private BoardClient userClient;
+    private String defHost;
+    private int defPort;
+    private boolean connected;
+
+    private final String backgroud = "BoardServer/client_background.jpg";
+
+    public ClientGUI()
+    {
+        defHost = "localhost";
+        defPort = 4242;
+        userClient = new BoardClient(defHost, defPort, self);
+    }
+
+/*    public ClientGUI(String hostName, int port) {
+        defHost = hostName;
+        defPort = port;
+        userClient = new BoardClient("localhost", defPort, self);
+    }*/
+
+    public void start(Stage stage)
+    {
+        drawClientEntry(stage);
+    }
+
+    public void drawClientEntry(Stage stage) {
+        //Create client window
+        stage.setTitle("Board Game Application");
+        stage.getIcons().add(new Image("BoardServer/windowlogo.png"));
+        stage.setOnCloseRequest(e -> {
+            Platform.exit();
+            userClient.disconnect();
+        });
+
+
+        // Group clientPortal = new Group();
+        StackPane clientPortal = new StackPane();
+        Canvas cClient = new Canvas(800, 600);
+        clientPortal.getChildren().add(cClient);
+        GraphicsContext gClient = cClient.getGraphicsContext2D();
+        gClient.drawImage(new Image(backgroud), 0, 0);
+
+        Group formGroup = new Group();
+
+        //Create form nodes
+        //Create form title
+        Text formTitle = new Text("Welcome to Board Game Server!");
+        formTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 40));
+        formTitle.setId("formTitle");
+
+        formGroup.getChildren().add(formTitle);
+
+        GridPane formGrid = new GridPane();
+        formGrid.setVgap(10);
+        formGrid.setHgap(10);
+        formGrid.setPadding(new Insets(25));
+
+        //Create entry label
+        Label playerName = new Label("Enter your Player Name: ");
+        playerName.setTextFill(Color.WHITE);
+        playerName.setId("playerName");
+        TextField playerNameTextField = new TextField();
+        formGrid.add(playerName, 0, 0);
+        formGrid.add(playerNameTextField, 1, 0);
+
+        HBox formBtn = new HBox(10);
+
+        //Create form button
+        Button signIn = new Button("Sign in");
+        Button clearForm = new Button("Clear");
+        formBtn.getChildren().addAll(signIn,clearForm);
+        formGrid.add(formBtn, 1, 1);
+
+        formGroup.getChildren().add(formGrid);
+        clientPortal.getChildren().add(formGroup);
+
+        Scene portalScene = new Scene(clientPortal, 800, 600);
+        portalScene.getStylesheets().add("BoardServer/stylesheet.css");
+        stage.setScene(portalScene);
+        stage.show();
+
+        signIn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (playerNameTextField.getText() != null && !playerNameTextField.getText().isEmpty()) {
+                    String playerName = playerNameTextField.getText();
+                    userClient.setUsername(playerName);
+                    if(!userClient.start())
+                        return;
+                    userClient.sendMessage(playerName);
+                    stage.setScene(drawTitleMenu());
+                    connected = true;
+                }
+            }
+        });
+
+        clearForm.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                playerNameTextField.clear();
+            }
+        });
+    }
+
+    private Scene drawTitleMenu() {
+
+        StackPane clientMenu = new StackPane();
+        Canvas cClient = new Canvas(800, 600);
+        clientMenu.getChildren().add(cClient);
+        GraphicsContext gClient = cClient.getGraphicsContext2D();
+        gClient.drawImage(new Image(backgroud), 0, 0);
+
+        GridPane titles = new GridPane();
+        titles.setAlignment(Pos.CENTER);
+        titles.setVgap(10);
+        titles.setHgap(10);
+        titles.setPadding(new Insets(25, 25, 25, 15));
+
+        VBox menuText = new VBox(5);
+
+        Text menuTitle = new Text("Board Game Server");
+        menuTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 40));
+        menuTitle.setStroke(Color.BLACK);
+        menuTitle.setFill(Color.WHITE);
+        //menuTitle.setId("menuTitle");
+        Text menuSubTitle = new Text("Please select a game to play.");
+        menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 30));
+        menuSubTitle.setFill(Color.WHITE);
+        //menuSubTitle.setId("menuSubTitle");
+        menuTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 35));
+        menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 15));
+        menuText.getChildren().addAll(menuTitle, menuSubTitle);
+
+        menuText.setAlignment(Pos.CENTER);
+
+        VBox gameBtn = new VBox(10);
+        //gameBtn.setAlignment(Pos.BOTTOM_CENTER);
+
+        Button playChess = new Button("Chess");
+        Button playCheckers = new Button("Checkers");
+        Button playTicTacToe = new Button("TicTacToe");
+        playChess.setMaxWidth(Double.MAX_VALUE);
+        playCheckers.setMaxWidth(Double.MAX_VALUE);
+        playTicTacToe.setMaxWidth(Double.MAX_VALUE);
+        gameBtn.getChildren().addAll(playChess,playCheckers,playTicTacToe);
+
+        titles.add(menuText, 2, 0);
+        titles.add(gameBtn, 2, 2);
+
+        clientMenu.getChildren().add(titles);
+
+        playCheckers.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Move move = new Move();
+                userClient.sendMove(move);
+                return;
+            }
+        });
+
+        Scene titleScene = new Scene(clientMenu, 800, 600);
+        return titleScene;
+
+        //Add actions
+    }
+
+    public static void main(String[] args)
+    {
+        launch(args);
+    }
+}
