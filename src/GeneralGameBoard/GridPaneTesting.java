@@ -110,23 +110,6 @@ public class GridPaneTesting extends Application implements EventHandler<MouseEv
         imgViewArray[2][2].setImage(new Image("GeneralGameBoard/Pawn_2.png"));
     }
 
-    public class IndexImageView extends ImageView {
-
-        public int col;
-        public int row;
-
-        public IndexImageView(Image img, int colNum, int rowNum) {
-            super(img);
-
-            this.col = colNum;
-            this.row = rowNum;
-        }
-
-        public String getRowColIndex() {
-            return "(" + Integer.toString(col) + "," + Integer.toString(row) + ")";
-        }
-    }
-
 
     public class IndexButton extends Button { // For Initial Testing
 
@@ -140,7 +123,7 @@ public class GridPaneTesting extends Application implements EventHandler<MouseEv
             this.row = rowNum;
         }
 
-        public String getRowColIndex() {
+        public String getColRowIndex() {
             return "(" + Integer.toString(col) + "," + Integer.toString(row) + ")";
         }
     }
