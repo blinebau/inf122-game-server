@@ -2,18 +2,24 @@ package GeneralGameBoard;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
+
 /**
  * Created by jgreene on 3/1/16.
  */
-public class GridPaneTesting extends Application implements EventHandler<ActionEvent> {
+public class GridPaneTesting extends Application implements EventHandler<MouseEvent> {
 
     Stage window;
     Scene myScene;
@@ -21,7 +27,9 @@ public class GridPaneTesting extends Application implements EventHandler<ActionE
     GridPane myGridPane;
     //Button button;
 
-    IndexButton[][] buttonArray; // Used to keep a record of the pieces placed on the gridpane and allow game events to alter the board's pieces
+    //IndexButton[][] buttonArray; // Used to keep a record of the pieces placed on the gridpane and allow game events to alter the board's pieces
+    IndexImageView[][] imgViewArray;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -49,15 +57,37 @@ public class GridPaneTesting extends Application implements EventHandler<ActionE
 
         layout.setStyle("-fx-padding: 20px;");
 
-        buttonArray = new IndexButton[4][5];
+
+        /*
+
+        // IndexButtons (Note: Refer to previous commit to get this working again) - Used for Initial Testing
+
+        buttonArray = new IndexButton[4][5]; // [col],[row]
 
         // c - column (x), r - row (y)
         for (int c = 0; c < 4; c++) {
             for (int r = 0; r < 5; r++) {
-                IndexButton temp = new IndexButton("Hello", c, r); // TODO: Do something similar with the imageview class that I will be creating
+                IndexButton temp = new IndexButton("Hello", c, r);
                 temp.setOnAction(this); // TODO: Events could be dealt with in some other location
                 layout.add(temp, c, r);
                 buttonArray[c][r] = temp; // Keep a record of the node
+            }
+        }
+
+        */
+
+        // ImageViews
+
+        imgViewArray = new IndexImageView[4][5]; // [col],[row]
+
+        // c - column (x), r - row (y)
+        for (int c = 0; c < 4; c++) {
+            for (int r = 0; r < 5; r++) {
+                IndexImageView temp = new IndexImageView(new Image("GeneralGameBoard/King_2.png"), c, r);
+                temp.addEventHandler(MouseEvent.MOUSE_CLICKED, this); // Note - Since the mouse event is not processed by the ImageView,
+                                                                            // it propagates up to the container.
+                layout.add(temp, c, r);
+                imgViewArray[c][r] = temp; // Keep a record of the node
             }
         }
 
@@ -72,15 +102,33 @@ public class GridPaneTesting extends Application implements EventHandler<ActionE
     }
 
     @Override
-    public void handle(ActionEvent event) {
+    public void handle(MouseEvent event) {
         //System.out.println("Button Clicked");
-        System.out.println(((IndexButton) event.getSource()).getRowColIndex());
 
-        buttonArray[2][2].setText("What?");
+        System.out.println("Image Clicked");
+
+        imgViewArray[2][2].setImage(new Image("GeneralGameBoard/Pawn_2.png"));
+    }
+
+    public class IndexImageView extends ImageView {
+
+        public int col;
+        public int row;
+
+        public IndexImageView(Image img, int colNum, int rowNum) {
+            super(img);
+
+            this.col = colNum;
+            this.row = rowNum;
+        }
+
+        public String getRowColIndex() {
+            return "(" + Integer.toString(col) + "," + Integer.toString(row) + ")";
+        }
     }
 
 
-    public class IndexButton extends Button {
+    public class IndexButton extends Button { // For Initial Testing
 
         public int col;
         public int row;
