@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 
 //board is the main class for the game
+//this is also a test
 public abstract class Board {
 	
 	static final char SIDE_LETTERS[] = {'A','B','C','D','E','F','G','H'};
