@@ -37,7 +37,7 @@ public class ServerGUI extends Application {
     public void drawServerEntry(Stage stage)
     {
         stage.setTitle("Board Game Server");
-        stage.getIcons().add(new Image("file:windowlogo.png"));
+        stage.getIcons().add(new Image("BoardServer/chess_logo.png"));
 
         BorderPane serverPane = new BorderPane();
 
