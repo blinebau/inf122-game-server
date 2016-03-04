@@ -4,6 +4,7 @@ package BoardServer;
  * Created by Bryan on 3/1/2016.
  */
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -84,7 +85,20 @@ public class BoardServer {
         }
     }
 
-    //public void stop()
+    public boolean isRunning()
+    {
+        return running;
+    }
+
+    public void stop()
+    {
+        running = false;
+        try {
+            new Socket("localhost", port);
+        }catch (IOException e){
+            //end
+        }
+    }
 
     public void echo(String message)
     {

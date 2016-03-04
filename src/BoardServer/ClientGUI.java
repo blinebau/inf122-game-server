@@ -26,7 +26,7 @@ import javafx.scene.Group;
  */
 public class ClientGUI extends Application {
 
-    private ClientGUI self;
+    //private ClientGUI self;
     private BoardClient userClient;
     private String defHost;
     private int defPort;
@@ -38,7 +38,7 @@ public class ClientGUI extends Application {
     {
         defHost = "localhost";
         defPort = 4242;
-        userClient = new BoardClient(defHost, defPort, self);
+        userClient = new BoardClient(defHost, defPort, this);
     }
 
 /*    public ClientGUI(String hostName, int port) {
@@ -105,6 +105,7 @@ public class ClientGUI extends Application {
 
         Scene portalScene = new Scene(clientPortal, 800, 600);
         portalScene.getStylesheets().add("BoardServer/stylesheet.css");
+
         stage.setScene(portalScene);
         stage.show();
 
@@ -178,7 +179,25 @@ public class ClientGUI extends Application {
 
         clientMenu.getChildren().add(titles);
 
+        playChess.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Move move = new Move();
+                userClient.sendMove(move);
+                return;
+            }
+        });
+
         playCheckers.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Move move = new Move();
+                userClient.sendMove(move);
+                return;
+            }
+        });
+
+        playTicTacToe.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 Move move = new Move();
