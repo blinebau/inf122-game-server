@@ -37,7 +37,7 @@ public class ServerGUI extends Application {
     public void drawServerEntry(Stage stage)
     {
         stage.setTitle("Board Game Server");
-        stage.getIcons().add(new Image("BoardServer/windowlogo.png"));
+        stage.getIcons().add(new Image("file:windowlogo.png"));
 
         BorderPane serverPane = new BorderPane();
 
@@ -58,7 +58,25 @@ public class ServerGUI extends Application {
         topBox.getChildren().addAll(startBox, logLabel);
 
         TextArea eventLog = new TextArea();
-        eventLog.addEventFilter(KeyEvent.ANY, getKeyFilter());
+        //eventLog.addEventFilter(KeyEvent.ANY, getKeyFilter());
+        eventLog.addEventFilter(KeyEvent.ANY, (KeyEvent event) -> {
+            boolean consume = true;
+            if(consume)
+            {
+                event.consume();
+            }
+            if(event.getCode().isKeypadKey())
+            {
+                if(event.getEventType() == KeyEvent.KEY_PRESSED)
+                {
+                    consume = false;
+                }
+                else if(event.getEventType() == KeyEvent.KEY_RELEASED)
+                {
+                    consume = true;
+                }
+            }
+        });
         serverPane.setCenter(eventLog);
 
         serverPane.setTop(topBox);
@@ -80,35 +98,10 @@ public class ServerGUI extends Application {
                 server = null;
             }
         });
+
+
     }
 
-    public EventHandler<KeyEvent> getKeyFilter()
-    {
-        EventHandler<KeyEvent> preventKeyEntry = new EventHandler<KeyEvent>() {
-
-            boolean consume = true;
-
-            @Override
-            public void handle(KeyEvent event) {
-                if(consume)
-                {
-                    event.consume();
-                }
-                if(event.getCode().isKeypadKey())
-                {
-                    if(event.getEventType() == KeyEvent.KEY_PRESSED)
-                    {
-                        consume = false;
-                    }
-                    else if(event.getEventType() == KeyEvent.KEY_RELEASED)
-                    {
-                        consume = true;
-                    }
-                }
-            }
-        };
-        return preventKeyEntry;
-    }
 
     class ServerThread extends Thread{
 
