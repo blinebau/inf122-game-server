@@ -31,7 +31,7 @@ public class ChessGUI extends Application implements EventHandler<MouseEvent> {
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
-        window.setTitle("Testing BoardGameGridPane");
+        window.setTitle("ChessGUI");
 
         // Initialize the custom gridpane with 8 rows/cols, Set the horizonal and vertical gaps to 2, Pass this class since it will serve
         // as the board's handler for mouse events
