@@ -1,7 +1,7 @@
 /**
  * Created by Sophia on 3/1/2016.
  */
-//package com.almasb.tictactoe;
+package TicTacToe;
 
 import java.util.ArrayList;
 import java.util.List;
