@@ -110,6 +110,32 @@ public class GridPaneTesting extends Application implements EventHandler<MouseEv
         imgViewArray[2][2].setImage(new Image("GeneralGameBoard/Pawn_2.png"));
     }
 
+    public class IndexImageView extends ImageView { // Learned that creating gridpane has methods that allow you to identify a node's row and column
+                                                    // So, this and IndexButton aren't needed.
+
+        private int columnIndex;
+        private int rowIndex;
+
+        public IndexImageView(int columnIndex, int rowIndex) {
+            super();
+            this.columnIndex = columnIndex;
+            this.rowIndex = rowIndex;
+        }
+
+        public IndexImageView(Image img, int columnIndex, int rowIndex) {
+            super(img);
+
+            this.columnIndex = columnIndex;
+            this.rowIndex = rowIndex;
+        }
+
+        public String getColRowIndex() {
+            return "(" + Integer.toString(columnIndex) + "," + Integer.toString(rowIndex) + ")";
+        }
+
+        public BoardIndex getBoardIndex() { return new BoardIndex(columnIndex, rowIndex); }
+    }
+
 
     public class IndexButton extends Button { // For Initial Testing
 
