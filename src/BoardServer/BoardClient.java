@@ -30,7 +30,7 @@ public class BoardClient {
     //console constructor
     public BoardClient(String server, int port, ClientGUI clientGUI)
     {
-        this(server, port, "Anonymous", null);
+        this(server, port, "Anonymous", clientGUI);
     }
 
     //GUI constructor
@@ -153,14 +153,15 @@ public class BoardClient {
             {
                 try {
                     String message = (String) obj_in.readObject();
-                    if(clientGUI == null)//if gui exists
+                    System.out.println(message);
+/*                    if(clientGUI == null)//if gui exists
                     {
                         System.out.println(message);
                     }
                     else
                     {
                         //do something to gui
-                    }
+                    }*/
                 }catch (Exception e){
                     e.printStackTrace();
                     echo("Server closed this connection...");

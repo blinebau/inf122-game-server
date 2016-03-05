@@ -26,19 +26,19 @@ import javafx.scene.Group;
  */
 public class ClientGUI extends Application {
 
-    private ClientGUI self;
+    //private ClientGUI self;
     private BoardClient userClient;
     private String defHost;
     private int defPort;
     private boolean connected;
 
-    private final String backgroud = "BoardServer/client_background.jpg";
+    private final String background = "BoardServer/background.jpg";
 
     public ClientGUI()
     {
         defHost = "localhost";
         defPort = 4242;
-        userClient = new BoardClient(defHost, defPort, self);
+        userClient = new BoardClient(defHost, defPort, this);
     }
 
 /*    public ClientGUI(String hostName, int port) {
@@ -55,7 +55,7 @@ public class ClientGUI extends Application {
     public void drawClientEntry(Stage stage) {
         //Create client window
         stage.setTitle("Board Game Application");
-        stage.getIcons().add(new Image("BoardServer/windowlogo.png"));
+        stage.getIcons().add(new Image("BoardServer/chess_logo.png"));
         stage.setOnCloseRequest(e -> {
             Platform.exit();
             userClient.disconnect();
@@ -67,7 +67,7 @@ public class ClientGUI extends Application {
         Canvas cClient = new Canvas(800, 600);
         clientPortal.getChildren().add(cClient);
         GraphicsContext gClient = cClient.getGraphicsContext2D();
-        gClient.drawImage(new Image(backgroud), 0, 0);
+        gClient.drawImage(new Image(background), 0, 0);
 
         Group formGroup = new Group();
 
@@ -104,30 +104,23 @@ public class ClientGUI extends Application {
         clientPortal.getChildren().add(formGroup);
 
         Scene portalScene = new Scene(clientPortal, 800, 600);
-        portalScene.getStylesheets().add("BoardServer/stylesheet.css");
         stage.setScene(portalScene);
         stage.show();
 
-        signIn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        signIn.setOnAction((ActionEvent event) -> {
                 if (playerNameTextField.getText() != null && !playerNameTextField.getText().isEmpty()) {
-                    String playerName = playerNameTextField.getText();
-                    userClient.setUsername(playerName);
+                    String userName = playerNameTextField.getText();
+                    userClient.setUsername(userName);
                     if(!userClient.start())
                         return;
-                    userClient.sendMessage(playerName);
+                    userClient.sendMessage(userName);
                     stage.setScene(drawTitleMenu());
                     connected = true;
                 }
-            }
-        });
+            });
 
-        clearForm.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        clearForm.setOnAction((ActionEvent event) -> {
                 playerNameTextField.clear();
-            }
         });
     }
 
@@ -137,7 +130,7 @@ public class ClientGUI extends Application {
         Canvas cClient = new Canvas(800, 600);
         clientMenu.getChildren().add(cClient);
         GraphicsContext gClient = cClient.getGraphicsContext2D();
-        gClient.drawImage(new Image(backgroud), 0, 0);
+        gClient.drawImage(new Image(background), 0, 0);
 
         GridPane titles = new GridPane();
         titles.setAlignment(Pos.CENTER);
@@ -178,17 +171,22 @@ public class ClientGUI extends Application {
 
         clientMenu.getChildren().add(titles);
 
-        playCheckers.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
+        playChess.setOnAction((ActionEvent event) -> {
                 Move move = new Move();
                 userClient.sendMove(move);
-                return;
-            }
         });
 
-        Scene titleScene = new Scene(clientMenu, 800, 600);
-        return titleScene;
+        playCheckers.setOnAction((ActionEvent event) -> {
+                Move move = new Move();
+                userClient.sendMove(move);
+        });
+
+        playTicTacToe.setOnAction((ActionEvent event) -> {
+                Move move = new Move();
+                userClient.sendMove(move);
+        });
+
+        return new Scene(clientMenu, 800, 600);
 
         //Add actions
     }
