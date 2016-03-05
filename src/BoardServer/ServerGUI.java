@@ -58,7 +58,6 @@ public class ServerGUI extends Application {
         topBox.getChildren().addAll(startBox, logLabel);
 
         TextArea eventLog = new TextArea();
-        //eventLog.addEventFilter(KeyEvent.ANY, getKeyFilter());
         eventLog.addEventFilter(KeyEvent.ANY, (KeyEvent event) -> {
             boolean consume = true;
             if(consume)
