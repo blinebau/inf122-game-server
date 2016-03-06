@@ -14,7 +14,7 @@ public interface CustomEventHandler extends EventHandler<Event> {
     public void handle(Event event);
 
     // Identify the object that was clicked and fire a PieceClickEvent for ImageViews that are selected
-    // Note: The developer can overide this to extend this method if they want (in GAMEGUI)
+    // Note: The developer can overide this to extend this method if they want (ex. ChessGUI)
     public void handleMouseEvent(MouseEvent event);
 
     // Will be implemented by the developer (depends on their GUI)
