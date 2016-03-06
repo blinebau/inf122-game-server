@@ -171,7 +171,7 @@ public class ClientGUI extends Application {
 
         clientMenu.getChildren().add(titles);
 
-        playChess.setOnAction((ActionEvent event) -> {
+/*        playChess.setOnAction((ActionEvent event) -> {
                 Move move = new Move();
                 userClient.sendMove(move);
         });
@@ -179,7 +179,7 @@ public class ClientGUI extends Application {
         playCheckers.setOnAction((ActionEvent event) -> {
                 Move move = new Move();
                 userClient.sendMove(move);
-        });
+        });*/
 
         playTicTacToe.setOnAction((ActionEvent event) -> {
                 Move move = new Move();

@@ -1,4 +1,4 @@
-package models;
+package app.model;
 
 import java.awt.Point;	// favor awt Point over javafx Point2D because awt.Point is recorded with int coordinates
 import java.io.Serializable;
@@ -11,6 +11,8 @@ import java.io.Serializable;
 
 public class Move implements Serializable {
 
+	
+	// TODO: Change Points to BoardIndex
 	private final Point source;
 	private final Point destination;
 	private final boolean isMyTurn;	// Change the variable name if it is not descriptive enough.
