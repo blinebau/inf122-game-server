@@ -1,8 +1,10 @@
 package app.view;
 
-import GeneralGameBoard.BoardObject;
 import app.model.BoardIndex;
+import app.model.Piece;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -24,7 +26,7 @@ public class BoardGameGridPane extends GridPane{
     private ImageView[][] imgViewArray; // Used to keep a record of the pieces placed on the gridpane and allow game events to alter the board's pieces
 
     public BoardGameGridPane(int cols, int rows, double hgap, double vgap, double tileSize,
-                             Color tilePrimaryColor,Color tileSecondaryColor, EventHandler<MouseEvent> eventClass) {
+                             Color tilePrimaryColor,Color tileSecondaryColor, EventHandler<Event> eventClass) {
         super();
 
         this.columns = cols;
@@ -57,7 +59,7 @@ public class BoardGameGridPane extends GridPane{
         initTiles(eventClass);
     }
 
-    private void initTiles(EventHandler<MouseEvent> eventClass) { // Add the board's tiles and empty imageViews to represent the pieces / board objects
+    private void initTiles(EventHandler<Event> eventClass) { // Add the board's tiles and empty imageViews to represent the pieces / board objects
                                                                  // and record the imageviews so that they can be altered easily
         int order = 0;
 
@@ -99,20 +101,24 @@ public class BoardGameGridPane extends GridPane{
         }
     }
 
-    public void addBoardObjectToTile(BoardIndex index, BoardObject boardObject) {  // Set the corresponding imageview's image to the boardObject's image
-        imgViewArray[index.getColumnIndex()][index.getRowIndex()].setImage(boardObject.getImage());
+    public BoardIndex getBoardIndex(Node element) {
+        return new BoardIndex(getColumnIndex(element), getRowIndex(element));
+    }
+
+    public void addPieceToTile(BoardIndex index, Piece piece) {  // Set the corresponding imageview's image to the boardObject's image
+        imgViewArray[index.getColumnIndex()][index.getRowIndex()].setImage(piece.getImage());
     }
 
     public void resetTile(BoardIndex index) { // Sets the corresponding imageview's image to null (default state)
         imgViewArray[index.getColumnIndex()][index.getRowIndex()].setImage(null);
     }
 
-    public void setBoardObjectStartingLayout(BoardObject[][] object2DArray) {   // The images of the array's boardObjects will be used to set the image of their
+    public void setPieceStartingLayout(Piece[][] piece2DArray) {   // The images of the array's boardObjects will be used to set the image of their
                                                                                 // corresponding imageviews
         for (int c = 0; c < columns; c++) {
             for (int r = 0; r < rows; r++) {
-                if (object2DArray[c][r] instanceof BoardObject) {
-                    addBoardObjectToTile(new BoardIndex(c,r), object2DArray[c][r]);
+                if (piece2DArray[c][r] instanceof Piece) {
+                    addPieceToTile(new BoardIndex(c,r), piece2DArray[c][r]);
                 }
             }
         }

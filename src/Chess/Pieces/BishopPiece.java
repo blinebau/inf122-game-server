@@ -1,12 +1,13 @@
 package Chess.Pieces;
 
 import GeneralGameBoard.BoardObject;
+import app.model.*;
 import javafx.scene.image.Image;
 
 /**
  * Created by Luke on 3/5/2016.
  */
-public class BishopPiece extends BoardObject {
+public class BishopPiece extends app.model.Piece {
 
     public BishopPiece(String color){
 
