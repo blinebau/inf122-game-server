@@ -3,6 +3,7 @@ package BoardServer;
 import TicTacToe.TTGUI;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,8 +31,6 @@ public class ClientGUI extends Application {
     private BoardClient userClient;
     private String defHost;
     private int defPort;
-    private boolean connected;
-    public boolean gameReady = false;
 
     private final String background = "BoardServer/background.jpg";
 
@@ -122,7 +121,6 @@ public class ClientGUI extends Application {
                         return;
                     userClient.sendMessage(userName);
                     primaryStage.setScene(drawTitleMenu());
-                    connected = true;
                 }
             });
 
@@ -194,31 +192,32 @@ public class ClientGUI extends Application {
             playTicTacToe();
         });
 
-
         return new Scene(clientMenu, 800, 600);
-
-        //Add actions
     }
 
     public void playTicTacToe()
     {
         String message = "TicTacToe";
-        //Move move = new Move();
-        userClient.sendMessage(message);
-        //userClient.setGameGUI(message);
-        userClient.listenToServer();
-        userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
-        userClient.myTurn = userClient.getPlayerStatus().equals("Player 1");
-        primaryStage.setScene(userClient.getGameGUI().getScene());
-        while(true)
-        {
-            System.out.println("fdfdf");
-            if(!userClient.myTurn) {
-                userClient.listenToServer();
+        Task worker = new Task() {
+            protected Object call() {
+                userClient.sendMessage(message);
+                try {
+                    Thread.sleep(500);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                System.out.println("test");
+                return null;
             }
-        }
+        };
 
+        worker.setOnSucceeded(e -> {
+            userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
+            userClient.myTurn = userClient.getPlayerStatus().equals("Player 1");
+            primaryStage.setScene(userClient.getGameGUI().getScene());
+        });
 
+        new Thread(worker).start();
     }
 
     public static void main(String[] args)

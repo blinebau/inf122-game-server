@@ -1,7 +1,7 @@
 package TicTacToe;
 
 import BoardServer.BoardClient;
-import GeneralGameBoard.BoardIndex;
+import app.model.BoardIndex;
 import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import models.Move;
+import app.model.Move;
 
 /**
  * Created by Sophia on 3/4/2016.
@@ -51,7 +51,7 @@ public class IndTile extends StackPane {
             if (event.getButton() == MouseButton.PRIMARY) {
                 drawMyShape();
                 Move move = new Move(new BoardIndex(col, row));
-                client.sendMove(move);
+                client.sendMessage(move);
             }
         });
     }

@@ -10,7 +10,9 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import TicTacToe.TTGUI;
-import models.Move;
+import app.model.Move;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 /**
  * Created by Bryan on 3/1/2016.
@@ -87,6 +89,8 @@ public class BoardClient {
             return false;
         }
 
+        new listenToServer().start();
+
         //create thread that listens to server
 
 /*        try {
@@ -104,22 +108,60 @@ public class BoardClient {
     }
 
     public void sendMessage(String message) {
-        try {
-            obj_out.writeObject(message);
-            obj_out.flush();
-        } catch (Exception e) {
-            echo("Failed to write message to server");
-        }
+        Task worker = new Task() {
+            protected Object call() throws Exception {
+                try
+                {
+                    obj_out.writeObject(message);
+                    obj_out.flush();
+                }
+
+                catch(Exception e)
+                {
+                    echo("Failed to write message to server");
+                }
+                return null;
+            }
+
+            protected void succeeded() {
+
+            }
+
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        new Thread(worker).start();
     }
 
-    public void sendMove(Move move) {
-        try {
-            obj_out.writeObject(move);
-            obj_out.flush();
-        } catch (Exception e) {
-            echo("Failed to write move to server...");
+    public void sendMessage(Move move) {
+        Task worker = new Task() {
+            protected Object call() throws Exception {
+                try
+                {
+                    obj_out.writeObject(move);
+                    obj_out.flush();
+                }
 
-        }
+                catch(
+                        Exception e
+                        )
+
+                {
+                    echo("Failed to write move to server");
+                }
+                return null;
+            }
+
+            protected void succeeded() {
+
+            }
+
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        new Thread(worker).start();
     }
 
     public void disconnect() {
@@ -155,39 +197,41 @@ public class BoardClient {
     }
 
     //waits for messages and then acts on the message (Move eventually)
-    public void listenToServer() {
-        while (true) {
-            try {
-                Object obj = obj_in.readObject();
-                if (obj instanceof Move) {
-                    Move move = (Move) obj;
-                    gameGUI.updateBoard(move);
-                    return;
-                } else if(obj instanceof String)
-                {
-                    String message = (String) obj;
-                    if (message.equals("Player 1") || message.equals("Player 2")) {
-                        playerStatus = message;
-                        return;
-                    }
-                }
-
-                    //System.out.println(message);
-/*                    if(clientGUI == null)//if gui exists
-                {
-                    System.out.println(message);
-                }
-                else
-                {
-                    //do something to gui
-                }*/
-                }catch(Exception e){
+    class listenToServer extends Thread {
+        public void run() {
+            while (true) {
+                try {
+                    Object obj = obj_in.readObject();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleServerMessage(obj);
+                        }
+                    });
+                } catch (Exception e) {
                     e.printStackTrace();
                     echo("Server closed this connection...");
                     break;
                 }
             }
         }
+
+        public void handleServerMessage(Object serverMessage)
+        {
+            if (serverMessage instanceof Move) {
+                Move move = (Move) serverMessage;
+                gameGUI.updateBoard(move);
+                return;
+            } else if (serverMessage instanceof String) {
+                String message = (String) serverMessage;
+                if (message.equals("Player 1") || message.equals("Player 2")) {
+                    System.out.println(message);
+                    playerStatus = message;
+                    return;
+                }
+            }
+        }
     }
+}
 
 

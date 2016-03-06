@@ -4,7 +4,7 @@ package BoardServer;
  * Created by Bryan on 3/1/2016.
  */
 
-import models.Move;
+import app.model.Move;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -138,13 +138,12 @@ public class BoardServer {
         String userName;
 
         //Move made by the user
-       // Move move;
+        Move move;
 
         public ClientThread(Socket socket)
         {
             //unique id
             id = ++connection_id;
-            boolean active = true;
             //socket client connected to
             this.socket = socket;
 
@@ -154,7 +153,6 @@ public class BoardServer {
             {
                 //Output created first
                 obj_out = new ObjectOutputStream(socket.getOutputStream());
-                obj_out.flush();
                 obj_in = new ObjectInputStream(socket.getInputStream());
                 //read a user name
                 userName = (String)obj_in.readObject();
@@ -175,7 +173,6 @@ public class BoardServer {
                 try {
                         Object obj = obj_in.readObject();
                         if(obj instanceof Move) {
-                            System.out.println("inside Move obj");
                             Move move = (Move) obj;
                             for(ClientThread thread : clientThreads)
                                 if(thread.id != id)
