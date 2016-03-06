@@ -1,6 +1,5 @@
 package Chess.Pieces;
 
-import GeneralGameBoard.BoardObject;
 import javafx.scene.image.Image;
 
 /**
@@ -11,9 +10,9 @@ public class PawnPiece extends app.model.Piece {
     public PawnPiece(String color){
 
         if(color.equals("Black")) {
-            setImage(new Image("Chess/ChessPieces/Black_pawn.png"));
+            setImage(new Image("Chess/ImageFiles/Black_pawn.png"));
         } else if (color.equals("White")){
-            setImage(new Image("Chess/ChessPieces/White_pawn.png"));
+            setImage(new Image("Chess/ImageFiles/White_pawn.png"));
         }
     }
 }

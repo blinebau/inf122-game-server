@@ -1,7 +1,6 @@
 package Chess.Pieces;
 
-import GeneralGameBoard.BoardObject;
-import app.model.*;
+
 import javafx.scene.image.Image;
 
 /**
@@ -12,9 +11,9 @@ public class BishopPiece extends app.model.Piece {
     public BishopPiece(String color){
 
         if(color.equals("Black")) {
-            setImage(new Image("Chess/ChessPieces/Black_bishop.png"));
+            setImage(new Image("Chess/ImageFiles/Black_bishop.png"));
         } else if (color.equals("White")){
-            setImage(new Image("Chess/ChessPieces/White_bishop.png"));
+            setImage(new Image("Chess/ImageFiles/White_bishop.png"));
         }
     }
 }

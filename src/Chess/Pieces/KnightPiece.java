@@ -1,6 +1,5 @@
 package Chess.Pieces;
 
-import GeneralGameBoard.BoardObject;
 import javafx.scene.image.Image;
 
 /**
@@ -11,9 +10,9 @@ public class KnightPiece extends app.model.Piece {
     public KnightPiece(String color){
 
         if(color.equals("Black")) {
-            setImage(new Image("Chess/ChessPieces/Black_horse.png"));
+            setImage(new Image("Chess/ImageFiles/Black_knight.png"));
         } else if (color.equals("White")){
-            setImage(new Image("Chess/ChessPieces/White_horse.png"));
+            setImage(new Image("Chess/ImageFiles/White_rook.png"));
         }
     }
 }

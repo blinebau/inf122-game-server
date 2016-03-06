@@ -67,10 +67,11 @@ public class ChessController extends BoardGameController {
         game2DArray[3][0] = new QueenPiece("Black");
 
         game2DArray[0][7] = new RookPiece("White");
+        game2DArray[7][7] = new RookPiece("White");
+
+        game2DArray[7][0] = new RookPiece("Black");
         game2DArray[0][0] = new RookPiece("Black");
 
-        game2DArray[7][7] = new RookPiece("White");
-        game2DArray[7][0] = new RookPiece("Black");
 
         // Set up the encompassing gui, which uses the array to set up the board
         chessGUI = new ChessGUI(this, game2DArray);
@@ -81,15 +82,15 @@ public class ChessController extends BoardGameController {
         window.show();
 
         // Test reseting a tile after the scene is shown
-        chessGUI.getBoard().resetTile(new BoardIndex(0,0));
+//        chessGUI.getBoard().resetTile(new BoardIndex(0,0));
     }
 
     public void tileSelected(BoardIndex pos) {
-        System.out.println("Tile Selected");
+        System.out.println("Tile Selected" + pos.toString());
     }
 
     public void pieceSelected(BoardIndex pos) {
-        System.out.println("Piece Selected");
+        System.out.println("Piece Selected" + pos.toString());
     }
 
     public void makeMove(BoardIndex pos) { // TODO

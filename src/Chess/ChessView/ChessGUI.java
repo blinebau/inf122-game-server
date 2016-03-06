@@ -34,7 +34,7 @@ public class ChessGUI extends GameGUI { // ChessGUI is a Group
     }
 
     @Override
-    public void handleMouseEvent(MouseEvent event) {;
+    public void handleMouseEvent(MouseEvent event) {
         if (event.getSource() instanceof Rectangle) {
             Shape clickedTile = (Rectangle) event.getSource();
             controller.tileSelected(board.getBoardIndex(clickedTile));
