@@ -1,5 +1,7 @@
 package GeneralGameBoard;
 
+import app.model.BoardIndex;
+import app.view.BoardGameGridPane;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;

@@ -1,7 +1,7 @@
 package app.controller;
 
 import java.util.List;
-import GeneralGameBoard.BoardIndex;
+import app.model.BoardIndex;
 import app.model.GameState;
 import app.view.GameGUI;
 import BoardServer.BoardClient;

@@ -1,8 +1,8 @@
 package Chess.ChessView;
 
 import Chess.Pieces.*;
-import GeneralGameBoard.BoardGameGridPane;
-import GeneralGameBoard.BoardIndex;
+import app.view.BoardGameGridPane;
+import app.model.BoardIndex;
 import GeneralGameBoard.BoardObject;
 import javafx.application.Application;
 import javafx.event.EventHandler;

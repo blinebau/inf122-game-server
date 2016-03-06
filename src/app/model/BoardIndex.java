@@ -1,4 +1,4 @@
-package GeneralGameBoard;
+package app.model;
 
 /**
  * Created by jgreene on 3/5/16.

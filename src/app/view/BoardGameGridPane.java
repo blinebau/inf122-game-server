@@ -1,5 +1,7 @@
-package GeneralGameBoard;
+package app.view;
 
+import GeneralGameBoard.BoardObject;
+import app.model.BoardIndex;
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
