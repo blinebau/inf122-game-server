@@ -1,9 +1,9 @@
 package BoardServer;
 
+import TicTacToe.TTGUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
@@ -26,11 +26,12 @@ import javafx.scene.Group;
  */
 public class ClientGUI extends Application {
 
-    //private ClientGUI self;
+    private Stage primaryStage;
     private BoardClient userClient;
     private String defHost;
     private int defPort;
     private boolean connected;
+    public boolean gameReady = false;
 
     private final String background = "BoardServer/background.jpg";
 
@@ -39,6 +40,11 @@ public class ClientGUI extends Application {
         defHost = "localhost";
         defPort = 4242;
         userClient = new BoardClient(defHost, defPort, this);
+    }
+
+    public Stage getPrimaryStage()
+    {
+        return primaryStage;
     }
 
 /*    public ClientGUI(String hostName, int port) {
@@ -104,8 +110,9 @@ public class ClientGUI extends Application {
         clientPortal.getChildren().add(formGroup);
 
         Scene portalScene = new Scene(clientPortal, 800, 600);
-        stage.setScene(portalScene);
-        stage.show();
+        primaryStage = stage;
+        primaryStage.setScene(portalScene);
+        primaryStage.show();
 
         signIn.setOnAction((ActionEvent event) -> {
                 if (playerNameTextField.getText() != null && !playerNameTextField.getText().isEmpty()) {
@@ -114,7 +121,7 @@ public class ClientGUI extends Application {
                     if(!userClient.start())
                         return;
                     userClient.sendMessage(userName);
-                    stage.setScene(drawTitleMenu());
+                    primaryStage.setScene(drawTitleMenu());
                     connected = true;
                 }
             });
@@ -125,6 +132,8 @@ public class ClientGUI extends Application {
     }
 
     private Scene drawTitleMenu() {
+
+        Scene scene;
 
         StackPane clientMenu = new StackPane();
         Canvas cClient = new Canvas(800, 600);
@@ -182,13 +191,34 @@ public class ClientGUI extends Application {
         });*/
 
         playTicTacToe.setOnAction((ActionEvent event) -> {
-                Move move = new Move();
-                userClient.sendMove(move);
+            playTicTacToe();
         });
+
 
         return new Scene(clientMenu, 800, 600);
 
         //Add actions
+    }
+
+    public void playTicTacToe()
+    {
+        String message = "TicTacToe";
+        //Move move = new Move();
+        userClient.sendMessage(message);
+        //userClient.setGameGUI(message);
+        userClient.listenToServer();
+        userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
+        userClient.myTurn = userClient.getPlayerStatus().equals("Player 1");
+        primaryStage.setScene(userClient.getGameGUI().getScene());
+        while(true)
+        {
+            System.out.println("fdfdf");
+            if(!userClient.myTurn) {
+                userClient.listenToServer();
+            }
+        }
+
+
     }
 
     public static void main(String[] args)

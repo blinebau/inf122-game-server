@@ -4,13 +4,14 @@ package BoardServer;
  * Created by Bryan on 3/1/2016.
  */
 
+import models.Move;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.jar.Pack200;
 
 /**
  * Created by Bryan on 3/1/2016.
@@ -137,12 +138,13 @@ public class BoardServer {
         String userName;
 
         //Move made by the user
-        Move move;
+       // Move move;
 
         public ClientThread(Socket socket)
         {
             //unique id
             id = ++connection_id;
+            boolean active = true;
             //socket client connected to
             this.socket = socket;
 
@@ -152,6 +154,7 @@ public class BoardServer {
             {
                 //Output created first
                 obj_out = new ObjectOutputStream(socket.getOutputStream());
+                obj_out.flush();
                 obj_in = new ObjectInputStream(socket.getInputStream());
                 //read a user name
                 userName = (String)obj_in.readObject();
@@ -170,9 +173,30 @@ public class BoardServer {
             while(running)
             {
                 try {
-                    move = (Move)obj_in.readObject();
-                    String message = move.getMoveMessage();
-                    sendMove(message);
+                        Object obj = obj_in.readObject();
+                        if(obj instanceof Move) {
+                            System.out.println("inside Move obj");
+                            Move move = (Move) obj;
+                            for(ClientThread thread : clientThreads)
+                                if(thread.id != id)
+                                    thread.obj_out.writeObject(move);
+                        }
+                        else if(obj instanceof String)
+                        {
+                            String message = (String) obj;
+                            echo(message);
+                            if(message.equals("TicTacToe"))
+                            {
+                                if(id == 1) {
+                                    obj_out.writeObject("Player 1");
+                                    obj_out.flush();
+                                }
+                                else
+                                {
+                                    clientThreads.get(id - 1).obj_out.writeObject("Player 2");
+                                }
+                            }
+                        }
                 }catch (Exception e) {
                     e.printStackTrace();
                     System.exit(1);
