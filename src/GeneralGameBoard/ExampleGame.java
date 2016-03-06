@@ -31,8 +31,7 @@ public class ExampleGame extends Application implements EventHandler<MouseEvent>
 
         // Initialize the custom gridpane with 8 rows/cols, Set the horizonal and vertical gaps to 2, Pass this class since it will serve
         // as the board's handler for mouse events
-        board = new BoardGameGridPane(8, 8, 2, 2, 50, Color.AQUA, this);
-
+        board = new BoardGameGridPane(8, 8, 2, 2, 50, Color.AQUA, Color.GREEN, this);
 
         TempPiece[][] tempState = new TempPiece[8][8];
 

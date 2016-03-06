@@ -16,16 +16,26 @@ public class BoardGameGridPane extends GridPane{
 
     private int columns, rows;
     private double tileSize;
-    private Color tileColor;
+    private boolean isCheckered;
+    private Color tilePrimaryColor;
+    private Color tileSecondaryColor;
     private ImageView[][] imgViewArray; // Used to keep a record of the pieces placed on the gridpane and allow game events to alter the board's pieces
 
-    public BoardGameGridPane(int cols, int rows, double hgap, double vgap, double tileSize, Color tileColor, EventHandler<MouseEvent> eventClass) {
+    public BoardGameGridPane(int cols, int rows, double hgap, double vgap, double tileSize,
+                             Color tilePrimaryColor,Color tileSecondaryColor, EventHandler<MouseEvent> eventClass) {
         super();
 
         this.columns = cols;
         this.rows = rows;
         this.tileSize = tileSize;
-        this.tileColor = tileColor; // TODO: Will need to be extended to handle checkered boards
+        this.tilePrimaryColor = tilePrimaryColor;
+        this.tileSecondaryColor = tileSecondaryColor;
+
+        if (tileSecondaryColor == null) {
+            isCheckered = false;
+        } else {
+            isCheckered = true;
+        }
 
         // Set the amount of space in between the rows and columns
         setHgap(hgap);
@@ -47,6 +57,9 @@ public class BoardGameGridPane extends GridPane{
 
     private void initTiles(EventHandler<MouseEvent> eventClass) { // Add the board's tiles and empty imageViews to represent the pieces / board objects
                                                                  // and record the imageviews so that they can be altered easily
+        int order = 0;
+
+
         // c - column (x), r - row (y)
         for (int c = 0; c < columns; c++) {
             for (int r = 0; r < rows; r++) {
@@ -54,8 +67,22 @@ public class BoardGameGridPane extends GridPane{
                 Rectangle rec = new Rectangle();
                 rec.setWidth(tileSize);
                 rec.setHeight(tileSize);
-                rec.setFill(tileColor);
                 rec.setStrokeWidth(0);
+
+                // Fill the tiles differently based on if the board is checkered or constant
+                if (!isCheckered) {
+                    rec.setFill(tilePrimaryColor);
+                } else {
+                    // Switch between the primary color for each row
+                    if (order == 0) {
+                        rec.setFill(tilePrimaryColor);
+                        order = 1;
+                    } else {
+                        rec.setFill(tileSecondaryColor);
+                        order = 0;
+                    }
+                }
+
                 rec.addEventHandler(MouseEvent.MOUSE_CLICKED, eventClass);
                 add(rec, c, r);
 
@@ -65,6 +92,8 @@ public class BoardGameGridPane extends GridPane{
                 add(temp, c, r);
                 imgViewArray[c][r] = temp;
             }
+            // Change the order for the next column
+            order = 1 - order;
         }
     }
 
