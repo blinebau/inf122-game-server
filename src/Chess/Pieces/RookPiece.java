@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 /**
  * Created by Luke on 3/5/2016.
  */
-public class RookPiece extends BoardObject{
+public class RookPiece extends app.model.Piece{
 
     public RookPiece(String color){
 

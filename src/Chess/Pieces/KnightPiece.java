@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 /**
  * Created by Luke on 3/5/2016.
  */
-public class KnightPiece extends BoardObject {
+public class KnightPiece extends app.model.Piece {
 
     public KnightPiece(String color){
 

@@ -1,4 +1,6 @@
-package models;
+package app.model;
+
+import javafx.scene.image.Image;
 
 /**
  * 
@@ -12,4 +14,13 @@ public abstract class Piece {
 	 *  Should be extended by different game pieces.
 	 *  Should be used as programming-to-interface.
 	 */
+    private Image img;
+
+    public Image getImage() {
+        return img;
+    }
+
+    public void setImage(Image img) {
+        this.img = img;
+    }
 }
