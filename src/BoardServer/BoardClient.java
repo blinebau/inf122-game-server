@@ -9,6 +9,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import TicTacToe.TTGUI;
+import app.model.Move;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 /**
  * Created by Bryan on 3/1/2016.
@@ -22,38 +26,48 @@ public class BoardClient {
 
     //Client gui
     private ClientGUI clientGUI = null;
-
+    private TTGUI gameGUI;
     //Server, port and username
     private String server, username;
+    private String playerStatus;
+    public boolean myTurn;
     private int port;
 
     //console constructor
-    public BoardClient(String server, int port, ClientGUI clientGUI)
-    {
+    public BoardClient(String server, int port, ClientGUI clientGUI) {
         this(server, port, "Anonymous", clientGUI);
     }
 
     //GUI constructor
-    public BoardClient(String server, int port, String username, ClientGUI clientGUI)
-    {
+    public BoardClient(String server, int port, String username, ClientGUI clientGUI) {
         this.server = server;
         this.port = port;
         //this.username = username;
         this.clientGUI = clientGUI;
     }
 
-    public void setUsername(String name)
-    {
+    public String getPlayerStatus() {
+        return playerStatus;
+    }
+
+    public void setGameGUI(TTGUI gui) {
+        gameGUI = gui;
+    }
+
+    public TTGUI getGameGUI() {
+        return gameGUI;
+    }
+
+    public void setUsername(String name) {
         username = name;
     }
 
     //start the client dialog
-    public boolean start()
-    {
+    public boolean start() {
         //attempt connecting to server using socket
         try {
             socket = new Socket(server, port);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             //display failure message
             echo("Client failed to connect to server");
@@ -66,17 +80,18 @@ public class BoardClient {
         echo(message);
 
         //attempt to create data streams
-        try{
+        try {
             obj_in = new ObjectInputStream(socket.getInputStream());
             obj_out = new ObjectOutputStream(socket.getOutputStream());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             echo("Failed to create data streams, Exception was thrown");
             return false;
         }
 
+        new listenToServer().start();
+
         //create thread that listens to server
-        new ListenToServer().start();
 
 /*        try {
             //send the
@@ -88,52 +103,89 @@ public class BoardClient {
         return true;
     }
 
-    public void echo(String message)
-    {
+    public void echo(String message) {
         System.out.println(message);
     }
 
-    public void sendMessage(String message)
-    {
-        try {
-            obj_out.writeObject(message);
-        }catch (Exception e){
-            echo("Failed to write message to server");
-        }
+    public void sendMessage(String message) {
+        Task worker = new Task() {
+            protected Object call() throws Exception {
+                try
+                {
+                    obj_out.writeObject(message);
+                    obj_out.flush();
+                }
+
+                catch(Exception e)
+                {
+                    echo("Failed to write message to server");
+                }
+                return null;
+            }
+
+            protected void succeeded() {
+
+            }
+
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        new Thread(worker).start();
     }
 
-    public void sendMove(Move move)
-    {
-        try {
-            obj_out.writeObject(move);
-        }catch (Exception e){
-            echo("Failed to write move to server...");
+    public void sendMessage(Move move) {
+        Task worker = new Task() {
+            protected Object call() throws Exception {
+                try
+                {
+                    obj_out.writeObject(move);
+                    obj_out.flush();
+                }
 
-        }
+                catch(
+                        Exception e
+                        )
+
+                {
+                    echo("Failed to write move to server");
+                }
+                return null;
+            }
+
+            protected void succeeded() {
+
+            }
+
+            protected void failed() {
+                getException().printStackTrace();
+            }
+        };
+        new Thread(worker).start();
     }
 
-    public void disconnect()
-    {
+    public void disconnect() {
         //close all connections
-        try{
-            if(obj_out != null) obj_out.close();
-        }catch (Exception e){}
-        try{
-            if(obj_in != null) obj_in.close();
-        }catch (Exception e){}
-        try{
-            if(socket != null) socket.close();
-        }catch (SocketException e){
+        try {
+            if (obj_out != null) obj_out.close();
+        } catch (Exception e) {
+        }
+        try {
+            if (obj_in != null) obj_in.close();
+        } catch (Exception e) {
+        }
+        try {
+            if (socket != null) socket.close();
+        } catch (SocketException e) {
             System.out.println("Socket disconnected, client has exited.");
             System.exit(1);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    public static void main(String [] args)
-    {
+    public static void main(String[] args) {
 /*        int portNumber = 4242;
         String serverAddress = "localhost";
         String userName = "Anonymous";
@@ -145,30 +197,41 @@ public class BoardClient {
     }
 
     //waits for messages and then acts on the message (Move eventually)
-    class ListenToServer extends Thread
-    {
-        public void run()
-        {
-            while (true)
-            {
+    class listenToServer extends Thread {
+        public void run() {
+            while (true) {
                 try {
-                    String message = (String) obj_in.readObject();
-                    System.out.println(message);
-/*                    if(clientGUI == null)//if gui exists
-                    {
-                        System.out.println(message);
-                    }
-                    else
-                    {
-                        //do something to gui
-                    }*/
-                }catch (Exception e){
+                    Object obj = obj_in.readObject();
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleServerMessage(obj);
+                        }
+                    });
+                } catch (Exception e) {
                     e.printStackTrace();
                     echo("Server closed this connection...");
                     break;
                 }
             }
         }
+
+        public void handleServerMessage(Object serverMessage)
+        {
+            if (serverMessage instanceof Move) {
+                Move move = (Move) serverMessage;
+                gameGUI.updateBoard(move);
+                return;
+            } else if (serverMessage instanceof String) {
+                String message = (String) serverMessage;
+                if (message.equals("Player 1") || message.equals("Player 2")) {
+                    System.out.println(message);
+                    playerStatus = message;
+                    return;
+                }
+            }
+        }
     }
 }
+
 

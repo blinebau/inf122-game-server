@@ -4,13 +4,14 @@ package BoardServer;
  * Created by Bryan on 3/1/2016.
  */
 
+import app.model.Move;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.jar.Pack200;
 
 /**
  * Created by Bryan on 3/1/2016.
@@ -170,9 +171,29 @@ public class BoardServer {
             while(running)
             {
                 try {
-                    move = (Move)obj_in.readObject();
-                    String message = move.getMoveMessage();
-                    sendMove(message);
+                        Object obj = obj_in.readObject();
+                        if(obj instanceof Move) {
+                            Move move = (Move) obj;
+                            for(ClientThread thread : clientThreads)
+                                if(thread.id != id)
+                                    thread.obj_out.writeObject(move);
+                        }
+                        else if(obj instanceof String)
+                        {
+                            String message = (String) obj;
+                            echo(message);
+                            if(message.equals("TicTacToe"))
+                            {
+                                if(id == 1) {
+                                    obj_out.writeObject("Player 1");
+                                    obj_out.flush();
+                                }
+                                else
+                                {
+                                    clientThreads.get(id - 1).obj_out.writeObject("Player 2");
+                                }
+                            }
+                        }
                 }catch (Exception e) {
                     e.printStackTrace();
                     System.exit(1);

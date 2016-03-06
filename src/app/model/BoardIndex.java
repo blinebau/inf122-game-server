@@ -1,9 +1,11 @@
 package app.model;
 
+import java.io.Serializable;
+
 /**
  * Created by jgreene on 3/5/16.
  */
-public class BoardIndex {
+public class BoardIndex implements Serializable {
     private int columnIndex;
     private int rowIndex;
 
