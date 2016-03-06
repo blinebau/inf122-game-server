@@ -1,4 +1,4 @@
-package models;
+package app.model;
 
 import Chess.Logic.Board;
 import GeneralGameBoard.BoardIndex;
@@ -19,7 +19,7 @@ public class Move implements Serializable{
 	//private final int  source;
 	//private final int destination;
 	private final boolean isMyTurn = false;	// Change the variable name if it is not descriptive enough.
-
+	
 	/*
 	 * 	boolean variable is used to indicate whether one player is done with his turn.
 	 * 	In Checkers, a player can jump multiple times when there are multiple opponent's pieces can be captured.

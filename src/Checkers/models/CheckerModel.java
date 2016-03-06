@@ -9,7 +9,6 @@ public class CheckerModel {
     Player black;
     String turnColor;
 
-    Tile[][] board = new Tile[8][8];
 
 
     // Get game ID and color of the current player

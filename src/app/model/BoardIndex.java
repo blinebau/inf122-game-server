@@ -1,4 +1,4 @@
-package GeneralGameBoard;
+package app.model;
 
 import java.io.Serializable;
 
