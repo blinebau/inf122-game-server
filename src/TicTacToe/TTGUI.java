@@ -1,10 +1,18 @@
 package TicTacToe;
 
 import BoardServer.BoardClient;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import app.model.Move;
+import javafx.scene.shape.Line;
+import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Sophia on 3/4/2016.
@@ -14,18 +22,25 @@ public class TTGUI {
     private Scene tttscene;
     private BoardClient client;
     private IndTile[][] board = new IndTile[3][3];
+    List<WinCombo> possibleWins = new ArrayList<>();
+    WinCombo winnersCombo;
+    boolean someoneWon = false;
 
     /**
-     * Creates the board
-     * @return
+     * Constructor that takes in a String and BoardClient
+     * @param message
+     * @param client
      */
-
     public TTGUI(String message, BoardClient client)
     {
         this.client = client;
         tttscene = new Scene(fillBoard(message));
     }
 
+    /**
+     * Creates and fills the board
+     * @return
+     */
     private Parent fillBoard(String message) {
         root.setPrefSize(600,600);
 
@@ -41,13 +56,72 @@ public class TTGUI {
                 board[j][i] = tile;
             }
         }
+
+        // horizontal
+        for (int y = 0; y < 3; y++) {
+            possibleWins.add(new WinCombo(board[0][y], board[1][y], board[2][y]));
+        }
+
+        // vertical
+        for (int x = 0; x < 3; x++) {
+            possibleWins.add(new WinCombo(board[x][0], board[x][1], board[x][2]));
+        }
+
+        // diagonals
+        possibleWins.add(new WinCombo(board[0][0], board[1][1], board[2][2]));
+        possibleWins.add(new WinCombo(board[2][0], board[1][1], board[0][2]));
+
         return root;
     }
 
+    /**
+     * Updates board based on other player's move
+     * @param move
+     */
     public void updateBoard(Move move)
     {
         IndTile tile = board[move.getIndex().getColumnIndex()][move.getIndex().getRowIndex()];
         tile.drawOpponent();
+        checkWin();
+        if(someoneWon) {
+            client.sendMessage("Congratulations, " + client.getPlayerStatus()+ " - " + client.getUsername()+ ", has lost. Good game!");
+            client.myTurn = false;
+        }
+    }
+
+    /**
+     * Checks all possible combinations to win
+     */
+    private void checkWin() {
+
+        for (WinCombo combo : possibleWins) {
+            if (combo.isComplete()) {
+                playWinAnimation(combo);
+                someoneWon = true;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Displays the winning trio with a line through them
+     * @param combo
+     */
+    private void playWinAnimation(WinCombo combo) {
+        Line line = new Line();
+        line.setStartX(combo.getTile(0).getCenterX());
+        line.setStartY(combo.getTile(0).getCenterY());
+        line.setEndX(combo.getTile(0).getCenterX());
+        line.setEndY(combo.getTile(0).getCenterY());
+
+        root.getChildren().add(line);
+
+        Timeline timeline = new Timeline();
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1),
+                new KeyValue(line.endXProperty(), combo.getTile(2).getCenterX()),
+                new KeyValue(line.endYProperty(), combo.getTile(2).getCenterY())));
+        timeline.play();
+        winnersCombo = combo;
     }
 
     public void setScene(Scene scene)

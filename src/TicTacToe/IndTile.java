@@ -24,12 +24,12 @@ public class IndTile extends StackPane {
     /**
      * Creates an individual tile with dimensions
      */
-    public IndTile(int row, int col, String shape, BoardClient client) {
+    public IndTile(int row, int col, String playerNum, BoardClient client) {
         this.row = row;
         this.col = col;
         this.client = client;
 
-        if(shape.equals("Player 1"))
+        if(playerNum.equals("Player 1"))
             this.shape = "X";
         else
             this.shape = "O";
@@ -48,32 +48,63 @@ public class IndTile extends StackPane {
          * On the event of a mouse clicking on that tile, draws X or O
          */
         setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) {
+            if (event.getButton() == MouseButton.PRIMARY && client.myTurn) {
                 drawMyShape();
                 Move move = new Move(new BoardIndex(col, row));
                 client.sendMessage(move);
             }
         });
+
+    }
+
+    /**
+     * Returns text in tile
+     * @return Text text
+     */
+    public String getValue() {
+        return text.getText();
+    }
+
+    /**
+     * Draws my shape
+     */
+    public void drawMyShape() {
+        if(shape.equals("X")) {
+            drawX();
+        } else {
+            drawO();
+        }
+        client.myTurn = !client.myTurn;
+    }
+
+    /**
+     * Draws opponent's shape
+     */
+    public void drawOpponent() {
+        if(shape.equals("X")) {
+            drawO();
+        } else {
+            drawX();
+        }
+        client.myTurn = !client.myTurn;
     }
 
     /**
      * Draws an X
      */
-    public void drawMyShape() {
+    private void drawX() {
         text.setText("X");
         text.setStroke(Color.CADETBLUE);
         text.setFill(Color.CADETBLUE);
-        client.myTurn = !client.myTurn;
     }
 
     /**
      * Draws an O
      */
-    public void drawOpponent() {
+    private void drawO() {
         text.setText("O");
         text.setStroke(Color.LIGHTGREEN);
         text.setFill(Color.LIGHTGREEN);
-        client.myTurn = !client.myTurn;
     }
 
  /*   public void draw(boolean myMove)
@@ -87,6 +118,14 @@ public class IndTile extends StackPane {
     public void setShape(String shape)
     {
         this.shape = shape;
+    }
+
+    public double getCenterX() {
+        return getTranslateX() + 100;
+    }
+
+    public double getCenterY() {
+        return getTranslateY() + 100;
     }
 }
 

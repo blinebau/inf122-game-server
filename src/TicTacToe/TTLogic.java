@@ -21,4 +21,6 @@ public class TTLogic extends StackPane {
     public void setFirstPlayerTurn(boolean newBoolean) {
         firstPlayerTurn = newBoolean;
     }
+
+
 }
