@@ -1,8 +1,8 @@
-package Chess;
+package Chess.controller;
 
 import BoardServer.BoardClient;
-import Chess.ChessView.ChessGUI;
-import Chess.Pieces.*;
+import Chess.model.*;
+import Chess.view.ChessGUI;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
 import app.model.Piece;

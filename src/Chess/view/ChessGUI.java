@@ -1,6 +1,6 @@
-package Chess.ChessView;
+package Chess.view;
 
-import Chess.ChessController;
+import Chess.controller.ChessController;
 import app.model.Piece;
 import app.view.BoardGameGridPane;
 import app.view.GameGUI;

@@ -1,4 +1,4 @@
-package Chess.Pieces;
+package Chess.model;
 
 
 import javafx.scene.image.Image;
@@ -11,9 +11,9 @@ public class BishopPiece extends app.model.Piece {
     public BishopPiece(String color){
 
         if(color.equals("Black")) {
-            setImage(new Image("Chess/ImageFiles/Black_bishop.png"));
+            setImage(new Image("Chess/view/ImageFiles/Black_bishop.png"));
         } else if (color.equals("White")){
-            setImage(new Image("Chess/ImageFiles/White_bishop.png"));
+            setImage(new Image("Chess/view/ImageFiles/White_bishop.png"));
         }
     }
 }
