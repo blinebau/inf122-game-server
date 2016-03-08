@@ -1,8 +1,11 @@
 package Chess.controller;
 
 import BoardServer.BoardClient;
+import Chess.CMD.controller.Game;
+import Chess.CMD.view.Display;
 import Chess.model.*;
 import Chess.view.ChessGUI;
+import GeneralGameBoard.BoardObject;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
 import app.model.Piece;
@@ -21,6 +24,9 @@ public class ChessController extends BoardGameController {
     BoardGameGridPane board;
     app.model.Piece[][] game2DArray;
     ChessGUI chessGUI;
+    Game chessGame;
+    String move1 = "";
+    String move2 = "";
 
     public ChessController() {};
 
@@ -77,6 +83,7 @@ public class ChessController extends BoardGameController {
         chessGUI = new ChessGUI(this, game2DArray);
 
         myScene = new Scene(chessGUI);
+        chessGame = new Game();
 
         window.setScene(myScene);
         window.show();
@@ -86,11 +93,104 @@ public class ChessController extends BoardGameController {
     }
 
     public void tileSelected(BoardIndex pos) {
-        System.out.println("Tile Selected" + pos.toString());
+
+        String chessLocation = boardIndexToChessTile(pos);
+        System.out.println("Tile Selected:" + pos.toString()
+                + " Location:" + chessLocation);
+        makeLogicMove(chessLocation);
+
     }
 
     public void pieceSelected(BoardIndex pos) {
-        System.out.println("Piece Selected" + pos.toString());
+
+        String chessLocation = boardIndexToChessTile(pos);
+        System.out.println("Piece Selected:" + pos.toString()
+                + " Location:" + chessLocation);
+        makeLogicMove(chessLocation);
+
+    }
+
+    public void makeLogicMove(String chessLocation){
+        if (move1.equals("")){
+            move1 = chessLocation;
+        } else if (move2.equals("")){
+            move2 = chessLocation;
+        }
+        if(!move1.equals("") && !move2.equals("")) {
+            System.out.println("Make move: " + move1 + " " + move2);
+            if(!chessGame.move(move1, move2, null)){
+                System.out.println("Illegal Move");
+            } else {
+                Display.showBoard(chessGame);
+            }
+            move1 = "";
+            move2 = "";
+        }
+    }
+
+    // Take the boardIndex and change it to a chess location (4,6) = e2
+    public String boardIndexToChessTile(BoardIndex pos){
+        String chessLocation = "";
+        // Column
+        switch (pos.getColumnIndex()){
+            case 0:
+                chessLocation += "a";
+                break;
+            case 1:
+                chessLocation += "b";
+                break;
+            case 2:
+                chessLocation += "c";
+                break;
+            case 3:
+                chessLocation += "d";
+                break;
+            case 4:
+                chessLocation += "e";
+                break;
+            case 5:
+                chessLocation += "f";
+                break;
+            case 6:
+                chessLocation += "g";
+                break;
+            case 7:
+                chessLocation += "h";
+                break;
+            default:
+                break;
+        }
+
+        //Row
+        switch (pos.getRowIndex()){
+            case 0:
+                chessLocation += "8";
+                break;
+            case 1:
+                chessLocation += "7";
+                break;
+            case 2:
+                chessLocation += "6";
+                break;
+            case 3:
+                chessLocation += "5";
+                break;
+            case 4:
+                chessLocation += "4";
+                break;
+            case 5:
+                chessLocation += "3";
+                break;
+            case 6:
+                chessLocation += "2";
+                break;
+            case 7:
+                chessLocation += "1";
+                break;
+            default:
+                break;
+        }
+        return chessLocation;
     }
 
     public void makeMove(BoardIndex pos) { // TODO

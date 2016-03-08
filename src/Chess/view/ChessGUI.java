@@ -5,11 +5,17 @@ import app.model.Piece;
 import app.view.BoardGameGridPane;
 import app.view.GameGUI;
 import javafx.event.ActionEvent;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 /**
  * Created by jgreene on 3/5/16.
@@ -30,7 +36,20 @@ public class ChessGUI extends GameGUI { // ChessGUI is a Group
         board.setPieceStartingLayout(game2DArray);
 
         // Add the board as an element of ChessGUI
-        getChildren().add(board);
+        BorderPane border = new BorderPane();
+        Text right = new Text("8\n7\n6\n5\n4\n3\n2\n1");
+        right.setFont(Font.font("Arial", FontWeight.BOLD, 45));
+        Text bottom = new Text(" a  b  c  d  e   f  g  h");
+        bottom.setFont(Font.font("Arial", FontWeight.BOLD, 45));
+        Text top = new Text("Game Status");
+        top.setFont(Font.font("Arial", 20));
+
+        border.setRight(right);
+        border.setBottom(bottom);
+        border.setTop(top);
+        border.setCenter(board);
+
+        getChildren().add(border);
     }
 
     @Override
