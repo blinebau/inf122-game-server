@@ -1,6 +1,6 @@
 package app.model;
 
-import Chess.Logic.Board;
+//import Chess.Logic.Board;
 import app.model.BoardIndex;
 
 import java.io.Serializable;

@@ -213,8 +213,8 @@ public class ClientGUI extends Application {
 
         worker.setOnSucceeded(e -> {
             userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
-            userClient.myTurn = userClient.getPlayerStatus().equals("Player 1");
             primaryStage.setScene(userClient.getGameGUI().getScene());
+            primaryStage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 
         new Thread(worker).start();

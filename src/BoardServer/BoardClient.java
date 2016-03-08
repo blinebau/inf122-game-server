@@ -10,6 +10,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import TicTacToe.TTGUI;
+import TicTacToe.WinCombo;
 import app.model.Move;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -42,7 +43,7 @@ public class BoardClient {
     public BoardClient(String server, int port, String username, ClientGUI clientGUI) {
         this.server = server;
         this.port = port;
-        //this.username = username;
+        this.username = username;
         this.clientGUI = clientGUI;
     }
 
@@ -60,6 +61,10 @@ public class BoardClient {
 
     public void setUsername(String name) {
         username = name;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     //start the client dialog
@@ -224,11 +229,19 @@ public class BoardClient {
                 return;
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
-                if (message.equals("Player 1") || message.equals("Player 2")) {
-                    System.out.println(message);
-                    playerStatus = message;
-                    return;
+//                if (message.compareTo("Player 1") == 0 || message.compareTo("Player 2") == 0) {
+//                    System.out.println(message);
+//                    playerStatus = message;
+//                    return;
+//                }
+                if(message.compareTo("Player 1") == 0) {
+                    myTurn = true;
+                } else {
+                    myTurn = false;
                 }
+                System.out.println(message);
+                playerStatus = message;
+                return;
             }
         }
     }
