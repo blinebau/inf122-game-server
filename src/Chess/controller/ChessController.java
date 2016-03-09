@@ -5,7 +5,6 @@ import Chess.CMD.controller.Game;
 import Chess.CMD.view.Display;
 import Chess.model.*;
 import Chess.view.ChessGUI;
-import GeneralGameBoard.BoardObject;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
 import app.model.Piece;
