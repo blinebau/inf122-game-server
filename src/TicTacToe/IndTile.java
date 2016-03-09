@@ -48,10 +48,12 @@ public class IndTile extends StackPane {
          * On the event of a mouse clicking on that tile, draws X or O
          */
         setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && client.myTurn) {
+            //Checks if tile was left-clicked, it's player's turn, and tile has not been drawn on before
+            if (event.getButton() == MouseButton.PRIMARY && client.myTurn && text.getText().isEmpty()) {
                 drawMyShape();
                 Move move = new Move(new BoardIndex(col, row));
                 client.sendMessage(move);
+                TTGUI.checkWin();
             }
         });
 

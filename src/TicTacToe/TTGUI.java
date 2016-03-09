@@ -18,13 +18,13 @@ import java.util.List;
  * Created by Sophia on 3/4/2016.
  */
 public class TTGUI {
-    private Pane root = new Pane();
+    private static Pane root = new Pane();
     private Scene tttscene;
     private BoardClient client;
     private IndTile[][] board = new IndTile[3][3];
-    List<WinCombo> possibleWins = new ArrayList<>();
-    WinCombo winnersCombo;
-    boolean someoneWon = false;
+    static List<WinCombo> possibleWins = new ArrayList<>();
+    static WinCombo winnersCombo;
+    static boolean someoneWon = false;
 
     /**
      * Constructor that takes in a String and BoardClient
@@ -92,7 +92,7 @@ public class TTGUI {
     /**
      * Checks all possible combinations to win
      */
-    private void checkWin() {
+    public static void checkWin() {
 
         for (WinCombo combo : possibleWins) {
             if (combo.isComplete()) {
@@ -107,7 +107,7 @@ public class TTGUI {
      * Displays the winning trio with a line through them
      * @param combo
      */
-    private void playWinAnimation(WinCombo combo) {
+    private static void playWinAnimation(WinCombo combo) {
         Line line = new Line();
         line.setStartX(combo.getTile(0).getCenterX());
         line.setStartY(combo.getTile(0).getCenterY());
