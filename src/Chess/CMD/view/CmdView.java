@@ -98,7 +98,7 @@ public class CmdView {
 		}
 
 		int asciiRank1 = (int) tokens[0].toLowerCase().charAt(0);
-		int file1 = Character.getNumericValue(tokens[0].charAt(1));
+        int file1 = Character.getNumericValue(tokens[0].charAt(1));
 		int asciiRank2 = (int) tokens[1].toLowerCase().charAt(0);
 		int file2 = Character.getNumericValue(tokens[1].charAt(1));
 

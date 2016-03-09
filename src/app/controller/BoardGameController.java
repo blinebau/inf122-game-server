@@ -12,10 +12,10 @@ import javafx.application.Application;
  */
 public abstract class BoardGameController extends Application {
 	
-	private GameState state;
-	private GameGUI gui;
-	private List<BoardIndex> validMoves;
-	private BoardClient client; // needed to remove final keyboard in order to add constructor (constructor is needed to run the GameControllers)
+	protected GameState state;
+	protected GameGUI gui;
+	protected List<BoardIndex> validMoves;
+	protected BoardClient client; // needed to remove final keyboard in order to add constructor (constructor is needed to run the GameControllers)
 
 	public BoardGameController() {};
 
