@@ -1,6 +1,7 @@
 package Chess.view;
 
 import Chess.controller.ChessController;
+import app.model.BoardIndex;
 import app.model.Piece;
 import app.view.BoardGameGridPane;
 import app.view.GameGUI;
@@ -21,6 +22,18 @@ import javafx.scene.text.Text;
 public class ChessGUI extends GameGUI { // ChessGUI is a Group
 
     protected ChessController controller;
+
+    public Piece copyOfPieceOnBoard(BoardIndex pos){
+        Piece copy;
+        copy = this.game2DArray[pos.getColumnIndex()][pos.getRowIndex()];
+        return copy;
+    }
+
+    public void updateGame2DArray(BoardIndex source, BoardIndex destination){
+        Piece moveSource = this.game2DArray[source.getColumnIndex()][source.getRowIndex()];
+        this.game2DArray[destination.getColumnIndex()][destination.getRowIndex()] = moveSource;
+        this.game2DArray[source.getColumnIndex()][source.getRowIndex()] = null;
+    }
 
     public ChessGUI(ChessController controller, Piece[][] game2DArray) {
 

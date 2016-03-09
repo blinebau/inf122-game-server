@@ -20,12 +20,12 @@ public class ChessController extends BoardGameController {
     Stage window;
     Scene myScene;
 
-    BoardGameGridPane board;
-    app.model.Piece[][] game2DArray;
+//    BoardGameGridPane board;
+//    app.model.Piece[][] game2DArray;
     ChessGUI chessGUI;
     Game chessGame;
-    String move1 = "";
-    String move2 = "";
+    BoardIndex moveSource;
+    BoardIndex moveDestination;
 
     public ChessController() {};
 
@@ -93,42 +93,17 @@ public class ChessController extends BoardGameController {
 
     public void tileSelected(BoardIndex pos) {
 
-        String chessLocation = boardIndexToChessTile(pos);
-        System.out.println("Tile Selected:" + pos.toString()
-                + " Location:" + chessLocation);
-        makeLogicMove(chessLocation);
+        makeMove(pos);
 
     }
 
     public void pieceSelected(BoardIndex pos) {
-
-        String chessLocation = boardIndexToChessTile(pos);
-        System.out.println("Piece Selected:" + pos.toString()
-                + " Location:" + chessLocation);
-        makeLogicMove(chessLocation);
-
+        makeMove(pos);
     }
 
-    public void makeLogicMove(String chessLocation){
-        if (move1.equals("")){
-            move1 = chessLocation;
-        } else if (move2.equals("")){
-            move2 = chessLocation;
-        }
-        if(!move1.equals("") && !move2.equals("")) {
-            System.out.println("Make move: " + move1 + " " + move2);
-            if(!chessGame.move(move1, move2, null)){
-                System.out.println("Illegal Move");
-            } else {
-                Display.showBoard(chessGame);
-            }
-            move1 = "";
-            move2 = "";
-        }
-    }
 
     // Take the boardIndex and change it to a chess location (4,6) = e2
-    public String boardIndexToChessTile(BoardIndex pos){
+    private String boardIndexToChessTile(BoardIndex pos){
         String chessLocation = "";
         // Column
         switch (pos.getColumnIndex()){
@@ -192,7 +167,35 @@ public class ChessController extends BoardGameController {
         return chessLocation;
     }
 
-    public void makeMove(BoardIndex pos) { // TODO
+    public void makeMove(BoardIndex pos) {
+        String chessLocation = boardIndexToChessTile(pos);
+        System.out.println("Piece Selected:" + pos.toString()
+                + " Location:" + chessLocation);
+
+        if (moveSource == null){
+            moveSource = pos;
+        } else if (moveDestination == null){
+            moveDestination = pos;
+        }
+        if(moveSource != null && moveDestination != null) {
+            String chessSource = boardIndexToChessTile(moveSource);
+            String chessDestination = boardIndexToChessTile(moveDestination);
+            System.out.println("Make move: " + chessSource + " " + chessDestination);
+            //TODO: deal with 3rd parameter which deals with promotions
+            if(!chessGame.move(chessSource, chessDestination, null)){
+                System.out.println("Illegal Move");
+            } else {
+                Display.showBoard(chessGame);
+                Piece movePiece = chessGUI.copyOfPieceOnBoard(moveSource);
+                chessGUI.updateGame2DArray(moveSource, moveDestination);
+                chessGUI.getBoard().resetTile(moveDestination);
+                chessGUI.getBoard().addPieceToTile(moveDestination, movePiece);
+                chessGUI.getBoard().resetTile(moveSource);
+
+            }
+            moveSource = null;
+            moveDestination = null;
+        }
 
     }
 
