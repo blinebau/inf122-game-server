@@ -29,18 +29,15 @@ public class ChessController extends BoardGameController {
 
     public ChessController() {};
 
-    public ChessController(BoardClient client) {
-        super(client);
+    public ChessController(BoardClient client, Stage stage) {
+        super(client, stage);
         System.out.println("constructed");
+
+        setUpModelAndView();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        window = primaryStage;
+    public void setUpModelAndView() {
+        window = stage;
         window.setTitle("Chess");
 
         // Set up the game's state
@@ -77,8 +74,7 @@ public class ChessController extends BoardGameController {
         game2DArray[7][0] = new RookPiece("Black");
         game2DArray[0][0] = new RookPiece("Black");
 
-
-        // Set up the encompassing gui, which uses the array to set up the board
+        // Set up the view by constructing the encompassing gui, which uses the array to set up the board
         chessGUI = new ChessGUI(this, game2DArray);
 
         myScene = new Scene(chessGUI);
@@ -86,9 +82,6 @@ public class ChessController extends BoardGameController {
 
         window.setScene(myScene);
         window.show();
-
-        // Test reseting a tile after the scene is shown
-//        chessGUI.getBoard().resetTile(new BoardIndex(0,0));
     }
 
     public void tileSelected(BoardIndex pos) {

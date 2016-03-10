@@ -38,7 +38,12 @@ public class CheckersController extends BoardGameController{
     	
     	initStateAndLists();
     }
-    
+
+    @Override
+    protected void setUpModelAndView() { // TODO: Needs to be implemented
+        System.out.println("Implement");
+    }
+
     private void initStateAndLists() {
     	state = new GameState(8, 8);
     	myPieces = new ArrayList<>();
@@ -92,11 +97,6 @@ public class CheckersController extends BoardGameController{
 
     @Override
     protected void updateView() {
-
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
 
     }
 }
