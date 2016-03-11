@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class Move implements Serializable {
 
-    private final BoardIndex dest;
+    protected final BoardIndex dest;
 
     public Move(BoardIndex index) {
         this.dest = index;
