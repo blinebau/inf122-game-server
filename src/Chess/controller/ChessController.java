@@ -1,13 +1,13 @@
 package Chess.controller;
 
 import BoardServer.BoardClient;
-import Checkers.model.CheckersMove;
 import Chess.CMD.controller.Game;
 import Chess.CMD.view.Display;
 import Chess.model.*;
 import Chess.view.ChessGUI;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
+import app.model.Move;
 import app.model.Piece;
 import app.view.BoardGameGridPane;
 import javafx.scene.Scene;
@@ -213,7 +213,7 @@ public class ChessController extends BoardGameController {
     }
 
 	@Override
-	public void moveReveived(CheckersMove move) {
+	public void moveReveived(Move move) {
 		// TODO Auto-generated method stub
 		
 	}

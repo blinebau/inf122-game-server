@@ -3,9 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 import app.model.BoardIndex;
 import app.model.GameState;
+import app.model.Move;
 import app.view.GameGUI;
 import BoardServer.BoardClient;
-import Checkers.model.CheckersMove;
 import javafx.application.Application;
 
 /**
@@ -31,7 +31,7 @@ public abstract class BoardGameController extends Application {
 												       // - Tic-Tac-Toe (used to immediately make a move)
 													   // - Chess / Checkers (used after a piece is currently selected)
 	
-	public abstract void moveReveived(CheckersMove move); // Called by BoardClient when a Move is received from the opponent.
+	public abstract void moveReveived(Move move); // Called by BoardClient when a Move is received from the opponent.
 	
 	protected abstract void makeMove(BoardIndex pos);
 	
