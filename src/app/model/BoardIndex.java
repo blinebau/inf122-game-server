@@ -21,6 +21,14 @@ public class BoardIndex implements Serializable {
     public int getRowIndex() {
         return rowIndex;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+    	if(!(o instanceof BoardIndex))
+    		return false;
+    	BoardIndex index = (BoardIndex)o;
+    	return columnIndex == index.getColumnIndex() && rowIndex == index.getRowIndex();
+    }
 
     public String toString() {
         return "(" + Integer.toString(columnIndex) + "," + Integer.toString(rowIndex) + ")";

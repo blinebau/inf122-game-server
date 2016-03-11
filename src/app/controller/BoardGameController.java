@@ -22,7 +22,6 @@ public abstract class BoardGameController extends Application {
 
 	public BoardGameController(BoardClient c) { 
 		client = c; 
-		validMoves = new ArrayList<>();
 	}
 
 	// Used by the view classes to notify the controller
