@@ -80,7 +80,7 @@ public class TTGUI {
      */
     public void updateBoard(Move move)
     {
-        IndTile tile = board[move.getIndex().getColumnIndex()][move.getIndex().getRowIndex()];
+        IndTile tile = board[move.getDest().getColumnIndex()][move.getDest().getRowIndex()];
         tile.drawOpponent();
         checkWin();
         if(someoneWon) {

@@ -1,10 +1,11 @@
 package app.controller;
-
+import java.util.ArrayList;
 import java.util.List;
 import app.model.BoardIndex;
 import app.model.GameState;
 import app.view.GameGUI;
 import BoardServer.BoardClient;
+import Checkers.model.CheckersMove;
 import javafx.application.Application;
 
 /**
@@ -19,12 +20,19 @@ public abstract class BoardGameController extends Application {
 
 	public BoardGameController() {};
 
-	public BoardGameController(BoardClient c) { client = c; }
+	public BoardGameController(BoardClient c) { 
+		client = c; 
+		validMoves = new ArrayList<>();
+	}
 
 	// Used by the view classes to notify the controller
-	public abstract void tileSelected(BoardIndex pos); // Used by all of the games to complete a move
+	public abstract void tileSelected(BoardIndex pos); // Called by GUI component
+													   // Used by all of the games to complete a move
 												       // - Tic-Tac-Toe (used to immediately make a move)
 													   // - Chess / Checkers (used after a piece is currently selected)
+	
+	public abstract void moveReveived(CheckersMove move); // Called by BoardClient when a Move is received from the opponent.
+	
 	protected abstract void makeMove(BoardIndex pos);
 	
 	protected abstract boolean validateMove(BoardIndex pos);

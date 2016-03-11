@@ -23,4 +23,12 @@ public class GameState {
 	public Piece getIndex(int col, int row) {
 		return board[col][row];
 	}
+	
+	public void removePiece(BoardIndex index) {
+		board[index.getColumnIndex()][index.getRowIndex()] = null;
+	}
+	
+	public void removePiece(int col, int row) {
+		board[col][row] = null;
+	}
 }

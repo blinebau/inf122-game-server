@@ -18,7 +18,7 @@ public class Move implements Serializable {
         this.dest = index;
     }
 
-	public BoardIndex getdDest() {
+	public BoardIndex getDest() {
 		return dest;
 	}
 }

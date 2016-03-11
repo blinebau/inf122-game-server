@@ -1,6 +1,7 @@
 package Chess.controller;
 
 import BoardServer.BoardClient;
+import Checkers.model.CheckersMove;
 import Chess.CMD.controller.Game;
 import Chess.CMD.view.Display;
 import Chess.model.*;
@@ -210,4 +211,10 @@ public class ChessController extends BoardGameController {
     public void updateView() { // TODO
 
     }
+
+	@Override
+	public void moveReveived(CheckersMove move) {
+		// TODO Auto-generated method stub
+		
+	}
 }
