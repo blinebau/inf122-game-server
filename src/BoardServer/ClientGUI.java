@@ -67,11 +67,6 @@ public class ClientGUI extends Application {
         //Create client window
         stage.setTitle("Board Game Application");
         stage.getIcons().add(new Image("BoardServer/chess_logo.png"));
-        stage.setOnCloseRequest(e -> {
-            Platform.exit();
-            userClient.disconnect();
-        });
-
 
         // Group clientPortal = new Group();
         StackPane clientPortal = new StackPane();
@@ -114,9 +109,10 @@ public class ClientGUI extends Application {
         formGroup.getChildren().add(formGrid);
         clientPortal.getChildren().add(formGroup);
 
+
         Scene portalScene = new Scene(clientPortal, 800, 600);
 
-        signIn.setOnAction((ActionEvent event) -> {
+        signIn.setOnAction(event -> {
                 if (playerNameTextField.getText() != null && !playerNameTextField.getText().isEmpty()) {
                     String userName = playerNameTextField.getText();
                     userClient.setUsername(userName);
@@ -127,9 +123,7 @@ public class ClientGUI extends Application {
                 }
             });
 
-        clearForm.setOnAction((ActionEvent event) -> {
-                playerNameTextField.clear();
-        });
+        clearForm.setOnAction(event -> playerNameTextField.clear());
 
         return portalScene;
     }
@@ -173,10 +167,12 @@ public class ClientGUI extends Application {
         Button playChess = new Button("Chess");
         Button playCheckers = new Button("Checkers");
         Button playTicTacToe = new Button("TicTacToe");
+        Button quitBtn = new Button("Quit to Desktop");
         playChess.setMaxWidth(Double.MAX_VALUE);
         playCheckers.setMaxWidth(Double.MAX_VALUE);
         playTicTacToe.setMaxWidth(Double.MAX_VALUE);
-        gameBtn.getChildren().addAll(playChess,playCheckers,playTicTacToe);
+        quitBtn.setMaxWidth(Double.MAX_VALUE);
+        gameBtn.getChildren().addAll(playChess,playCheckers,playTicTacToe, quitBtn);
 
         titles.add(menuText, 2, 0);
         titles.add(gameBtn, 2, 2);
@@ -193,8 +189,11 @@ public class ClientGUI extends Application {
                 userClient.sendMove(move);
         });*/
 
-        playTicTacToe.setOnAction((ActionEvent event) -> {
-            playTicTacToe();
+        playTicTacToe.setOnAction(event -> playTicTacToe());
+
+        quitBtn.setOnAction((ActionEvent event) -> {
+            userClient.disconnect();
+            Platform.exit();
         });
 
         return new Scene(clientMenu, 800, 600);

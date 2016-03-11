@@ -2,17 +2,13 @@ package BoardServer;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
@@ -28,6 +24,7 @@ public class ServerGUI extends Application {
     //server would contains a display of connected user
     //start and stop button
     private BoardServer server;
+    private TextArea eventLog;
 
     public void start(Stage stage)
     {
@@ -57,7 +54,7 @@ public class ServerGUI extends Application {
         logLabel.setPadding(new Insets(0, 0, 0, 0));
         topBox.getChildren().addAll(startBox, logLabel);
 
-        TextArea eventLog = new TextArea();
+        eventLog = new TextArea();
         eventLog.addEventFilter(KeyEvent.ANY, (KeyEvent event) -> {
             boolean consume = true;
             if(consume)
@@ -93,14 +90,18 @@ public class ServerGUI extends Application {
 
         stopBtn.setOnAction((ActionEvent event) -> {
             if (server.isRunning()) {
+                eventLog.clear();
                 server.stop();
                 server = null;
             }
         });
 
-
     }
 
+    public TextArea getEventLog()
+    {
+        return eventLog;
+    }
 
     class ServerThread extends Thread{
 

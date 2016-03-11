@@ -5,7 +5,7 @@ package BoardServer;
  */
 
 import app.model.Move;
-
+import javafx.scene.control.TextArea;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -48,6 +48,7 @@ public class BoardServer {
     public void start()
     {
         //server is running
+        echo("Starting server...");
         running = true;
 
         try {
@@ -77,12 +78,8 @@ public class BoardServer {
                     }
                 }
             }catch (Exception e){
-                e.printStackTrace();
-                System.exit(1);
             }
         }catch(Exception e){
-            e.printStackTrace();
-            System.exit(1);
         }
     }
 
@@ -103,7 +100,7 @@ public class BoardServer {
 
     public void echo(String message)
     {
-        System.out.println(message);
+       serverGUI.getEventLog().appendText(message + "\n");
     }
 
     public void remove(int connection_id)
@@ -193,13 +190,17 @@ public class BoardServer {
                                     clientThreads.get(id - 1).obj_out.writeObject("Player 2");
                                 }
                             }
+                            if(message.equals("Disconnecting Client..."))
+                            {
+                                break;
+                            }
                         }
                 }catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(1);
+                    break;
                 }
             }
             //remove self form array list when no long running
+            echo(userName + " has disconnected...");
             remove(connection_id);
             //close everything
             close();
@@ -237,8 +238,6 @@ public class BoardServer {
                 }
                 // obj_out.writeObject(message);
             }catch (Exception e){
-                e.printStackTrace();
-                System.exit(1);
             }
             //return true;
         }

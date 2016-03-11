@@ -212,12 +212,9 @@ public class BoardClient {
             while (true) {
                 try {
                     Object obj = obj_in.readObject();
-                    Platform.runLater(() -> {
-                            handleServerMessage(obj);
-                    });
+                    Platform.runLater(() -> handleServerMessage(obj));
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    echo("Server closed this connection...");
+                    echo("Connection to Server severed...");
                     break;
                 }
             }
@@ -228,7 +225,6 @@ public class BoardClient {
             if (serverMessage instanceof Move) {
                 Move move = (Move) serverMessage;
                 gameGUI.updateBoard(move);
-                return;
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
 //                if (message.compareTo("Player 1") == 0 || message.compareTo("Player 2") == 0) {
@@ -236,14 +232,9 @@ public class BoardClient {
 //                    playerStatus = message;
 //                    return;
 //                }
-                if(message.equals("Player 1")) {
-                    myTurn = true;
-                } else {
-                    myTurn = false;
-                }
+                myTurn = message.equals("Player 1");
                 System.out.println(message);
                 playerStatus = message;
-                return;
             }
         }
     }
