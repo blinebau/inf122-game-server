@@ -1,6 +1,8 @@
 package Checkers.controller;
 import java.util.ArrayList;
 import java.util.List;
+
+import BoardServer.BoardClient;
 import Checkers.model.CheckerPiece;
 import app.controller.BoardGameController;
 import app.model.*;
@@ -26,7 +28,9 @@ public class CheckersController extends BoardGameController{
     private List<CheckerPiece> myPieces;
     private List<CheckerPiece> oppPieces;
 
-    public CheckersController(boolean isFirst) {
+    public CheckersController(boolean isFirst, BoardClient c) {
+    	
+    	super(c);
     	
     	if(isFirst) {
     		MY_COLOR = PieceColor.BLACK;
@@ -37,6 +41,8 @@ public class CheckersController extends BoardGameController{
     	}
     	
     	initStateAndLists();
+    	// TODO: initialize GUI
+    	initGUI();
     }
     
     private void initStateAndLists() {
@@ -44,21 +50,32 @@ public class CheckersController extends BoardGameController{
     	myPieces = new ArrayList<>();
     	oppPieces = new ArrayList<>();
     	CheckerPiece p;
+    	
+    	// Initializing my pieces
+    	int col, row;
     	for(int i = 0; i < 12; ++i) {
     		p = new CheckerPiece(MY_COLOR);
     		myPieces.add(p);
-    		// TODO: placing all pieces in place in state.
-    		
+    		// Placing piece in state.
+    		row = 7 - i/4;
+    		col = row%2 == 0 ? (2*i+1)%8 : (2*i)%8;
+    		state.putPiece(p, col, row);
     	}
     	
+    	// Initializing opponent's pieces
     	for(int i = 0; i < 12; ++i) {
     		p = new CheckerPiece(OPP_COLOR);
-    		myPieces.add(p);
-    		// TODO: placing all pieces in place in state.
-    		
+    		oppPieces.add(p);
+    		// Placing piece in state.
+    		row = i/4;
+    		col = row%2 == 0 ? (2*i+1)%8 : (2*i)%8;
+    		state.putPiece(p, col, row);
     	}
     }
     
+    private void initGUI() {
+    	// TODO
+    }
     
     private Piece selectPiece(BoardIndex bi) {
         //TODO

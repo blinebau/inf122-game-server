@@ -8,7 +8,19 @@ public class GameState {
 		board = new Piece[columns][rows];
 	}
 	
-	public void putPiece(Piece piece /*, Boardindex index*/) {
-		
+	public void putPiece(Piece piece , BoardIndex index) {
+		board[index.getColumnIndex()][index.getRowIndex()] = piece;
+	}
+	
+	public void putPiece(Piece piece , int col, int row) {
+		board[col][row] = piece;
+	}
+	
+	public Piece getIndex(BoardIndex index) {
+		return board[index.getColumnIndex()][index.getRowIndex()];
+	}
+	
+	public Piece getIndex(int col, int row) {
+		return board[col][row];
 	}
 }
