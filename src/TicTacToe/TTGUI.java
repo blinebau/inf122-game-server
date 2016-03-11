@@ -6,6 +6,11 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.StageStyle;
+import javafx.stage.Stage; 
+import javafx.stage.Window;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import app.model.Move;
 import javafx.scene.shape.Line;
@@ -18,13 +23,13 @@ import java.util.List;
  * Created by Sophia on 3/4/2016.
  */
 public class TTGUI {
-    private static Pane root = new Pane();
-    private Scene tttscene;
-    private BoardClient client;
-    private IndTile[][] board = new IndTile[3][3];
-    static List<WinCombo> possibleWins = new ArrayList<>();
+    private static Pane root;
+    private static Scene tttscene;
+    private static BoardClient client;
+    private static IndTile[][] board;
+    static List<WinCombo> possibleWins;
     static WinCombo winnersCombo;
-    static boolean someoneWon = false;
+    static boolean someoneWon;
 
     /**
      * Constructor that takes in a String and BoardClient
@@ -34,6 +39,7 @@ public class TTGUI {
     public TTGUI(String message, BoardClient client)
     {
         this.client = client;
+        root = new Pane();
         tttscene = new Scene(fillBoard(message));
     }
 
@@ -43,7 +49,8 @@ public class TTGUI {
      */
     private Parent fillBoard(String message) {
         root.setPrefSize(600,600);
-
+        board = new IndTile[3][3];
+        possibleWins = new ArrayList<>();
         // creates the 3 x 3 board
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
@@ -83,10 +90,6 @@ public class TTGUI {
         IndTile tile = board[move.getDest().getColumnIndex()][move.getDest().getRowIndex()];
         tile.drawOpponent();
         checkWin();
-        if(someoneWon) {
-            client.sendMessage("Congratulations, " + client.getPlayerStatus()+ " - " + client.getUsername()+ ", has lost. Good game!");
-            client.myTurn = false;
-        }
     }
 
     /**
@@ -98,7 +101,6 @@ public class TTGUI {
             if (combo.isComplete()) {
                 playWinAnimation(combo);
                 someoneWon = true;
-                break;
             }
         }
     }
@@ -122,6 +124,27 @@ public class TTGUI {
                 new KeyValue(line.endYProperty(), combo.getTile(2).getCenterY())));
         timeline.play();
         winnersCombo = combo;
+
+        String endingStatus;
+        if(client.myTurn)
+        {
+            endingStatus = "You lost";
+        }
+        else
+        {
+            endingStatus = "You won!";
+        }
+
+        Stage stage = (Stage) root.getScene().getWindow();
+        Window owner = tttscene.getWindow();
+        Alert gameConfirm = new Alert(Alert.AlertType.CONFIRMATION, "");
+        gameConfirm.initOwner(owner);
+        gameConfirm.initStyle(StageStyle.DECORATED);
+        gameConfirm.getDialogPane().setHeaderText(endingStatus);
+        gameConfirm.setTitle("Game over");
+        gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
+        gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
+        gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
     }
 
     public void setScene(Scene scene)

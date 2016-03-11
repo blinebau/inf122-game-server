@@ -47,6 +47,11 @@ public class BoardClient {
         this.clientGUI = clientGUI;
     }
 
+    public ClientGUI getClientGUI()
+    {
+        return clientGUI;
+    }
+
     public String getPlayerStatus() {
         return playerStatus;
     }
@@ -207,11 +212,8 @@ public class BoardClient {
             while (true) {
                 try {
                     Object obj = obj_in.readObject();
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
+                    Platform.runLater(() -> {
                             handleServerMessage(obj);
-                        }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -234,7 +236,7 @@ public class BoardClient {
 //                    playerStatus = message;
 //                    return;
 //                }
-                if(message.compareTo("Player 1") == 0) {
+                if(message.equals("Player 1")) {
                     myTurn = true;
                 } else {
                     myTurn = false;

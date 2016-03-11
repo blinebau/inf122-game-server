@@ -6,7 +6,7 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # all of .idea folder
-.idea
+.idea/
 
 # Gradle:
 .idea/gradle.xml
@@ -22,6 +22,8 @@
 
 # IntelliJ
 /out/
+INF122-Boardgame-Server.iml
+
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/

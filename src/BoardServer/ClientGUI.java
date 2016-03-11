@@ -27,7 +27,10 @@ import javafx.scene.Group;
  */
 public class ClientGUI extends Application {
 
-    private Stage primaryStage;
+    private Stage stage;
+    private Scene entryScene;
+    private Scene titleScene;
+
     private BoardClient userClient;
     private String defHost;
     private int defPort;
@@ -41,9 +44,9 @@ public class ClientGUI extends Application {
         userClient = new BoardClient(defHost, defPort, this);
     }
 
-    public Stage getPrimaryStage()
+    public Stage getStage()
     {
-        return primaryStage;
+        return stage;
     }
 
 /*    public ClientGUI(String hostName, int port) {
@@ -54,10 +57,13 @@ public class ClientGUI extends Application {
 
     public void start(Stage stage)
     {
-        drawClientEntry(stage);
+        this.stage = stage;
+        entryScene = drawClientEntry();
+        stage.setScene(entryScene);
+        stage.show();
     }
 
-    public void drawClientEntry(Stage stage) {
+    public Scene drawClientEntry() {
         //Create client window
         stage.setTitle("Board Game Application");
         stage.getIcons().add(new Image("BoardServer/chess_logo.png"));
@@ -109,9 +115,6 @@ public class ClientGUI extends Application {
         clientPortal.getChildren().add(formGroup);
 
         Scene portalScene = new Scene(clientPortal, 800, 600);
-        primaryStage = stage;
-        primaryStage.setScene(portalScene);
-        primaryStage.show();
 
         signIn.setOnAction((ActionEvent event) -> {
                 if (playerNameTextField.getText() != null && !playerNameTextField.getText().isEmpty()) {
@@ -120,16 +123,18 @@ public class ClientGUI extends Application {
                     if(!userClient.start())
                         return;
                     userClient.sendMessage(userName);
-                    primaryStage.setScene(drawTitleMenu());
+                    stage.setScene(drawTitleMenu());
                 }
             });
 
         clearForm.setOnAction((ActionEvent event) -> {
                 playerNameTextField.clear();
         });
+
+        return portalScene;
     }
 
-    private Scene drawTitleMenu() {
+    public Scene drawTitleMenu() {
 
         Scene scene;
 
@@ -213,8 +218,8 @@ public class ClientGUI extends Application {
 
         worker.setOnSucceeded(e -> {
             userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
-            primaryStage.setScene(userClient.getGameGUI().getScene());
-            primaryStage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
+            stage.setScene(userClient.getGameGUI().getScene());
+            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 
         new Thread(worker).start();
