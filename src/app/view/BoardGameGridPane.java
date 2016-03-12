@@ -146,7 +146,6 @@ public class BoardGameGridPane extends GridPane{
         if (tileSecondaryColor != null) { // Save the tile color if the board is checkered
             for (BoardIndex tilePos : tilePositions) {
                 Rectangle temp = rectangleArray[tilePos.getColumnIndex()][tilePos.getRowIndex()];
-
                 savedTileColors.add(temp.getFill());
                 highlightedTilePositions.add(tilePos);
                 temp.setFill(highlightColor);
@@ -172,5 +171,13 @@ public class BoardGameGridPane extends GridPane{
             }
         }
         highlightedTilePositions.clear();
+    }
+
+    public void disable() { // Disable the board (ex use case - it isn't the player's turn)
+        setDisable(true);
+    }
+
+    public void activate() { // Activate the board so the user can interact with it
+        setDisable(false);
     }
 }
