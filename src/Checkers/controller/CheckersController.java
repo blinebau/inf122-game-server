@@ -186,7 +186,7 @@ public class CheckersController extends BoardGameController{
     }
 
 	@Override
-	public void moveReveived(Move m) {
+	public void moveReceived(Move m) {
 		CheckersMove move = (CheckersMove)m;
 		
 		if(!move.getSource().equals(move.getDest())) {

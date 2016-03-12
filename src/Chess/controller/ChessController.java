@@ -218,7 +218,7 @@ public class ChessController extends BoardGameController {
 
     }
 
-    public  void moveReveived(Move move){
+    public  void moveReceived(Move move){
         // TODO
     }
 }
