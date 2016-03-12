@@ -242,7 +242,8 @@ public class ClientGUI extends Application {
         };
 
         worker.setOnSucceeded(e -> {
-            ChessController chessController = new ChessController(userClient);
+            ChessController chessController = new ChessController(userClient.getPlayerStatus(),
+                    userClient);
             userClient.setBoardGameController(chessController);
             stage.setScene(userClient.getBoardGameController().getMyScene());
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());

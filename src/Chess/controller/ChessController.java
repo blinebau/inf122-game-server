@@ -25,10 +25,12 @@ public class ChessController extends BoardGameController {
     Game chessGame;
     BoardIndex moveSource;
     BoardIndex moveDestination;
+    String playerStatus;
 
 
-    public ChessController(BoardClient client) {
+    public ChessController(String playerStatus, BoardClient client) {
         super(client);
+        this.playerStatus = playerStatus;
         constructGame();
         System.out.println("constructed");
     }
