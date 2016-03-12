@@ -105,11 +105,11 @@ public class BoardServer {
 
     public void remove(int connection_id)
     {
-        for(ClientThread thread : clientThreads)
+        for(int i = 0; i < clientThreads.size() - 1; i++)
         {
-            if(thread.id == connection_id) {
-                clientThreads.remove(thread);
-                return;
+            if(clientThreads.get(i).id == connection_id)
+            {
+                clientThreads.remove(i);
             }
         }
     }
