@@ -179,7 +179,7 @@ public class BoardServer {
                         {
                             String message = (String) obj;
                             echo(message);
-                            if(message.equals("TicTacToe"))
+                            if(message.equals("TicTacToe") || message.equals("Chess"))
                             {
                                 if(id == clientThreads.get(0).id) {
                                     obj_out.writeObject("Player 1");
