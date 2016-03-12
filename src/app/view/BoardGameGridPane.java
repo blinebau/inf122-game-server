@@ -10,8 +10,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jgreene on 3/1/16.
@@ -24,6 +28,10 @@ public class BoardGameGridPane extends GridPane{
     private Color tilePrimaryColor;
     private Color tileSecondaryColor;
     private ImageView[][] imgViewArray; // Used to keep a record of the pieces placed on the gridpane and allow game events to alter the board's pieces
+    private Rectangle[][] rectangleArray;
+    private List<BoardIndex> highlightedTilePositions;
+    private List<Paint> savedTileColors;
+    private Paint highlightColor;
 
     public BoardGameGridPane(int cols, int rows, double hgap, double vgap, double tileSize,
                              Color tilePrimaryColor,Color tileSecondaryColor, EventHandler<Event> eventClass) {
@@ -34,6 +42,10 @@ public class BoardGameGridPane extends GridPane{
         this.tileSize = tileSize;
         this.tilePrimaryColor = tilePrimaryColor;
         this.tileSecondaryColor = tileSecondaryColor;
+
+        highlightedTilePositions = new ArrayList<BoardIndex>();
+        savedTileColors = new ArrayList<Paint>();
+        highlightColor = Color.YELLOW;
 
         if (tileSecondaryColor == null) {
             isCheckered = false;
@@ -46,6 +58,7 @@ public class BoardGameGridPane extends GridPane{
         setVgap(vgap);
 
         imgViewArray = new ImageView[cols][rows];
+        rectangleArray = new Rectangle[cols][rows];
 
         // Set the constraints for the rows and cols
         for (int c = 0; c < cols; c++) {
@@ -89,6 +102,7 @@ public class BoardGameGridPane extends GridPane{
 
                 rec.addEventHandler(MouseEvent.MOUSE_CLICKED, eventClass);
                 add(rec, c, r);
+                rectangleArray[c][r] = rec;
 
                 // Empty ImageViews for Pieces and other board objects
                 ImageView temp = new ImageView();
@@ -122,5 +136,41 @@ public class BoardGameGridPane extends GridPane{
                 }
             }
         }
+    }
+
+    public void setHighlightColor(Paint highlightColor) {
+        this.highlightColor = highlightColor;
+    }
+
+    public void highlightAssociatedTiles(List<BoardIndex> tilePositions) { // Highlight the tiles that correspond to the given BoardIndexes
+        if (tileSecondaryColor != null) { // Save the tile color if the board is checkered
+            for (BoardIndex tilePos : tilePositions) {
+                Rectangle temp = rectangleArray[tilePos.getColumnIndex()][tilePos.getRowIndex()];
+
+                savedTileColors.add(temp.getFill());
+                highlightedTilePositions.add(tilePos);
+                temp.setFill(highlightColor);
+            }
+        } else {
+            for (BoardIndex tilePos : tilePositions) {
+                rectangleArray[tilePos.getColumnIndex()][tilePos.getRowIndex()].setFill(highlightColor);
+                highlightedTilePositions.add(tilePos);
+            }
+        }
+    }
+
+    public void resetHighlightedTiles() {   // Reset the highlighted tiles
+        if (tileSecondaryColor != null) { // Get colors from savedTileColors if the board is checkered
+            for (int i = 0; i < highlightedTilePositions.size(); i++) {
+                rectangleArray[highlightedTilePositions.get(i).getColumnIndex()][highlightedTilePositions.get(i).getRowIndex()]
+                        .setFill(savedTileColors.get(i));
+            }
+            savedTileColors.clear();
+        } else {
+            for (BoardIndex hTilePos : highlightedTilePositions) {
+                rectangleArray[hTilePos.getColumnIndex()][hTilePos.getRowIndex()].setFill(tilePrimaryColor);
+            }
+        }
+        highlightedTilePositions.clear();
     }
 }
