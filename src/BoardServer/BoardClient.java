@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import TicTacToe.TTGUI;
 import TicTacToe.WinCombo;
+import app.controller.BoardGameController;
 import app.model.Move;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -27,7 +28,11 @@ public class BoardClient {
 
     //Client gui
     private ClientGUI clientGUI = null;
+
+
+
     private TTGUI gameGUI;
+    private BoardGameController boardGameController;
     //Server, port and username
     private String server, username;
     private String playerStatus;
@@ -56,13 +61,23 @@ public class BoardClient {
         return playerStatus;
     }
 
-    public void setGameGUI(TTGUI gui) {
-        gameGUI = gui;
+
+    public BoardGameController getBoardGameController() {
+        return boardGameController;
+    }
+
+    public void setBoardGameController(BoardGameController boardGameController) {
+        this.boardGameController = boardGameController;
     }
 
     public TTGUI getGameGUI() {
         return gameGUI;
     }
+
+    public void setGameGUI(TTGUI gameGUI) {
+        this.gameGUI = gameGUI;
+    }
+
 
     public void setUsername(String name) {
         username = name;
@@ -224,7 +239,11 @@ public class BoardClient {
         {
             if (serverMessage instanceof Move) {
                 Move move = (Move) serverMessage;
-                gameGUI.updateBoard(move);
+                if (gameGUI == null) {
+                    boardGameController.updateBoard(move);
+                } else {
+                    gameGUI.updateBoard(move);
+                }
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
 //                if (message.compareTo("Player 1") == 0 || message.compareTo("Player 2") == 0) {

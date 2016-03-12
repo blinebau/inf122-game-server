@@ -222,9 +222,13 @@ public class CheckersController extends BoardGameController{
 
     }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+	public void updateBoard(Move move){
 
-    }
+	}
+
+//    @Override
+//    public void start(Stage primaryStage) throws Exception {
+//
+//    }
 
 }

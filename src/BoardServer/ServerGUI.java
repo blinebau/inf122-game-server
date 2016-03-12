@@ -1,6 +1,7 @@
 package BoardServer;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -29,6 +30,7 @@ public class ServerGUI extends Application {
     public void start(Stage stage)
     {
         drawServerEntry(stage);
+
     }
 
     public void drawServerEntry(Stage stage)
@@ -96,6 +98,8 @@ public class ServerGUI extends Application {
             }
         });
 
+        stage.setOnCloseRequest(e -> System.exit(0));
+
     }
 
     public TextArea getEventLog()
@@ -113,6 +117,7 @@ public class ServerGUI extends Application {
             server = null;
         }
     }
+
 
     public static void main(String[] args)
     {

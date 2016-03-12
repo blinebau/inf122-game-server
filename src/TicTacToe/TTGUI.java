@@ -144,7 +144,7 @@ public class TTGUI {
         gameConfirm.setTitle("Game over");
         gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
         gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
-        client.setGameGUI(null);
+//        client(null);
         gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
     }
 

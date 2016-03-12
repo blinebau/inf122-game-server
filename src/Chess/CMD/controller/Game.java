@@ -157,13 +157,13 @@ public class Game {
 				blackInCheck = true;
 				if (black.getKing().checkmate(black.getKing().getLocation())) {
 					System.out.println("White wins.");
-					System.exit(0);
+//					System.exit(0);
 				}
 			} else {
 				whiteInCheck = true;
 				if (white.getKing().checkmate(white.getKing().getLocation())) {
 					System.out.println("Black wins.");
-					System.exit(0);
+//					System.exit(0);
 				}
 			}
 		}

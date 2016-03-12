@@ -1,6 +1,8 @@
 package BoardServer;
 
+import Chess.controller.ChessController;
 import TicTacToe.TTGUI;
+import app.view.GameGUI;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -179,12 +181,10 @@ public class ClientGUI extends Application {
 
         clientMenu.getChildren().add(titles);
 
-/*        playChess.setOnAction((ActionEvent event) -> {
-                Move move = new Move();
-                userClient.sendMove(move);
-        });
 
-        playCheckers.setOnAction((ActionEvent event) -> {
+        playChess.setOnAction(event -> playChess());
+
+/*        playCheckers.setOnAction((ActionEvent event) -> {
                 Move move = new Move();
                 userClient.sendMove(move);
         });*/
@@ -218,6 +218,31 @@ public class ClientGUI extends Application {
         worker.setOnSucceeded(e -> {
             userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
             stage.setScene(userClient.getGameGUI().getScene());
+            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
+        });
+
+        new Thread(worker).start();
+    }
+
+    public void playChess(){
+        String message = "Chess";
+        Task worker = new Task() {
+            protected Object call() {
+                userClient.sendMessage(message);
+                try {
+                    Thread.sleep(500);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                System.out.println("test");
+                return null;
+            }
+        };
+
+        worker.setOnSucceeded(e -> {
+            ChessController chessController = new ChessController(userClient);
+            userClient.setBoardGameController(chessController);
+            stage.setScene(userClient.getBoardGameController().getMyScene());
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 

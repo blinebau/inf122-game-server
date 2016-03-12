@@ -11,39 +11,33 @@ import app.model.Move;
 import app.model.Piece;
 import app.view.BoardGameGridPane;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
+
 
 /**
  * Created by Luke on 3/5/2016.
  */
 public class ChessController extends BoardGameController {
 
-    Stage window;
-    Scene myScene;
 
-//    BoardGameGridPane board;
-//    app.model.Piece[][] game2DArray;
-    ChessGUI chessGUI;
+
+    //    BoardGameGridPane board;
+//    app.model.Piece[][] game2DArray
     Game chessGame;
     BoardIndex moveSource;
     BoardIndex moveDestination;
 
-    public ChessController() {};
 
     public ChessController(BoardClient client) {
         super(client);
+        constructGame();
         System.out.println("constructed");
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+//    public static void main(String[] args) {
+//        launch(args);
+//    }
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        window = primaryStage;
-        window.setTitle("Chess");
-
+    private void constructGame(){
         // Set up the game's state
         app.model.Piece[][] game2DArray = new Piece[8][8];
 
@@ -80,17 +74,12 @@ public class ChessController extends BoardGameController {
 
 
         // Set up the encompassing gui, which uses the array to set up the board
-        chessGUI = new ChessGUI(this, game2DArray);
-
-        myScene = new Scene(chessGUI);
+        gui = new ChessGUI(this, game2DArray);
         chessGame = new Game();
+        myScene = new Scene(gui);
 
-        window.setScene(myScene);
-        window.show();
-
-        // Test reseting a tile after the scene is shown
-//        chessGUI.getBoard().resetTile(new BoardIndex(0,0));
     }
+
 
     public void tileSelected(BoardIndex pos) {
 
@@ -178,26 +167,43 @@ public class ChessController extends BoardGameController {
         } else if (moveDestination == null){
             moveDestination = pos;
         }
-        if(moveSource != null && moveDestination != null) {
-            String chessSource = boardIndexToChessTile(moveSource);
-            String chessDestination = boardIndexToChessTile(moveDestination);
-            System.out.println("Make move: " + chessSource + " " + chessDestination);
-            //TODO: deal with 3rd parameter which deals with promotions
-            if(!chessGame.move(chessSource, chessDestination, null)){
-                System.out.println("Illegal Move");
-            } else {
-                Display.showBoard(chessGame);
-                Piece movePiece = chessGUI.copyOfPieceOnBoard(moveSource);
-                chessGUI.updateGame2DArray(moveSource, moveDestination);
-                chessGUI.getBoard().resetTile(moveDestination);
-                chessGUI.getBoard().addPieceToTile(moveDestination, movePiece);
-                chessGUI.getBoard().resetTile(moveSource);
-
-            }
-            moveSource = null;
-            moveDestination = null;
+        if(moveDestination != null) {
+            makeChessMove(moveSource, moveDestination, false);
         }
 
+    }
+
+    public void updateBoard(Move move){
+        ChessMove chessMove = (ChessMove) move;
+        makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
+    }
+
+    private void makeChessMove(BoardIndex moveSrc, BoardIndex moveDes, boolean fromServer){
+        String chessSource = boardIndexToChessTile(moveSrc);
+        String chessDestination = boardIndexToChessTile(moveDes);
+        System.out.println("Make move: " + chessSource + " " + chessDestination);
+        //TODO: deal with 3rd parameter which deals with promotions
+        if(!chessGame.move(chessSource, chessDestination, null)){
+            System.out.println("Illegal Move");
+        } else {
+            Display.showBoard(chessGame);
+            ChessGUI chessGUI = (ChessGUI) gui;
+            Piece movePiece =  chessGUI.copyOfPieceOnBoard(moveSrc);
+            chessGUI.updateGame2DArray(moveSrc, moveDes);
+            chessGUI.getBoard().resetTile(moveSrc);
+            chessGUI.getBoard().addPieceToTile(moveDes, movePiece);
+            chessGUI.getBoard().resetTile(moveSrc);
+            if(!fromServer) {
+                sendMoveToServer(moveSrc, moveDes);
+            }
+        }
+        moveSource = null;
+        moveDestination = null;
+    }
+
+    private void sendMoveToServer(BoardIndex moveSrc, BoardIndex moveDes){
+        Move move = new ChessMove(moveSrc, moveDes);
+        client.sendMessage(move);
     }
 
     public boolean validateMove(BoardIndex pos) { // TODO
@@ -212,9 +218,7 @@ public class ChessController extends BoardGameController {
 
     }
 
-	@Override
-	public void moveReveived(Move move) {
-		// TODO Auto-generated method stub
-		
-	}
+    public  void moveReveived(Move move){
+        // TODO
+    }
 }
