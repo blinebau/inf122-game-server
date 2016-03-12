@@ -38,7 +38,7 @@ public class TTGUI {
      */
     public TTGUI(String message, BoardClient client)
     {
-        this.client = client;
+        TTGUI.client = client;
         root = new Pane();
         tttscene = new Scene(fillBoard(message));
     }
@@ -144,6 +144,7 @@ public class TTGUI {
         gameConfirm.setTitle("Game over");
         gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
         gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
+        client.setGameGUI(null);
         gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
     }
 

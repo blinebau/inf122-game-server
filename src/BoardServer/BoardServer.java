@@ -181,7 +181,7 @@ public class BoardServer {
                             echo(message);
                             if(message.equals("TicTacToe"))
                             {
-                                if(id == 1) {
+                                if(id == clientThreads.get(0).id) {
                                     obj_out.writeObject("Player 1");
                                     obj_out.flush();
                                 }

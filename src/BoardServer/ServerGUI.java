@@ -109,7 +109,6 @@ public class ServerGUI extends Application {
         {
             //start server
             server.start();
-
             //server failed/stopped
             server = null;
         }
