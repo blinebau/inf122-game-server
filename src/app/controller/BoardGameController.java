@@ -44,7 +44,7 @@ public abstract class BoardGameController {
 												       // - Tic-Tac-Toe (used to immediately make a move)
 													   // - Chess / Checkers (used after a piece is currently selected)
 	
-	public abstract void moveReveived(Move move); // Called by BoardClient when a Move is received from the opponent.
+	public abstract void moveReceived(Move move); // Called by BoardClient when a Move is received from the opponent.
 	
 	protected abstract void makeMove(BoardIndex pos);
 	

@@ -2,6 +2,7 @@ package BoardServer;
 
 import Chess.controller.ChessController;
 import TicTacToe.TTGUI;
+import TicTacToe.TTTController;
 import app.view.GameGUI;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -216,8 +217,9 @@ public class ClientGUI extends Application {
         };
 
         worker.setOnSucceeded(e -> {
-            userClient.setGameGUI(new TTGUI(userClient.getPlayerStatus(), userClient));
-            stage.setScene(userClient.getGameGUI().getScene());
+            TTTController controller = new TTTController(userClient);
+            userClient.setBoardGameController(controller);
+            stage.setScene(controller.getGameGUI().getScene());
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 

@@ -28,10 +28,6 @@ public class BoardClient {
 
     //Client gui
     private ClientGUI clientGUI = null;
-
-
-
-    private TTGUI gameGUI;
     private BoardGameController boardGameController;
     //Server, port and username
     private String server, username;
@@ -70,13 +66,6 @@ public class BoardClient {
         this.boardGameController = boardGameController;
     }
 
-    public TTGUI getGameGUI() {
-        return gameGUI;
-    }
-
-    public void setGameGUI(TTGUI gameGUI) {
-        this.gameGUI = gameGUI;
-    }
 
 
     public void setUsername(String name) {
@@ -239,11 +228,7 @@ public class BoardClient {
         {
             if (serverMessage instanceof Move) {
                 Move move = (Move) serverMessage;
-                if (gameGUI == null) {
-                    boardGameController.updateBoard(move);
-                } else {
-                    gameGUI.updateBoard(move);
-                }
+                boardGameController.updateBoard(move);
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
 //                if (message.compareTo("Player 1") == 0 || message.compareTo("Player 2") == 0) {
