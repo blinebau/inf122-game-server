@@ -31,17 +31,17 @@ public class TTGUI {
     static WinCombo winnersCombo;
     static boolean someoneWon;
 
-    /**
-     * Constructor that takes in a String and BoardClient
-     * @param message
-     * @param client
-     */
-    public TTGUI(String message, BoardClient client)
-    {
-        TTGUI.client = client;
-        root = new Pane();
-        tttscene = new Scene(fillBoard(message));
-    }
+        /**
+         * Constructor that takes in a String and BoardClient
+         * @param message
+         * @param client
+         */
+        public TTGUI(String message, BoardClient client)
+        {
+            TTGUI.client = client;
+            root = new Pane();
+            tttscene = new Scene(fillBoard(message));
+        }
 
     /**
      * Creates and fills the board

@@ -6,6 +6,7 @@ import app.model.BoardIndex;
 import app.model.GameState;
 import app.model.Move;
 import app.model.Piece;
+import app.view.GameGUI;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -14,26 +15,32 @@ import javafx.stage.Stage;
  */
 public class TTTController extends BoardGameController {
 
-    private final Image mortalKombatX = new Image("MortalKombatX");
-    private final Image mortalKombatO = new Image("MortalKombatO");
+    private final Image mortalKombatX = new Image("TicTacToe/MortalKombatX.jpg");
+    private final Image mortalKombatO = new Image("TicTacToe/MortalKombatO.jpg");
 
     private Piece X = new TTTPiece(mortalKombatX);
     private Piece O = new TTTPiece(mortalKombatO);
 
     private GameState gameState = new GameState(3, 3);
+    TTGUI gameGUI;
 
     public TTGUI getGameGUI() {
         return gameGUI;
     }
 
-    TTGUI gameGUI;
-
     public TTTController(BoardClient client){
         super(client);
-        gameGUI = new TTGUI(client.getPlayerStatus(), client);
+//        gameGUI = new TTGUI(client.getPlayerStatus(), client);
+//        gameGUI = new TTTGUI();
     }
 
-    public void tileSelected(BoardIndex pos) {} // Called by GUI component
+    public void tileSelected(BoardIndex pos) {
+        if(client.getPlayerStatus() == "Player 1") {
+            gameState.putPiece(X, pos);
+        } else {
+            gameState.putPiece(O, pos);
+        }
+    } // Called by GUI component
     // Used by all of the games to complete a move
     // - Tic-Tac-Toe (used to immediately make a move)
     // - Chess / Checkers (used after a piece is currently selected)
