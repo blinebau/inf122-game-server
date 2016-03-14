@@ -5,8 +5,13 @@ import TicTacToe.TTGUI;
 import TicTacToe.TTTController;
 import app.view.GameGUI;
 import javafx.application.Application;
+import javafx.stage.StageStyle;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,11 +37,14 @@ public class ClientGUI extends Application {
 
     private Stage stage;
     private Scene entryScene;
-    private Scene titleScene;
 
     private BoardClient userClient;
     private String defHost;
     private int defPort;
+
+    private ListView<String> lobby = new ListView<>();
+    private ObservableList<String> hostClients = FXCollections.observableArrayList();
+    private final int ROW_HEIGHT = 48;
 
     private final String background = "BoardServer/background.jpg";
 
@@ -63,6 +71,7 @@ public class ClientGUI extends Application {
         this.stage = stage;
         entryScene = drawClientEntry();
         stage.setScene(entryScene);
+        stage.initStyle(StageStyle.DECORATED);
         stage.show();
     }
 
@@ -133,8 +142,6 @@ public class ClientGUI extends Application {
 
     public Scene drawTitleMenu() {
 
-        Scene scene;
-
         StackPane clientMenu = new StackPane();
         Canvas cClient = new Canvas(800, 600);
         clientMenu.getChildren().add(cClient);
@@ -142,21 +149,24 @@ public class ClientGUI extends Application {
         gClient.drawImage(new Image(background), 0, 0);
 
         GridPane titles = new GridPane();
-        titles.setAlignment(Pos.CENTER);
+        titles.setAlignment(Pos.CENTER_RIGHT);
         titles.setVgap(10);
         titles.setHgap(10);
-        titles.setPadding(new Insets(25, 25, 25, 15));
+        titles.setPadding(new Insets(5, 18, 25, 0));
+
+        titles.setStyle("-fx-background-color: white;-fx-background-radius: 3.0;-fx-border-color: silver;" +
+                "-fx-border-style: solid;-fx-border-width: 5.0");
 
         VBox menuText = new VBox(5);
 
         Text menuTitle = new Text("Board Game Server");
         menuTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 40));
         menuTitle.setStroke(Color.BLACK);
-        menuTitle.setFill(Color.WHITE);
+        menuTitle.setFill(Color.BLACK);
         //menuTitle.setId("menuTitle");
         Text menuSubTitle = new Text("Please select a game to play.");
         menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 30));
-        menuSubTitle.setFill(Color.WHITE);
+        menuSubTitle.setFill(Color.BLACK);
         //menuSubTitle.setId("menuSubTitle");
         menuTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 35));
         menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 15));
@@ -179,8 +189,41 @@ public class ClientGUI extends Application {
 
         titles.add(menuText, 2, 0);
         titles.add(gameBtn, 2, 2);
+        HBox hBox = new HBox();
 
-        clientMenu.getChildren().add(titles);
+        hostClients.addAll("Bryan", "Bryan", "Bryan");
+        lobby.setItems(hostClients);
+        lobby.setPrefHeight(hostClients.size() * ROW_HEIGHT);
+        lobby.setCellFactory(param -> new HostCell());
+
+        GridPane lobbyGrid = new GridPane();
+        lobbyGrid.setAlignment(Pos.CENTER_LEFT);
+        lobbyGrid.setPadding(new Insets(25, 25, 25, 15));
+        lobbyGrid.getStyleClass().add("lobbyGrid");
+
+        lobbyGrid.setStyle("-fx-background-color: white;-fx-background-radius: 3.0;-fx-border-color: silver;" +
+                "-fx-border-style: solid;-fx-border-width: 5.0");
+
+        HBox labelBox = new HBox();
+        labelBox.setStyle("-fx-border-color: silver;-fx-border-style: solid;-fx-border-width: 2.0;" +
+                "-fx-background-color: silver;");
+
+        Label lobbyLabel = new Label("Game Lobby");
+        lobbyLabel.setPadding(new Insets(0, 0, 0, 5));
+        lobbyLabel.setTextFill(Color.BLACK);
+        labelBox.getChildren().add(lobbyLabel);
+
+        lobbyGrid.add(labelBox, 0, 0);
+        lobbyGrid.add(lobby, 0, 1);
+
+        Pane frontPane = new Pane();
+        titles.setLayoutX(400);
+        titles.setLayoutY(120);
+        lobbyGrid.setLayoutY(120);
+        lobbyGrid.setLayoutX(75);
+
+        frontPane.getChildren().addAll(titles, lobbyGrid);
+        clientMenu.getChildren().add(frontPane);
 
 
         playChess.setOnAction(event -> playChess());
@@ -250,6 +293,39 @@ public class ClientGUI extends Application {
         });
 
         new Thread(worker).start();
+    }
+
+    class HostCell extends ListCell<String> {
+        HBox cell = new HBox();
+        Label label = new Label("empty");
+        Pane pane = new Pane();
+        Button button = new Button("Join game");
+        String lastCell;
+
+        public HostCell()
+        {
+            super();
+            cell.getChildren().addAll(label, pane, button);
+            cell.setHgrow(pane, Priority.ALWAYS);
+            button.setOnAction(e -> System.out.println(userClient.getUsername() + "attempting to join" + lastCell + "'s game"));
+        }
+
+        public void updateItem(String hostName, boolean empty)
+        {
+            super.updateItem(hostName, empty);
+            setText(null);
+            if(empty)
+            {
+                lastCell = null;
+                setGraphic(null);
+            }
+            else
+            {
+                lastCell = hostName;
+                label.setText(hostName != null ? hostName + " - Tic-Tac-Toe" : "<null>");
+                setGraphic(cell);
+            }
+        }
     }
 
     public static void main(String[] args)
