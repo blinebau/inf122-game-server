@@ -28,7 +28,7 @@ public class CheckersController extends BoardGameController{
     private CheckersMove lastMove;
     private List<BoardIndex> myPieces;
     private List<BoardIndex> oppPieces;
-    
+    private int[][] directions;
     private boolean isMyTurn;
 
     public CheckersController(BoardClient c, boolean isFirst) {
@@ -47,6 +47,8 @@ public class CheckersController extends BoardGameController{
     	pieceSelected = null;
     	
     	initStateAndLists();
+    	initDir();
+    	
     	gui = new CheckersGUI(this, state.getBoard());
     	myScene = new Scene(gui);
     	if(isMyTurn)
@@ -82,6 +84,15 @@ public class CheckersController extends BoardGameController{
     		// Placing piece in state.
     		state.putPiece(p, index);
     	}
+    }
+    
+    private void initDir() {
+    	directions = new int[4][2];
+    	
+    	directions[0][0] = -1;	directions[0][1] = -1;
+    	directions[1][0] = 1;	directions[1][1] = -1;
+    	directions[2][0] = -1;	directions[2][1] = 1;
+    	directions[3][0] = 1;	directions[3][1] = 1;
     }
     
     // Called by GUI component
@@ -174,13 +185,14 @@ public class CheckersController extends BoardGameController{
     		
     		//if no:
 			} else {
-    			// TODO: set isTurnOver to true in Move object, set this.isMyTurn to false
+    			// Set isTurnOver to true in Move object, set this.isMyTurn to false
 				move = new CheckersMove(pieceSelected, pos, true);
 	    		isMyTurn = false;				
 				pieceSelected = null;
 			}
     	}
-    	// TODO: send move to the server
+    	// Send move to the server
+    	client.sendMessage(move);
     		
     	// Check if the piece can become the king
 		if(canBecomeKing(pos)) {
@@ -191,15 +203,44 @@ public class CheckersController extends BoardGameController{
     	// Check winning condition: no more valid moves for each piece in oppPieces
 		if(isGameOver(true)) {
 			// TODO: things to do when I win
+			
+			isMyTurn = false;
 		}
     }
     
     private void generateValidMove(BoardIndex pos) {
     	
     	validMoves = new ArrayList<>();
+
+    	int col = pos.getColumnIndex();
+    	int row = pos.getRowIndex();
+    	boolean isKing = ((CheckerPiece) state.getIndex(pos)).isKing();
+    	BoardIndex newPos;
     	
-    	// TODO
-    	
+    	for(int i = 0; i < 2 || (isKing && i < 4); ++i) {
+    		int x = col + directions[i][0];
+    		int y = row + directions[i][1];
+    		
+    		if(isValidIndex(x, y)) {
+        		newPos = new BoardIndex(x, y);
+        		
+        		// Normal move
+        		if(state.getIndex(newPos) == null)
+        			validMoves.add(newPos);
+        		
+        		// Adjacent to opponent's piece
+        		else if(oppPieces.contains(newPos)) {
+        			x += directions[i][0];
+        			y += directions[i][1];
+        			if(isValidIndex(x, y)) {
+        	    		newPos = new BoardIndex(x, y);
+        	    		// Capture move
+            			if(state.getIndex(newPos) == null)
+            				validMoves.add(newPos);
+        			}
+        		}
+    		}
+    	}
     }
 
 	@Override
@@ -224,11 +265,13 @@ public class CheckersController extends BoardGameController{
 		isMyTurn = move.isTurnOver();
 		
 		if(isMyTurn) {
-			gui.showMyTurn();
 			// Check losing condition: no more valid moves for each piece in myPieces
 			if(isGameOver(false)) {
 				// TODO: things to do when I lose
-			}
+				
+				isMyTurn = false;
+			} else
+				gui.showMyTurn();
 		}
 	}
 
@@ -247,10 +290,11 @@ public class CheckersController extends BoardGameController{
     private void closeCaptureCombo() {
 		
 		if(!lastMove.isTurnOver()) {
-			CheckersMove move = new CheckersMove(lastMove.getSource(), lastMove.getDest(), true);
+			// Dummy move, only to indicate that the turn is over.
+			CheckersMove move = new CheckersMove(lastMove.getDest(), lastMove.getDest(), true); 
 			lastMove = move;
-			// TODO: send move to server
-			
+			// Send move to server
+			client.sendMessage(move);
 		}
     }
     
@@ -260,6 +304,11 @@ public class CheckersController extends BoardGameController{
 		state.removePiece(index);
 		myPieces.remove(index);
 		oppPieces.remove(index);
+	}
+
+	
+	private boolean isValidIndex(int col, int row) {
+		return col >= 0 && col <= 7 && row >= 0 && row <= 7;
 	}
 	
 	private boolean isCapture(BoardIndex src, BoardIndex dest) {

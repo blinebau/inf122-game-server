@@ -1,5 +1,6 @@
 package Checkers.model;
 
+import java.io.Serializable;
 import app.model.BoardIndex;
 import app.model.Move;
 
@@ -9,7 +10,7 @@ import app.model.Move;
  *
  */
 
-public class CheckersMove extends Move {
+public class CheckersMove extends Move implements Serializable{
 	
 	private BoardIndex source;
 	private boolean isTurnOver;
