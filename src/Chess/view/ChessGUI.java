@@ -6,6 +6,7 @@ import app.model.Piece;
 import app.view.BoardGameGridPane;
 import app.view.GameGUI;
 import javafx.event.ActionEvent;
+import javafx.scene.Group;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -22,6 +23,7 @@ import javafx.scene.text.Text;
 public class ChessGUI extends GameGUI { // ChessGUI is a Group
 
     protected ChessController controller;
+    private Text gameStatusText;
 
     public Piece copyOfPieceOnBoard(BoardIndex pos){
         Piece copy;
@@ -52,15 +54,24 @@ public class ChessGUI extends GameGUI { // ChessGUI is a Group
         right.setFont(Font.font("Arial", FontWeight.BOLD, 45));
         Text bottom = new Text(" a  b  c  d  e   f  g  h");
         bottom.setFont(Font.font("Arial", FontWeight.BOLD, 45));
-        Text top = new Text("Game Status");
-        top.setFont(Font.font("Arial", 20));
+        Text gameStatusLabel = new Text("Game Status: ");
+        gameStatusLabel.setFont(Font.font("Arial", 20));
+        gameStatusText = new Text();
+        gameStatusText.setFont(Font.font("Arial", 20));
+        gameStatusText.setX(gameStatusLabel.getLayoutBounds().getWidth());
+        Group gameStatusGrp = new Group();
+        gameStatusGrp.getChildren().addAll(gameStatusLabel, gameStatusText);
 
         border.setRight(right);
         border.setBottom(bottom);
-        border.setTop(top);
+        border.setTop(gameStatusGrp);
         border.setCenter(board);
 
         getChildren().add(border);
+    }
+
+    public Text getGameStatusText() {
+        return gameStatusText;
     }
 
     @Override
