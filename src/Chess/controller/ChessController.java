@@ -85,8 +85,9 @@ public class ChessController extends BoardGameController {
 
     public void tileSelected(BoardIndex pos) {
 
-        makeMove(pos);
-
+        if (moveSource != null) {
+            makeMove(pos);
+        }
     }
 
     public void pieceSelected(BoardIndex pos) {
