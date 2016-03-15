@@ -1,15 +1,5 @@
 package Chess.model;
 
-import Chess.model.Bishop;
-import Chess.model.ChessPiece;
-import Chess.model.PlayerColor;
-import Chess.model.King;
-import Chess.model.Knight;
-import Chess.model.Pawn;
-import Chess.model.Player;
-import Chess.model.Queen;
-import Chess.model.Rook;
-import Chess.model.Square;
 
 public class Game {
 
