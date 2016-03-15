@@ -18,7 +18,6 @@ public abstract class BoardGameController {
 	
 	protected GameState state;
 
-    protected GameGUI gui;
 	protected List<BoardIndex> validMoves;
 	protected BoardClient client; // needed to remove final keyboard in order to add constructor (constructor is needed to run the GameControllers)
     protected Scene myScene;
@@ -26,10 +25,6 @@ public abstract class BoardGameController {
 
     public Scene getMyScene() {
         return myScene;
-    }
-
-    public GameGUI getGui() {
-        return gui;
     }
 
 	public BoardGameController() {};
