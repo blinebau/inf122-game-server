@@ -20,6 +20,7 @@ public class ChessController extends BoardGameController {
 
     //    BoardGameGridPane board;
 //    app.model.Piece[][] game2DArray
+    ChessGUI gui;
     Game chessGame;
     BoardIndex moveSource;
     BoardIndex moveDestination;
@@ -75,6 +76,11 @@ public class ChessController extends BoardGameController {
 
         // Set up the encompassing gui, which uses the array to set up the board
         gui = new ChessGUI(this, game2DArray);
+        if (playerStatus.equals("Player 1")) {
+            gui.getGameStatusText().setText("Your Turn");
+        } else {
+            gui.getGameStatusText().setText("Opponent's Turn");
+        }
         chessGame = new Game();
         myScene = new Scene(gui);
 
@@ -177,6 +183,9 @@ public class ChessController extends BoardGameController {
     public void updateBoard(Move move){
         ChessMove chessMove = (ChessMove) move;
         makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
+        // Player's Turn
+        gui.getBoard().activate();
+        gui.getGameStatusText().setText("Your Turn");
     }
 
     private void makeChessMove(BoardIndex moveSrc, BoardIndex moveDes, boolean fromServer){
@@ -205,6 +214,9 @@ public class ChessController extends BoardGameController {
     private void sendMoveToServer(BoardIndex moveSrc, BoardIndex moveDes){
         Move move = new ChessMove(moveSrc, moveDes);
         client.sendMessage(move);
+        // Opponent's Turn
+        gui.getBoard().disable();
+        gui.getGameStatusText().setText("Opponent's Turn");
     }
 
     public boolean validateMove(BoardIndex pos) { // TODO
