@@ -1,14 +1,10 @@
 package app.controller;
-import java.util.ArrayList;
 import java.util.List;
-
-import Chess.view.ChessGUI;
 import app.model.BoardIndex;
 import app.model.GameState;
 import app.model.Move;
-import app.view.GameGUI;
 import BoardServer.BoardClient;
-import javafx.application.Application;
+
 import javafx.scene.Scene;
 
 /**

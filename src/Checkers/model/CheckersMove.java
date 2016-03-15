@@ -14,7 +14,7 @@ public class CheckersMove extends Move {
 	private BoardIndex source;
 	private boolean isTurnOver;
 
-	public CheckersMove(BoardIndex dest, BoardIndex src, boolean b) {
+	public CheckersMove(BoardIndex src, BoardIndex dest, boolean b) {
 		super(dest);
 		source = src;
 		isTurnOver = b;

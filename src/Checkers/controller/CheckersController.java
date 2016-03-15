@@ -1,18 +1,13 @@
 package Checkers.controller;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.PrimitiveIterator.OfDouble;
-
 import BoardServer.BoardClient;
 import Checkers.model.CheckerPiece;
 import Checkers.model.CheckersMove;
+import Checkers.view.CheckersGUI;
 import app.controller.BoardGameController;
 import app.model.*;
-import javafx.stage.Stage;
-
-
+import javafx.scene.Scene;
 
 /**
  * Created by Roy on 3/8/16.
@@ -27,6 +22,7 @@ public class CheckersController extends BoardGameController{
 	
 	private final PieceColor MY_COLOR;
 	private final PieceColor OPP_COLOR;
+	private final CheckersGUI gui;
 	
     private BoardIndex pieceSelected;
     private CheckersMove lastMove;
@@ -35,7 +31,7 @@ public class CheckersController extends BoardGameController{
     
     private boolean isMyTurn;
 
-    public CheckersController(boolean isFirst, BoardClient c) {
+    public CheckersController(BoardClient c, boolean isFirst) {
     	
     	super(c);
     	
@@ -51,8 +47,10 @@ public class CheckersController extends BoardGameController{
     	pieceSelected = null;
     	
     	initStateAndLists();
-    	// TODO: initialize GUI
-    	initGUI();
+    	gui = new CheckersGUI(this, state.getBoard());
+    	myScene = new Scene(gui);
+    	if(isMyTurn)
+    		gui.showMyTurn();
     }
     
     private void initStateAndLists() {
@@ -86,10 +84,7 @@ public class CheckersController extends BoardGameController{
     	}
     }
     
-    private void initGUI() {
-    	// TODO
-    }
-    
+    // Called by GUI component
     @Override
     public void tileSelected(BoardIndex pos) {
     	
@@ -106,10 +101,13 @@ public class CheckersController extends BoardGameController{
     	// A piece is selected
     	if(piece != null) {
     		
-    		// Change of selection
     		if(pieceSelected != null) {
-    			// TODO: clear highlight of the original selected piece in GUI
-    			
+    			// Clicked on the same piece as last time
+    			if(pos.equals(pieceSelected))
+    				return;
+    			// Change of selection
+    			// Clear highlight
+    			gui.clearHighlight();
     			closeCaptureCombo();
     		}
     		
@@ -118,16 +116,18 @@ public class CheckersController extends BoardGameController{
     		// Generate valid moves for the selected piece
     		generateValidMove(pos);
     		
-    		// TODO: update GUI view to highlight the selected and show the valid moves
-    		
+    		// Update GUI view to highlight the selected and the valid moves
+    		validMoves.add(pieceSelected);
+    		gui.hightlightTile(validMoves);
+    		validMoves.remove(validMoves.size()-1);
     		return;
     	}
     	
     	// Clicked on empty space. Clear selection
     	if(!validMoves.contains(pos)) {
     		
-    		// TODO: clear highlight of the original selected piece in GUI
-    		
+    		// Clear highlight
+    		gui.clearHighlight();
     		closeCaptureCombo();
     		
     		pieceSelected = null;
@@ -135,54 +135,71 @@ public class CheckersController extends BoardGameController{
     	}
     	
     	
-    	// [Valid move]:
+    	/*************** [Valid move] *****************/
+    	CheckersMove move;
     	
-    	// TODO: clear highlighting of selected piece in GUI
+    	// Clear highlight
+    	gui.clearHighlight();
     	
-    	// TODO: check if it is a capture move
-    	// if not:
+    	// Make move
+    	makeMove(pos);
     	
-    		// TODO: make move
-    		// TODO: set isTurnOver to true in Move object, set this.isMyTurn to false
-    		
+    	// Check if it is a capture move 						
+    	// If not:
+    	if(!isCapture(pieceSelected, pos)) {
+    		// Set isTurnOver to true in Move object, set this.isMyTurn to false
+    		move = new CheckersMove(pieceSelected, pos, true);
+    		isMyTurn = false;
+    		pieceSelected = null;
+    		lastMove = move;
     	// else:
+    	} else {
+    		// Remove opponent's piece
+    		removePieceBetween(pieceSelected, pos);
     		
-    		// TODO: make move
-    		
-    		// TODO: check if another capture can be performed
+    		// Generate valid moves for the selected piece
+			generateValidMove(pos);
+			
+    		// Check if another capture can be performed
     		// if yes:
-    			// TODO: set isTurnOver to false in Move object
-    			// Generate valid moves for the selected piece
-    			generateValidMove(pos);
-    			// TODO: update GUI view to highlight the selected and show the valid moves
+			if(canCapture(pos)) {
+    			// Set isTurnOver to false in Move object
+				move = new CheckersMove(pieceSelected, pos, false);
+				lastMove = move;
+				pieceSelected = pos;
+    			// Update GUI view to highlight the selected and show the valid moves
+	    		validMoves.add(pieceSelected);
+	    		gui.hightlightTile(validMoves);
+	    		validMoves.remove(validMoves.size()-1);
     		
     		//if no:
+			} else {
     			// TODO: set isTurnOver to true in Move object, set this.isMyTurn to false
-    		
+				move = new CheckersMove(pieceSelected, pos, true);
+	    		isMyTurn = false;				
+				pieceSelected = null;
+			}
+    	}
     	// TODO: send move to the server
     		
-    	// TODO: Check if the piece is normal and it has reached opponent's side, set piece's king to true;
-    		
-    	pieceSelected = null;
+    	// Check if the piece can become the king
+		if(canBecomeKing(pos)) {
+			CheckerPiece p = (CheckerPiece) state.getIndex(pos);
+			p.toKing();
+		}
     	
-    	// TODO: check winning condition: no more valid moves for each piece in oppPieces
+    	// Check winning condition: no more valid moves for each piece in oppPieces
+		if(isGameOver(true)) {
+			// TODO: things to do when I win
+		}
     }
     
     private void generateValidMove(BoardIndex pos) {
     	
     	validMoves = new ArrayList<>();
+    	
     	// TODO
     	
-    }
-    
-    private void closeCaptureCombo() {
-		
-		if(!lastMove.isTurnOver()) {
-			CheckersMove move = new CheckersMove(lastMove.getDest(), lastMove.getDest(), true);
-			lastMove = move;
-			// TODO: send move to server
-			
-		}
     }
 
 	@Override
@@ -193,20 +210,94 @@ public class CheckersController extends BoardGameController{
 			pieceSelected = move.getSource();
 			makeMove(move.getDest());
 			pieceSelected = null;
+			
+			if(isCapture(move.getSource(), move.getDest())) 
+				removePieceBetween(move.getDest(), move.getSource());
+		}
+		
+		// Check if the piece can become a king
+		if(canBecomeKing(move.getDest())) {
+			CheckerPiece piece = (CheckerPiece) state.getIndex(move.getDest());
+			piece.toKing();
 		}
 		
 		isMyTurn = move.isTurnOver();
 		
 		if(isMyTurn) {
-			// TODO: check losing condition: no more valid moves for each piece in myPieces
+			gui.showMyTurn();
+			// Check losing condition: no more valid moves for each piece in myPieces
+			if(isGameOver(false)) {
+				// TODO: things to do when I lose
+			}
 		}
 	}
 
     @Override
     protected void makeMove(BoardIndex pos) {
-    	// TODO
+    	// Update piece list
+    	if(myPieces.remove(pieceSelected))
+    		myPieces.add(pos);
+    	if(oppPieces.remove(pieceSelected))
+    		oppPieces.add(pos);
+    	// Move piece in state board
+    	Piece piece = state.removePiece(pieceSelected);
+    	state.putPiece(piece, pos);
     }
 
+    private void closeCaptureCombo() {
+		
+		if(!lastMove.isTurnOver()) {
+			CheckersMove move = new CheckersMove(lastMove.getSource(), lastMove.getDest(), true);
+			lastMove = move;
+			// TODO: send move to server
+			
+		}
+    }
+    
+	private void removePieceBetween(BoardIndex src, BoardIndex dest) {
+		BoardIndex index = new BoardIndex( (src.getColumnIndex() + dest.getColumnIndex()) / 2,
+											(src.getRowIndex() + dest.getRowIndex()) / 2 );
+		state.removePiece(index);
+		myPieces.remove(index);
+		oppPieces.remove(index);
+	}
+	
+	private boolean isCapture(BoardIndex src, BoardIndex dest) {
+		return Math.abs(src.getColumnIndex() - dest.getColumnIndex()) > 1
+				&& Math.abs(src.getRowIndex() - dest.getRowIndex()) > 1;
+	}
+	
+	// CAUTION: only call this after generateValidMove()
+	private boolean canCapture(BoardIndex pos) {
+		// by checking the validMoves if there exists an index that is 2-tile away
+		for(BoardIndex index : validMoves) 
+			if(isCapture(pos, index))
+				return true;
+		return false;
+	}
+	
+	private boolean canBecomeKing(BoardIndex pos) {
+		CheckerPiece piece = (CheckerPiece) state.getIndex(pos);
+		if(piece.isKing())
+			return false;
+		boolean hasReachedOther = (myPieces.contains(pos) && pos.getRowIndex() == 0)
+								|| (oppPieces.contains(pos) && pos.getRowIndex() == 7);
+		return hasReachedOther;
+	}
+	
+	private boolean isGameOver(boolean checkWin) {
+		List<BoardIndex> list = checkWin ? oppPieces : myPieces;
+
+		for(BoardIndex index : list) {
+			generateValidMove(index);
+			if(validMoves.size() > 0)
+				return false;
+		}
+		return true;
+	}
+	
+	
+	
     @Override
     protected boolean validateMove(BoardIndex pos) {
         return false;
@@ -225,10 +316,5 @@ public class CheckersController extends BoardGameController{
 	public void updateBoard(Move move){
 
 	}
-
-//    @Override
-//    public void start(Stage primaryStage) throws Exception {
-//
-//    }
 
 }

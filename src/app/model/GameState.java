@@ -16,7 +16,13 @@ public class GameState {
 		return board[index.getColumnIndex()][index.getRowIndex()];
 	}
 	
-	public void removePiece(BoardIndex index) {
+	public Piece removePiece(BoardIndex index) {
+		Piece piece = board[index.getColumnIndex()][index.getRowIndex()];
 		board[index.getColumnIndex()][index.getRowIndex()] = null;
+		return piece;
+	}
+	
+	public Piece[][] getBoard() {
+		return board;
 	}
 }
