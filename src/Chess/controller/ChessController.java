@@ -180,14 +180,6 @@ public class ChessController extends BoardGameController {
 
     }
 
-    public void updateBoard(Move move){
-        ChessMove chessMove = (ChessMove) move;
-        makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
-        // Player's Turn
-        gui.getBoard().activate();
-        gui.getGameStatusText().setText("Your Turn");
-    }
-
     private void makeChessMove(BoardIndex moveSrc, BoardIndex moveDes, boolean fromServer){
         String chessSource = boardIndexToChessTile(moveSrc);
         String chessDestination = boardIndexToChessTile(moveDes);
@@ -219,19 +211,12 @@ public class ChessController extends BoardGameController {
         gui.getGameStatusText().setText("Opponent's Turn");
     }
 
-    public boolean validateMove(BoardIndex pos) { // TODO
-        return false;
-    }
-
-    public void updateModel() { // TODO
-
-    }
-
-    public void updateView() { // TODO
-
-    }
-
-    public  void moveReceived(Move move){
-        // TODO
+    @Override
+    public void moveReceived(Move move){
+        ChessMove chessMove = (ChessMove) move;
+        makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
+        // Player's Turn
+        gui.getBoard().activate();
+        gui.getGameStatusText().setText("Your Turn");
     }
 }

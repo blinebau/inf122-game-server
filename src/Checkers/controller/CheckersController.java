@@ -296,25 +296,4 @@ public class CheckersController extends BoardGameController{
 		return true;
 	}
 	
-	
-	
-    @Override
-    protected boolean validateMove(BoardIndex pos) {
-        return false;
-    }
-
-    @Override
-    protected void updateModel() {
-
-    }
-
-    @Override
-    protected void updateView() {
-
-    }
-
-	public void updateBoard(Move move){
-
-	}
-
 }

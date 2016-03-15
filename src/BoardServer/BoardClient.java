@@ -228,7 +228,7 @@ public class BoardClient {
         {
             if (serverMessage instanceof Move) {
                 Move move = (Move) serverMessage;
-                boardGameController.updateBoard(move);
+                boardGameController.moveReceived(move);
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
 //                if (message.compareTo("Player 1") == 0 || message.compareTo("Player 2") == 0) {

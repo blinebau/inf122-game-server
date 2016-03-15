@@ -39,11 +39,4 @@ public abstract class BoardGameController {
 	
 	protected abstract void makeMove(BoardIndex pos);
 	
-	protected abstract boolean validateMove(BoardIndex pos);
-	
-	protected abstract void updateModel();
-	
-	protected abstract void updateView();
-
-	public abstract void updateBoard(Move move);
 }

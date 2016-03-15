@@ -45,20 +45,9 @@ public class TTTController extends BoardGameController {
     // - Tic-Tac-Toe (used to immediately make a move)
     // - Chess / Checkers (used after a piece is currently selected)
 
-    public void moveReceived(Move move) {} // Called by BoardClient when a Move is received from the opponent.
+    @Override
+    public void moveReceived(Move move) { gameGUI.updateBoard(move); } // Called by BoardClient when a Move is received from the opponent.
 
     protected void makeMove(BoardIndex pos){}
-
-    protected boolean validateMove(BoardIndex pos){return true;}
-
-    protected void updateModel(){}
-
-    protected void updateView(){}
-
-    public void updateBoard(Move m) {gameGUI.updateBoard(m);}
-
-    public void start(Stage s) {
-
-    }
 
 }
