@@ -1,9 +1,9 @@
-package Chess.CMD.view;
+package Chess.view;
 
 import java.util.Scanner;
 
-import Chess.CMD.model.PlayerColor;
-import Chess.CMD.controller.Game;
+import Chess.model.PlayerColor;
+import Chess.model.Game;
 
 public class CmdView {
 

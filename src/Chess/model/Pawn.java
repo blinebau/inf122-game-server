@@ -1,4 +1,4 @@
-package Chess.CMD.model;
+package Chess.model;
 
 public class Pawn extends ChessPiece {
 

@@ -1,4 +1,4 @@
-package Chess.model;
+package Chess.view;
 
 
 import javafx.scene.image.Image;

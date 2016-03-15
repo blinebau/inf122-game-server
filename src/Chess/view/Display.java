@@ -1,9 +1,9 @@
-package Chess.CMD.view;
+package Chess.view;
 
-import Chess.CMD.model.ChessPiece;
-import Chess.CMD.model.PlayerColor;
-import Chess.CMD.model.Square;
-import Chess.CMD.controller.Game;
+import Chess.model.ChessPiece;
+import Chess.model.PlayerColor;
+import Chess.model.Square;
+import Chess.model.Game;
 
 //initial thoughts -- after performing game logic associated with a move in Game, this class would display the results of this logic 
 public class Display {

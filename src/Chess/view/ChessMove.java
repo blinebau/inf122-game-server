@@ -1,6 +1,5 @@
-package Chess.model;
+package Chess.view;
 
-import Chess.CMD.chess.Chess;
 import app.model.BoardIndex;
 import app.model.Move;
 

@@ -1,15 +1,15 @@
-package Chess.CMD.controller;
+package Chess.model;
 
-import Chess.CMD.model.Bishop;
-import Chess.CMD.model.ChessPiece;
-import Chess.CMD.model.PlayerColor;
-import Chess.CMD.model.King;
-import Chess.CMD.model.Knight;
-import Chess.CMD.model.Pawn;
-import Chess.CMD.model.Player;
-import Chess.CMD.model.Queen;
-import Chess.CMD.model.Rook;
-import Chess.CMD.model.Square;
+import Chess.model.Bishop;
+import Chess.model.ChessPiece;
+import Chess.model.PlayerColor;
+import Chess.model.King;
+import Chess.model.Knight;
+import Chess.model.Pawn;
+import Chess.model.Player;
+import Chess.model.Queen;
+import Chess.model.Rook;
+import Chess.model.Square;
 
 public class Game {
 

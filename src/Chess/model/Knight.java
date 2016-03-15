@@ -1,4 +1,4 @@
-package Chess.CMD.model;
+package Chess.model;
 
 public class Knight extends ChessPiece {
 

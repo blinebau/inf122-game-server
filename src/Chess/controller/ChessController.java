@@ -1,15 +1,13 @@
 package Chess.controller;
 
 import BoardServer.BoardClient;
-import Chess.CMD.controller.Game;
-import Chess.CMD.view.Display;
-import Chess.model.*;
-import Chess.view.ChessGUI;
+import Chess.model.Game;
+import Chess.view.Display;
+import Chess.view.*;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
 import app.model.Move;
 import app.model.Piece;
-import app.view.BoardGameGridPane;
 import javafx.scene.Scene;
 
 
