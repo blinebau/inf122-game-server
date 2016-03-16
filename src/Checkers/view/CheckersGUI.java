@@ -9,7 +9,7 @@ import app.model.BoardIndex;
 import app.model.Piece;
 import app.view.*;
 import javafx.event.ActionEvent;
-import javafx.scene.Group;
+import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
@@ -18,24 +18,30 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
+
 
 /**
  * Created by Roy on 3/8/16.
  */
 public class CheckersGUI extends GameGUI {
-	
+
+    BorderPane border;
+
 	public CheckersGUI(BoardGameController controller, Piece[][] game2DArray) {
 		super(controller, game2DArray);
 		board = new BoardGameGridPane(game2DArray.length, game2DArray[0].length, 2, 2, 50, Color.BISQUE, Color.CHOCOLATE, this);
 		board.setPieceStartingLayout(game2DArray);
 
-        BorderPane border = new BorderPane();
+        border = new BorderPane();
 //        Group gameStatusGrp = new Group();
         border.setCenter(board);
-
         this.getChildren().add(border);
 	}
 	
@@ -57,9 +63,21 @@ public class CheckersGUI extends GameGUI {
 	}
 	
 	// Called by controller when receiving a finish move from opponent
-	public void showMyTurn() {
-		// TODO: Shows a popup window says "Your Turn"
-		
+	public void showMyTurn(boolean myTurn) {
+        String msg;
+        if (myTurn) {
+            msg = "Your turn";
+        }
+        else {
+            msg = "Opponent's turn";
+        }
+
+        Text bottom = new Text(msg);
+        bottom.setFont(Font.font("Arial", FontWeight.BOLD, 45));
+        bottom.setTextAlignment(TextAlignment.CENTER);
+        border.setBottom(bottom);
+        BorderPane.setAlignment(bottom, Pos.CENTER);
+
 	}
 	
 	public void updateImgForPiece(BoardIndex pos, CheckerPiece piece) {

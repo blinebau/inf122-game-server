@@ -32,30 +32,7 @@ public class CheckersController extends BoardGameController{
     private boolean isMyTurn;
 
 
-	// ---------------------------------------------------------------// TESTING START
-	/*
-    public CheckersController() {
-		if(true) {
-    		isMyTurn = true;
-    		MY_COLOR = PieceColor.BLACK;
-    		OPP_COLOR = PieceColor.WHITE;
-    	} else {
-    		isMyTurn = false;
-    		MY_COLOR = PieceColor.WHITE;
-    		OPP_COLOR = PieceColor.BLACK;
-    	}
-    	pieceSelected = null;
 
-    	initStateAndLists();
-    	initDir();
-    	gui = new CheckersGUI(this, state.getBoard());
-    	myScene = new Scene(gui);
-    	if(isMyTurn)
-    		gui.showMyTurn();
-
-	}
-    */
-	// ---------------------------------------------------------------// TESTING END
     public CheckersController(BoardClient c) {
 
     	super(c);
@@ -76,8 +53,7 @@ public class CheckersController extends BoardGameController{
     	
     	gui = new CheckersGUI(this, state.getBoard());
     	myScene = new Scene(gui);
-    	if(isMyTurn)
-    		gui.showMyTurn();
+        gui.showMyTurn(isMyTurn);
     }
     
     private void initStateAndLists() {
@@ -186,7 +162,8 @@ public class CheckersController extends BoardGameController{
     	}
     	// Send move to the server
     	client.sendMessage(move);
-    		
+        gui.showMyTurn(!move.isTurnOver());
+
     	// Check if the piece can become the king
 		if(canBecomeKing(pos)) {
 			CheckerPiece p = (CheckerPiece) state.getPiece(pos);
@@ -196,8 +173,6 @@ public class CheckersController extends BoardGameController{
     	
     	// Check winning condition: no more valid moves for each piece in oppPieces
 		if(isGameOver(true)) {
-			// TODO: things to do when I win
-			
 			isMyTurn = false;
 		}
     }
@@ -293,11 +268,9 @@ public class CheckersController extends BoardGameController{
 		if(isMyTurn) {
 			// Check losing condition: no more valid moves for each piece in myPieces
 			if(isGameOver(false)) {
-				// TODO: things to do when I lose
-				
 				isMyTurn = false;
 			} else
-				gui.showMyTurn();
+				gui.showMyTurn(true);
 		}
 	}
 
