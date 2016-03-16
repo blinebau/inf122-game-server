@@ -16,7 +16,7 @@ public class GameState {
 		board[index.getColumnIndex()][index.getRowIndex()] = piece;
 	}
 	
-	public Piece getIndex(BoardIndex index) {
+	public Piece getPiece(BoardIndex index) {
 		return board[index.getColumnIndex()][index.getRowIndex()];
 	}
 	
