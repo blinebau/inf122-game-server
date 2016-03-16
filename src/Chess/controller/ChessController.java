@@ -2,6 +2,7 @@ package Chess.controller;
 
 import BoardServer.BoardClient;
 import Chess.model.ChessMove;
+import Chess.model.ChessPiece;
 import Chess.model.Game;
 import Chess.view.Display;
 import Chess.view.*;
@@ -16,16 +17,17 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Created by Luke on 3/5/2016.
+ * The Controller for Chess
  */
 public class ChessController extends BoardGameController {
 
 
-
-    //    BoardGameGridPane board;
-//    app.model.Piece[][] game2DArray
     ChessGUI gui;
     Game chessGame;
     BoardIndex moveSource;
@@ -102,6 +104,7 @@ public class ChessController extends BoardGameController {
     }
 
     public void pieceSelected(BoardIndex pos) {
+
         makeMove(pos);
     }
 
@@ -178,13 +181,33 @@ public class ChessController extends BoardGameController {
 
         if (moveSource == null){
             moveSource = pos;
+            highlightValidMoveTiles();
+//            chessGame.getBoard()[0][0].getPiece().canMoveTo()
+//            gui.getBoard().highlightAssociatedTiles();
         } else if (moveDestination == null){
             moveDestination = pos;
+            gui.getBoard().resetHighlightedTiles();
         }
         if(moveDestination != null) {
             makeChessMove(moveSource, moveDestination, false);
         }
 
+    }
+
+    private void highlightValidMoveTiles(){
+        String chessLocation = boardIndexToChessTile(moveSource);
+        int c = chessGame.fileToIndex(chessLocation.charAt(0));
+        int r = 8 - Character.getNumericValue(chessLocation.charAt(1));
+        ChessPiece piece = chessGame.getBoard()[r][c].getPiece();
+        List<BoardIndex> validMoves = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if (piece.canMoveTo(chessGame.getBoard()[j][i])){
+                    validMoves.add(new BoardIndex(i,j));
+                }
+            }
+        }
+        gui.getBoard().highlightAssociatedTiles(validMoves);
     }
 
     private void makeChessMove(BoardIndex moveSrc, BoardIndex moveDes, boolean fromServer){
@@ -196,12 +219,11 @@ public class ChessController extends BoardGameController {
             System.out.println("Illegal Move");
         } else {
             Display.showBoard(chessGame);
-            ChessGUI chessGUI = (ChessGUI) gui;
-            Piece movePiece =  chessGUI.copyOfPieceOnBoard(moveSrc);
-            chessGUI.updateGame2DArray(moveSrc, moveDes);
-            chessGUI.getBoard().resetTile(moveSrc);
-            chessGUI.getBoard().addPieceToTile(moveDes, movePiece);
-            chessGUI.getBoard().resetTile(moveSrc);
+            Piece movePiece =  gui.copyOfPieceOnBoard(moveSrc);
+            gui.updateGame2DArray(moveSrc, moveDes);
+            gui.getBoard().resetTile(moveSrc);
+            gui.getBoard().addPieceToTile(moveDes, movePiece);
+            gui.getBoard().resetTile(moveSrc);
             if(!fromServer) {
                 sendMoveToServer(moveSrc, moveDes);
             }
