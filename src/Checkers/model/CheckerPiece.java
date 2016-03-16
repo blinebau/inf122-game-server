@@ -2,6 +2,7 @@ package Checkers.model;
 
 import Checkers.controller.CheckersController;
 import app.model.*;
+import javafx.scene.image.Image;
 
 
 /**
@@ -15,6 +16,13 @@ public class CheckerPiece extends Piece{
     public CheckerPiece (CheckersController.PieceColor c) {
         this.king = false;
         this.color = c;
+
+        if (color == CheckersController.PieceColor.BLACK) {
+            setImage(new Image("Checkers/img/black_checkers.png"));
+        }
+        else {
+            setImage(new Image("Checkers/img/white_checkers.png"));
+        }
     }
     
     public CheckersController.PieceColor getColor() {

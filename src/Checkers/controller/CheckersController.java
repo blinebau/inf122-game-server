@@ -7,7 +7,9 @@ import Checkers.model.CheckersMove;
 import Checkers.view.CheckersGUI;
 import app.controller.BoardGameController;
 import app.model.*;
+import com.sun.tools.javac.comp.Check;
 import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 /**
  * Created by Roy on 3/8/16.
@@ -31,6 +33,28 @@ public class CheckersController extends BoardGameController{
     private int[][] directions;
     private boolean isMyTurn;
 
+
+	// ---------------------------------------------------------------// TESTING START
+	public CheckersController() {
+		if(true) {
+    		isMyTurn = true;
+    		MY_COLOR = PieceColor.BLACK;
+    		OPP_COLOR = PieceColor.WHITE;
+    	} else {
+    		isMyTurn = false;
+    		MY_COLOR = PieceColor.WHITE;
+    		OPP_COLOR = PieceColor.BLACK;
+    	}
+    	pieceSelected = null;
+
+    	initStateAndLists();
+    	gui = new CheckersGUI(this, state.getBoard());
+    	myScene = new Scene(gui);
+    	if(isMyTurn)
+    		gui.showMyTurn();
+
+	}
+	// ---------------------------------------------------------------// TESTING END
     public CheckersController(BoardClient c, boolean isFirst) {
     	
     	super(c);
