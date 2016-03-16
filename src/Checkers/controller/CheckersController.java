@@ -311,6 +311,7 @@ public class CheckersController extends BoardGameController{
     	// Move piece in state board
     	Piece piece = state.removePiece(pieceSelected);
     	state.putPiece(piece, pos);
+    	gui.movePiece(pieceSelected, pos);
     }
 
     private void closeCaptureCombo() {
@@ -333,6 +334,7 @@ public class CheckersController extends BoardGameController{
 		state.removePiece(index);
 		myPieces.remove(index);
 		oppPieces.remove(index);
+		gui.removePiece(index);
 	}
 
 	

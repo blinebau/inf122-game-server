@@ -40,6 +40,14 @@ public class CheckersGUI extends GameGUI {
 		board.resetHighlightedTiles();
 	}
 	
+	public void movePiece(BoardIndex src, BoardIndex dest) {
+		
+	}
+	
+	public void removePiece(BoardIndex pos) {
+		
+	}
+	
 	// Called by controller when receiving a finish move from opponent
 	public void showMyTurn() {
 		// TODO: Shows a popup window says "Your Turn"
