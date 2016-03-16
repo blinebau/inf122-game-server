@@ -47,6 +47,7 @@ public class CheckersController extends BoardGameController{
     	pieceSelected = null;
 
     	initStateAndLists();
+    	initDir();
     	gui = new CheckersGUI(this, state.getBoard());
     	myScene = new Scene(gui);
     	if(isMyTurn)
