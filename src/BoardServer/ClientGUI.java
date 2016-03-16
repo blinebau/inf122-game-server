@@ -311,7 +311,11 @@ public class ClientGUI extends Application {
     }
 
     public void playCheckers() {
-        String message = "Checkers";
+        String message = "NEW_HOST;" + userClient.getUsername() + ";Checkers";
+        userClient.setHostStatus(true);
+        hostClients.add(userClient.getUsername() + " : Checkers");
+        Platform.runLater(() -> userClient.sendMessage(message) );
+/*        String message = "Checkers";
         Task worker = new Task() {
             protected Object call() {
                 userClient.sendMessage(message);
@@ -329,11 +333,11 @@ public class ClientGUI extends Application {
         worker.setOnSucceeded(e -> {
             CheckersController controller = new CheckersController(userClient);
             userClient.setBoardGameController(controller);
-            stage.setScene(userClient.getBoardGameController().getMyScene()/*controller.getGameGUI().getScene()*/);
+            stage.setScene(userClient.getBoardGameController().getMyScene()*//*controller.getGameGUI().getScene()*//*);
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 
-        new Thread(worker).start();
+        new Thread(worker).start();*/
     }
 
     class HostCell extends ListCell<String> {

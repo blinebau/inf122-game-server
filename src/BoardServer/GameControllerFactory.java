@@ -14,7 +14,7 @@ public class GameControllerFactory {
 
     public static BoardGameController createGameController(BoardClient client, String gameName) {
         
-        if (gameName.equals("TicTacToe")) {
+        if (gameName.equals("Tic-Tac-Toe")) {
             return new TTTController(client);
         } else if (gameName.equals("Chess")) {
             return new ChessController(client);
