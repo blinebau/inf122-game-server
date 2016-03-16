@@ -11,12 +11,16 @@ import javafx.scene.shape.Rectangle;
 public class TTTPiece extends Piece {
 
     /**
-     * Constructor
+     * Constructor that takes in no arguments
      */
     public TTTPiece() {
         this.setImage(null);
     }
 
+    /**
+     * Constructor that takes in an Image
+     * @param image
+     */
     public TTTPiece(Image image) {
         this.setImage(image);
     }

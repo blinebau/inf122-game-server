@@ -32,12 +32,12 @@ public class ChessController extends BoardGameController {
     Game chessGame;
     BoardIndex moveSource;
     BoardIndex moveDestination;
-    String playerStatus;
+    boolean playerStatus;
 
 
     public ChessController(BoardClient client) {
         super(client);
-        this.playerStatus = client.getPlayerStatus();
+        this.playerStatus = client.getHostStatus();
         constructGame();
         System.out.println("constructed");
     }
@@ -84,7 +84,7 @@ public class ChessController extends BoardGameController {
 
         // Set up the encompassing gui, which uses the array to set up the board
         gui = new ChessGUI(this, game2DArray);
-        if (playerStatus.equals("Player 1")) {
+        if (playerStatus) {
             gui.getGameStatusText().setText("Your Turn");
         } else {
             gui.getGameStatusText().setText("Opponent's Turn");
@@ -270,7 +270,7 @@ public class ChessController extends BoardGameController {
         makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
         // Player's Turn
         String inCheck = "";
-        if (playerStatus.equals("Player 1")) {
+        if (playerStatus) {
             if(chessGame.whiteInCheck()){
                 inCheck = ", you're in Check";
             }
