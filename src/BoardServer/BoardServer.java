@@ -175,10 +175,10 @@ public class BoardServer {
                             for(ClientThread thread : clientThreads) {
 /*                                if(thread.id != id)
                                     thread.obj_out.writeObject(move);*/
-                                if(pairedID == thread.id)
-                                {
-                                    thread.obj_out.writeObject(move);
-                                }
+//                                if(pairedID == thread.id)
+//                                {
+//                                    thread.obj_out.writeObject(move);
+//                                }
                             }
                         }
                         else if(obj instanceof String)
