@@ -252,11 +252,12 @@ public class BoardClient {
                     case "CANCEL_HOST":
                         hostClients.remove(hostClients.get(hostClients.indexOf(tokens[1])));
                         break;
-                    case "CHESS":
-                        boardGameController = new ChessController(BoardClient.this);
-                        clientGUI.getStage().setScene(boardGameController.getMyScene());
+                    default:
                         String playerStatus = hostStatus ? "Player 1" : "Player 2";
-                        clientGUI.getStage().setTitle(username + " : " + playerStatus);
+                        String gameName = tokens[1].substring(tokens[1].indexOf(':') + 1).trim();
+                        boardGameController = GameControllerFactory.createGameController(BoardClient.this, gameName);
+                        clientGUI.getStage().setScene(boardGameController.getMyScene());
+                        clientGUI.getStage().setTitle(playerStatus + " : " + username);
                 }
             }
         }

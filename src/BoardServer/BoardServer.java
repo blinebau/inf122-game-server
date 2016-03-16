@@ -198,14 +198,6 @@ public class BoardServer {
                                     }*//*
 
                                     break;*/
-                                case "Chess":
-                                    if (id == clientThreads.get(0).id) {
-                                        obj_out.writeObject("Player 1");
-                                        obj_out.flush();
-                                    } else {
-                                        clientThreads.get(id - 1).obj_out.writeObject("Player 2");
-                                    }
-                                    break;
                                 case "NEW_HOST":
                                 case "CANCEL_HOST":
                                     for (ClientThread thread : clientThreads) {
@@ -216,18 +208,14 @@ public class BoardServer {
                                     break;
                                 case "JOIN_HOST":
                                     String hostName = tokens[1].substring(0, tokens[1].indexOf(':')).trim();
-                                    String gameName = tokens[1].substring(tokens[1].indexOf(':') + 1).trim();
                                     for (ClientThread thread : clientThreads)
                                     {
                                         if(thread.userName.equals((hostName)))
                                         {
                                             pairedID = thread.id;
                                             thread.pairedID = id;
-                                        }
-                                        switch (gameName)
-                                        {
-                                            case "Chess":
-
+                                            thread.obj_out.writeObject(message);
+                                            obj_out.writeObject(message);
                                         }
                                     }
                                     break;
