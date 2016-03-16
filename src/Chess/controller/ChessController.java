@@ -182,8 +182,6 @@ public class ChessController extends BoardGameController {
         if (moveSource == null){
             moveSource = pos;
             highlightValidMoveTiles();
-//            chessGame.getBoard()[0][0].getPiece().canMoveTo()
-//            gui.getBoard().highlightAssociatedTiles();
         } else if (moveDestination == null){
             moveDestination = pos;
             gui.getBoard().resetHighlightedTiles();
@@ -220,10 +218,18 @@ public class ChessController extends BoardGameController {
         } else {
             Display.showBoard(chessGame);
             Piece movePiece =  gui.copyOfPieceOnBoard(moveSrc);
-            gui.updateGame2DArray(moveSrc, moveDes);
+            // This handles Pawn promotion to queen
+            if(movePiece instanceof PawnPiece) {
+                if (moveDes.getRowIndex() == 0) {
+                    movePiece = new QueenPiece("White");
+                } else if (moveDes.getRowIndex() == 7) {
+                    movePiece = new QueenPiece("Black");
+                }
+            }
+
+            gui.updateGame2DArray(moveSrc, moveDes, movePiece);
             gui.getBoard().resetTile(moveSrc);
             gui.getBoard().addPieceToTile(moveDes, movePiece);
-            gui.getBoard().resetTile(moveSrc);
             if(!fromServer) {
                 sendMoveToServer(moveSrc, moveDes);
             }
