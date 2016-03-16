@@ -1,9 +1,7 @@
 package BoardServer;
 
 import Chess.controller.ChessController;
-import TicTacToe.TTGUI;
 import TicTacToe.TTTController;
-import app.view.GameGUI;
 import javafx.application.Application;
 import javafx.stage.StageStyle;
 import javafx.application.Platform;
@@ -52,7 +50,7 @@ public class ClientGUI extends Application {
     {
         defHost = "localhost";
         defPort = 4242;
-        userClient = new BoardClient(defHost, defPort, this);
+        userClient = new BoardClient(defHost, defPort, hostClients, this);
     }
 
     public Stage getStage()
@@ -175,7 +173,6 @@ public class ClientGUI extends Application {
         menuText.setAlignment(Pos.CENTER);
 
         VBox gameBtn = new VBox(10);
-        //gameBtn.setAlignment(Pos.BOTTOM_CENTER);
 
         Button playChess = new Button("Chess");
         Button playCheckers = new Button("Checkers");
@@ -189,11 +186,11 @@ public class ClientGUI extends Application {
 
         titles.add(menuText, 2, 0);
         titles.add(gameBtn, 2, 2);
-        HBox hBox = new HBox();
 
-        hostClients.addAll("Bryan", "Bryan", "Bryan");
+        lobby.setPlaceholder(new Label("No Currently Hosted Games"));
         lobby.setItems(hostClients);
-        lobby.setPrefHeight(hostClients.size() * ROW_HEIGHT);
+        lobby.setPrefHeight(4 * ROW_HEIGHT);
+        //lobby.setPrefHeight(hostClients.size() * ROW_HEIGHT);
         lobby.setCellFactory(param -> new HostCell());
 
         GridPane lobbyGrid = new GridPane();
@@ -204,14 +201,22 @@ public class ClientGUI extends Application {
         lobbyGrid.setStyle("-fx-background-color: white;-fx-background-radius: 3.0;-fx-border-color: silver;" +
                 "-fx-border-style: solid;-fx-border-width: 5.0");
 
-        HBox labelBox = new HBox();
+        HBox labelBox = new HBox(20);
         labelBox.setStyle("-fx-border-color: silver;-fx-border-style: solid;-fx-border-width: 2.0;" +
                 "-fx-background-color: silver;");
 
         Label lobbyLabel = new Label("Game Lobby");
         lobbyLabel.setPadding(new Insets(0, 0, 0, 5));
         lobbyLabel.setTextFill(Color.BLACK);
+
+        Button testAddBtn = new Button("Add a Cell");
+        testAddBtn.setOnAction(e -> {
+            hostClients.add(userClient.getUsername());
+            userClient.sendMessage("NEW_HOST");
+        });
+
         labelBox.getChildren().add(lobbyLabel);
+        labelBox.getChildren().add(testAddBtn);
 
         lobbyGrid.add(labelBox, 0, 0);
         lobbyGrid.add(lobby, 0, 1);
@@ -307,7 +312,10 @@ public class ClientGUI extends Application {
             super();
             cell.getChildren().addAll(label, pane, button);
             cell.setHgrow(pane, Priority.ALWAYS);
-            button.setOnAction(e -> System.out.println(userClient.getUsername() + "attempting to join" + lastCell + "'s game"));
+            button.setOnAction(e -> {
+                System.out.println(userClient.getUsername() + "attempting to join" + lastCell + "'s game");
+                userClient.sendMessage(lastCell);
+            });
         }
 
         public void updateItem(String hostName, boolean empty)

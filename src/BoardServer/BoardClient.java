@@ -9,8 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import TicTacToe.TTGUI;
-import TicTacToe.WinCombo;
+import javafx.collections.ObservableList;
 import app.controller.BoardGameController;
 import app.model.Move;
 import javafx.application.Platform;
@@ -29,22 +28,27 @@ public class BoardClient {
     //Client gui
     private ClientGUI clientGUI = null;
     private BoardGameController boardGameController;
+
     //Server, port and username
     private String server, username;
     private String playerStatus;
     public boolean myTurn;
     private int port;
 
-    //console constructor
-    public BoardClient(String server, int port, ClientGUI clientGUI) {
-        this(server, port, "Anonymous", clientGUI);
+    //Hosted games
+    private ObservableList<String> hostClients;
+
+    public BoardClient(String server, int port, ObservableList<String> hostClients, ClientGUI clientGUI)
+    {
+        this(server, port, "Anonynmous", hostClients, clientGUI);
     }
 
     //GUI constructor
-    public BoardClient(String server, int port, String username, ClientGUI clientGUI) {
+    public BoardClient(String server, int port, String username, ObservableList<String> hostClients, ClientGUI clientGUI) {
         this.server = server;
         this.port = port;
         this.username = username;
+        this.hostClients = hostClients;
         this.clientGUI = clientGUI;
     }
 
@@ -231,11 +235,8 @@ public class BoardClient {
                 boardGameController.moveReceived(move);
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
-//                if (message.compareTo("Player 1") == 0 || message.compareTo("Player 2") == 0) {
-//                    System.out.println(message);
-//                    playerStatus = message;
-//                    return;
-//                }
+                if(message.substring(0, 8).equals("NEW_HOST"))
+                    hostClients.add(message.substring(8));
                 myTurn = message.equals("Player 1");
                 System.out.println(message);
                 playerStatus = message;
