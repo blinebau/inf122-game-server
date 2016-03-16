@@ -209,11 +209,11 @@ public class ChessController extends BoardGameController {
         moveSource = null;
         moveDestination = null;
         if(chessGame.getWinner() != null){
-            gameOverScreen();
+            showGameOverScreen();
         }
     }
 
-    private void gameOverScreen(){
+    private void showGameOverScreen(){
         String winner = chessGame.getWinner();
 
         Stage stage = (Stage) gui.getScene().getWindow();
@@ -225,7 +225,6 @@ public class ChessController extends BoardGameController {
         gameConfirm.setTitle("Game over");
         gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
         gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
-//        client(null);
         gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
     }
 
