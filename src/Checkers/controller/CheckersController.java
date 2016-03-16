@@ -192,7 +192,7 @@ public class CheckersController extends BoardGameController{
 			}
     	}
     	// Send move to the server
-    	client.sendMessage(move);
+//    	client.sendMessage(move);
     		
     	// Check if the piece can become the king
 		if(canBecomeKing(pos)) {
@@ -311,7 +311,7 @@ public class CheckersController extends BoardGameController{
     	// Move piece in state board
     	Piece piece = state.removePiece(pieceSelected);
     	state.putPiece(piece, pos);
-    	gui.movePiece(pieceSelected, pos);
+    	gui.movePiece(piece, pieceSelected, pos);
     }
 
     private void closeCaptureCombo() {

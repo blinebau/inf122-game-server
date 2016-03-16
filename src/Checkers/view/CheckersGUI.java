@@ -39,13 +39,14 @@ public class CheckersGUI extends GameGUI {
 	public void clearHighlight() {
 		board.resetHighlightedTiles();
 	}
-	
-	public void movePiece(BoardIndex src, BoardIndex dest) {
-		
+
+	public void movePiece(Piece piece, BoardIndex src, BoardIndex dest) {
+        board.resetTile(src);
+        board.addPieceToTile(dest, piece);
 	}
 	
 	public void removePiece(BoardIndex pos) {
-		
+		board.resetTile(pos);
 	}
 	
 	// Called by controller when receiving a finish move from opponent
