@@ -36,13 +36,11 @@ public class CheckersController extends BoardGameController{
     public CheckersController(BoardClient c) {
 
     	super(c);
-
-    	if(c.getPlayerStatus().equals("Player 1")) {
-    		isMyTurn = true;
+    	isMyTurn = c.getHostStatus();
+    	if(isMyTurn) {
     		MY_COLOR = PieceColor.BLACK;
     		OPP_COLOR = PieceColor.WHITE;
     	} else {
-    		isMyTurn = false;
     		MY_COLOR = PieceColor.WHITE;
     		OPP_COLOR = PieceColor.BLACK;
     	}
