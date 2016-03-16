@@ -53,8 +53,8 @@ public class BoardClient {
         this.username = username;
         this.hostClients = hostClients;
         this.clientGUI = clientGUI;
-        playerStatus = hostStatus ? "Player 1" : "Player 2";
         hostStatus = false;
+        playerStatus = hostStatus ? "Player 1" : "Player 2";
     }
 
     public ClientGUI getClientGUI()
@@ -262,7 +262,7 @@ public class BoardClient {
                     case "CHESS":
                         boardGameController = new ChessController(BoardClient.this);
                         clientGUI.getStage().setScene(boardGameController.getMyScene());
-                        clientGUI.getStage().setTitle(message + " - " + playerStatus + ": " + username);
+                        clientGUI.getStage().setTitle(username + " : " + playerStatus);
                 }
                 myTurn = message.equals("Player 1");
                 System.out.println(message);
