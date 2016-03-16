@@ -23,6 +23,7 @@ public class TTTController extends BoardGameController {
     private Piece O = new TTTPiece(mortalKombatO);
 
     private String playerStatus;
+    private boolean myTurn;
 
 //    private GameState gameState = new GameState(3, 3);
     TTTGUI gameGUI;
@@ -43,6 +44,8 @@ public class TTTController extends BoardGameController {
         gameGUI = new TTTGUI(this, state.getBoard());
 //        gui = gameGUI;
         playerStatus = client.getPlayerStatus();
+
+        myTurn = client.myTurn;
         myScene = new Scene(gameGUI);
 
 //        gameGUI = new TTGUI(client.getPlayerStatus(), client);
@@ -50,42 +53,52 @@ public class TTTController extends BoardGameController {
     }
 
     public void tileSelected(BoardIndex pos) {
-        if(playerStatus == "Player 1" && client.myTurn) {
+        if(playerStatus.equals("Player 1") && myTurn) {
             state.putPiece(X, pos);
-            makeMove(pos);
-        } else if(playerStatus != "Player 1" && !client.myTurn){
+        } else if(!playerStatus.equals("Player 1") && myTurn) {
             state.putPiece(O, pos);
-            makeMove(pos);
         }
+        makeMove(pos);
     } // Called by GUI component
     // Used by all of the games to complete a move
     // - Tic-Tac-Toe (used to immediately make a move)
     // - Chess / Checkers (used after a piece is currently selected)
 
     public void moveReceived(Move move) {
-        if(playerStatus == "Player 1") {
+        if(playerStatus.equals("Player 1")) {
             state.putPiece(O, move.getDest());
-            updateBoard(move);
         } else {
             state.putPiece(X, move.getDest());
-            updateBoard(move);
         }
+        System.out.println("Just received a move!");
+        updateBoard(move);
     } // Called by BoardClient when a Move is received from the opponent.
 
     protected void makeMove(BoardIndex pos){
         Move move = new Move(pos);
         client.sendMessage(move);
+        System.out.println("Just sent " + playerStatus + "'s move!");
+        updateBoard(move);
     }
 
     public void updateBoard(Move m) {
         //gameGUI.updateBoard(m);
         Piece p;
-        if(playerStatus == "Player 1") {
-            p = O;
+        if(playerStatus.equals("Player 1")) {
+            if(myTurn) {
+                p = X;
+            } else {
+                p = O;
+            }
         } else {
-            p = X;
+            if (myTurn) {
+                p = O;
+            } else {
+                p = X;
+            }
         }
         gameGUI.updateGameBoard(m, p);
+        myTurn = !myTurn;
     }
 
     public void start(Stage s) {

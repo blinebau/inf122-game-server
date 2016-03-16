@@ -18,11 +18,13 @@ import javafx.scene.shape.Shape;
 public class TTTGUI extends GameGUI {
 
     public TTTGUI(TTTController controller, Piece[][] array) {
-        super(controller, array);
+//        super(controller, array);
         this.controller = controller;
         this.game2DArray = array;
 
-        this.board = new BoardGameGridPane(game2DArray.length, game2DArray[0].length, 1, 1, 200, Color.GRAY, null, this);
+        this.board = new BoardGameGridPane(game2DArray.length, game2DArray[0].length, 5, 5, 200, Color.LIGHTGREY, null, this);
+
+        getChildren().add(board);
     }
 
     public void updateGameBoard(Move m, Piece p) {
@@ -35,10 +37,11 @@ public class TTTGUI extends GameGUI {
         if(event.getSource() instanceof Rectangle) {
             Shape clickedTile = (Rectangle) event.getSource();
             this.controller.tileSelected(this.board.getBoardIndex(clickedTile));
-        } else if (event.getSource() instanceof ImageView) {
-            ImageView clickedImage = (ImageView) event.getSource();
-            this.controller.tileSelected(this.board.getBoardIndex(clickedImage));
         }
+//        } else if (event.getSource() instanceof ImageView) {
+//            ImageView clickedImage = (ImageView) event.getSource();
+//            this.controller.tileSelected(this.board.getBoardIndex(clickedImage));
+//        }
     }
 
     @Override
