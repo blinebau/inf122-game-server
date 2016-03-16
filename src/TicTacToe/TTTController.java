@@ -30,7 +30,7 @@ public class TTTController extends BoardGameController {
     private Piece X = new TTTPiece(mortalKombatX);
     private Piece O = new TTTPiece(mortalKombatO);
 
-    private String playerStatus;
+    private boolean host;
     private boolean myTurn;
 
     private List<WinCombo> possibleWins = new ArrayList<>();
@@ -39,6 +39,10 @@ public class TTTController extends BoardGameController {
     TTTGUI gameGUI;
 //    TTGUI gameGUI;
 
+    /**
+     * getGameGUI(): returns attribute gameGUI
+     * @return TTTGUI
+     */
     public TTTGUI getGameGUI() {
         return gameGUI;
     }
@@ -47,10 +51,15 @@ public class TTTController extends BoardGameController {
 //        return gameGUI;
 //    }
 
+    /**
+     * Constructor that takes in a BoardClient object
+     * @param client
+     */
     public TTTController(BoardClient client){
         super(client);
         state = new GameState(3,3);
 
+        //initialize with pieces
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 state.putPiece(new TTTPiece(), new BoardIndex(i,j));
@@ -59,11 +68,17 @@ public class TTTController extends BoardGameController {
 
         gameGUI = new TTTGUI(this, state.getBoard());
 //        gui = gameGUI;
-        playerStatus = client.getPlayerStatus();
+        host = client.getHostStatus();
+        if(host) {
+            myTurn = true;
+        } else {
+            myTurn = false;
+        }
 
-        myTurn = client.myTurn;
+//        myTurn = client.myTurn;
         myScene = new Scene(gameGUI);
 
+        //populates the attribute possibleWins with all the possible winnig combinations
         //horizontal
         for(int y = 0; y < 3; y++) {
             possibleWins.add(new WinCombo(state.getPiece(new BoardIndex(0, y)),
@@ -90,10 +105,14 @@ public class TTTController extends BoardGameController {
 //        gameGUI = new TTTGUI();
     }
 
+    /**
+     * tileSelected(): updates state based on player's move
+     * @param pos
+     */
     public void tileSelected(BoardIndex pos) {
         if(myTurn) {
             state.removePiece(pos);
-            if(playerStatus.equals("Player 1")) {
+            if(host) {
                 state.putPiece(X, pos);
             } else {
                 state.putPiece(O, pos);
@@ -105,9 +124,13 @@ public class TTTController extends BoardGameController {
     // - Tic-Tac-Toe (used to immediately make a move)
     // - Chess / Checkers (used after a piece is currently selected)
 
+    /**
+     * moveReceived(): updates state based on received move
+     * @param move
+     */
     public void moveReceived(Move move) {
         state.removePiece(new BoardIndex(move.getDest().getColumnIndex(), move.getDest().getRowIndex()));
-        if(playerStatus.equals("Player 1")) {
+        if(host) {
             state.putPiece(O, move.getDest());
         } else {
             state.putPiece(X, move.getDest());
@@ -116,6 +139,10 @@ public class TTTController extends BoardGameController {
         myTurn = true;
     } // Called by BoardClient when a Move is received from the opponent.
 
+    /**
+     * makeMove(): sends move to BoardClient
+     * @param pos
+     */
     protected void makeMove(BoardIndex pos){
         Move move = new Move(pos);
         client.sendMessage(move);
@@ -123,10 +150,14 @@ public class TTTController extends BoardGameController {
         myTurn = false;
     }
 
+    /**
+     * updateBoard(): updates game gui of the client
+     * @param m
+     */
     public void updateBoard(Move m) {
         //gameGUI.updateBoard(m);
         Piece p;
-        if(playerStatus.equals("Player 1")) {
+        if(host) {
             if(myTurn) {
                 p = X;
             } else {
@@ -143,6 +174,9 @@ public class TTTController extends BoardGameController {
         checkWin();
     }
 
+    /**
+     * checkWin(): checks if one of the possible winning combos has been completed
+     */
     private void checkWin() {
         for(WinCombo combo: possibleWins) {
             if(combo.isComplete()) {
@@ -151,6 +185,10 @@ public class TTTController extends BoardGameController {
         }
     }
 
+    /**
+     * playWinAnimation(): plays the winning animation
+     * @param combo
+     */
     private void playWinAnimation(WinCombo combo) {
         Line line = new Line();
         line.setStartX(combo.getTile(0).getImage().getWidth()/2);//.getCenterX());
