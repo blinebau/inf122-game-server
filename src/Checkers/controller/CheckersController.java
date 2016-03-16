@@ -372,6 +372,8 @@ public class CheckersController extends BoardGameController{
 			if(moves.size() > 0)
 				return false;
 		}
+        gui.showGameOverScreen(checkWin, client);
+
 		return true;
 	}
 	
