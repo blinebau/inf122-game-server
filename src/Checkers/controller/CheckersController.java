@@ -9,6 +9,7 @@ import app.controller.BoardGameController;
 import app.model.*;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import sun.security.krb5.internal.crypto.Des;
 
 /**
  * Created by Roy on 3/8/16.
@@ -34,7 +35,8 @@ public class CheckersController extends BoardGameController{
 
 
 	// ---------------------------------------------------------------// TESTING START
-	public CheckersController() {
+	/*
+    public CheckersController() {
 		if(true) {
     		isMyTurn = true;
     		MY_COLOR = PieceColor.BLACK;
@@ -54,11 +56,12 @@ public class CheckersController extends BoardGameController{
     		gui.showMyTurn();
 
 	}
+    */
 	// ---------------------------------------------------------------// TESTING END
     public CheckersController(BoardClient c) {
-    	
+
     	super(c);
-    	
+
     	if(c.getPlayerStatus().equals("Player 1")) {
     		isMyTurn = true;
     		MY_COLOR = PieceColor.BLACK;
@@ -192,7 +195,7 @@ public class CheckersController extends BoardGameController{
 			}
     	}
     	// Send move to the server
-//    	client.sendMessage(move);
+    	client.sendMessage(move);
     		
     	// Check if the piece can become the king
 		if(canBecomeKing(pos)) {
@@ -272,19 +275,21 @@ public class CheckersController extends BoardGameController{
 	@Override
 	public void moveReceived(Move m) {
 		CheckersMove move = (CheckersMove)m;
+		BoardIndex source = new BoardIndex(7-move.getSource().getColumnIndex(), 7-move.getSource().getRowIndex());
+		BoardIndex dest = new BoardIndex(7-move.getDest().getColumnIndex(), 7-move.getDest().getRowIndex());
 		
-		if(!move.getSource().equals(move.getDest())) {
-			pieceSelected = move.getSource();
-			makeMove(move.getDest());
+		if(!source.equals(dest)) {
+			pieceSelected = source;
+			makeMove(dest);
 			pieceSelected = null;
 			
-			if(isCapture(move.getSource(), move.getDest())) 
-				removePieceBetween(move.getDest(), move.getSource());
+			if(isCapture(source, dest)) 
+				removePieceBetween(source, dest);
 		}
 		
 		// Check if the piece can become a king
-		if(canBecomeKing(move.getDest())) {
-			CheckerPiece piece = (CheckerPiece) state.getIndex(move.getDest());
+		if(canBecomeKing(dest)) {
+			CheckerPiece piece = (CheckerPiece) state.getIndex(dest);
 			piece.toKing();
 		}
 		
