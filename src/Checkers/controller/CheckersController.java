@@ -164,7 +164,7 @@ public class CheckersController extends BoardGameController{
     		removePieceBetween(pieceSelected, pos);
     		
     		// Generate valid moves for the selected piece
-			generateValidMove(pos);
+			validMoves = generateValidMove(pos, true);
 			
     		// Check if another capture can be performed
     		// if yes:
@@ -220,7 +220,7 @@ public class CheckersController extends BoardGameController{
 		pieceSelected = pos;
 		
 		// Generate valid moves for the selected piece
-		generateValidMove(pos);
+		validMoves = generateValidMove(pos, true);
 		
 		// Update GUI view to highlight the selected and the valid moves
 		validMoves.add(pieceSelected);
@@ -229,10 +229,11 @@ public class CheckersController extends BoardGameController{
     }
     
     
-    private void generateValidMove(BoardIndex pos) {
+    private List<BoardIndex> generateValidMove(BoardIndex pos, boolean checkMine) {
     	
-    	validMoves = new ArrayList<>();
-
+    	List<BoardIndex> moves = new ArrayList<>();
+    	List<BoardIndex> other = checkMine ? oppPieces : myPieces;
+    	
     	int col = pos.getColumnIndex();
     	int row = pos.getRowIndex();
     	boolean isKing = ((CheckerPiece) state.getPiece(pos)).isKing();
@@ -250,7 +251,7 @@ public class CheckersController extends BoardGameController{
         			validMoves.add(newPos);
         		
         		// Adjacent to opponent's piece
-        		else if(oppPieces.contains(newPos)) {
+        		else if(other.contains(newPos)) {
         			x += directions[i][0];
         			y += directions[i][1];
         			if(isValidIndex(x, y)) {
@@ -262,6 +263,7 @@ public class CheckersController extends BoardGameController{
         		}
     		}
     	}
+    	return moves;
     }
 
 	@Override
@@ -364,10 +366,10 @@ public class CheckersController extends BoardGameController{
 	
 	private boolean isGameOver(boolean checkWin) {
 		List<BoardIndex> list = checkWin ? oppPieces : myPieces;
-
+		List<BoardIndex> moves;
 		for(BoardIndex index : list) {
-			generateValidMove(index);
-			if(validMoves.size() > 0)
+			moves = generateValidMove(index, !checkWin);
+			if(moves.size() > 0)
 				return false;
 		}
 		return true;
