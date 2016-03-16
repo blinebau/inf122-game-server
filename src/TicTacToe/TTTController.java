@@ -53,12 +53,14 @@ public class TTTController extends BoardGameController {
     }
 
     public void tileSelected(BoardIndex pos) {
-        if(playerStatus.equals("Player 1") && myTurn) {
-            state.putPiece(X, pos);
-        } else if(!playerStatus.equals("Player 1") && myTurn) {
-            state.putPiece(O, pos);
+        if(myTurn) {
+            if(playerStatus.equals("Player 1")) {
+                state.putPiece(X, pos);
+            } else {
+                state.putPiece(O, pos);
+            }
+            makeMove(pos);
         }
-        makeMove(pos);
     } // Called by GUI component
     // Used by all of the games to complete a move
     // - Tic-Tac-Toe (used to immediately make a move)
@@ -70,15 +72,15 @@ public class TTTController extends BoardGameController {
         } else {
             state.putPiece(X, move.getDest());
         }
-        System.out.println("Just received a move!");
         updateBoard(move);
+        myTurn = true;
     } // Called by BoardClient when a Move is received from the opponent.
 
     protected void makeMove(BoardIndex pos){
         Move move = new Move(pos);
         client.sendMessage(move);
-        System.out.println("Just sent " + playerStatus + "'s move!");
         updateBoard(move);
+        myTurn = false;
     }
 
     public void updateBoard(Move m) {
@@ -98,7 +100,6 @@ public class TTTController extends BoardGameController {
             }
         }
         gameGUI.updateGameBoard(m, p);
-        myTurn = !myTurn;
     }
 
     public void start(Stage s) {
