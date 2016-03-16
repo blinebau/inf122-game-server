@@ -248,7 +248,7 @@ public class CheckersController extends BoardGameController{
         		
         		// Normal move
         		if(state.getPiece(newPos) == null)
-        			validMoves.add(newPos);
+        			moves.add(newPos);
         		
         		// Adjacent to opponent's piece
         		else if(other.contains(newPos)) {
@@ -258,7 +258,7 @@ public class CheckersController extends BoardGameController{
         	    		newPos = new BoardIndex(x, y);
         	    		// Capture move
             			if(state.getPiece(newPos) == null)
-            				validMoves.add(newPos);
+            				moves.add(newPos);
         			}
         		}
     		}
