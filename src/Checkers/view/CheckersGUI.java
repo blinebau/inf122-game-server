@@ -1,11 +1,14 @@
 package Checkers.view;
 import java.util.List;
+
+import Checkers.controller.CheckersController;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
 import app.model.Piece;
 import app.view.*;
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
@@ -46,16 +49,15 @@ public class CheckersGUI extends GameGUI {
     @Override
     public void handleMouseEvent(MouseEvent event) {
         if (event.getSource() instanceof Rectangle) {
+            System.out.println("Tile Selected");
             Shape tile = (Rectangle) event.getSource();
             controller.tileSelected(board.getBoardIndex(tile));
         }
-        // TODO Talk with Jiahao to separate concern in CheckerController.tileSelected()
-        /*
         else if (event.getSource() instanceof ImageView) {
-            ImageView imgView = (ImageView) event.getSource();
-            controller.pieceSelected(board.getBoardIndex(clickedImgView));
+            System.out.println("Piece Selected");
+            ImageView clickedImgView = (ImageView) event.getSource();
+            ((CheckersController) controller).pieceSelected(board.getBoardIndex(clickedImgView));
         }
-        */
 
     }
 
