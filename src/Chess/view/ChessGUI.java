@@ -31,11 +31,11 @@ public class ChessGUI extends GameGUI { // ChessGUI is a Group
         return copy;
     }
 
-    public void updateGame2DArray(BoardIndex source, BoardIndex destination){
-        Piece moveSource = this.game2DArray[source.getColumnIndex()][source.getRowIndex()];
-        this.game2DArray[destination.getColumnIndex()][destination.getRowIndex()] = moveSource;
+    public void updateGame2DArray(BoardIndex source, BoardIndex destination, Piece movePiece){
+        this.game2DArray[destination.getColumnIndex()][destination.getRowIndex()] = movePiece;
         this.game2DArray[source.getColumnIndex()][source.getRowIndex()] = null;
     }
+
 
     public ChessGUI(ChessController controller, Piece[][] game2DArray) {
 
