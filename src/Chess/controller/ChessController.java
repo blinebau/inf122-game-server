@@ -1,6 +1,7 @@
 package Chess.controller;
 
 import BoardServer.BoardClient;
+import Chess.model.ChessMove;
 import Chess.model.Game;
 import Chess.view.Display;
 import Chess.view.*;
@@ -9,6 +10,11 @@ import app.model.BoardIndex;
 import app.model.Move;
 import app.model.Piece;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 
 /**
@@ -27,9 +33,9 @@ public class ChessController extends BoardGameController {
     String playerStatus;
 
 
-    public ChessController(String playerStatus, BoardClient client) {
+    public ChessController(BoardClient client) {
         super(client);
-        this.playerStatus = playerStatus;
+        this.playerStatus = client.getPlayerStatus();
         constructGame();
         System.out.println("constructed");
     }
@@ -80,6 +86,7 @@ public class ChessController extends BoardGameController {
             gui.getGameStatusText().setText("Your Turn");
         } else {
             gui.getGameStatusText().setText("Opponent's Turn");
+            gui.getBoard().disable();
         }
         chessGame = new Game();
         myScene = new Scene(gui);
@@ -201,6 +208,24 @@ public class ChessController extends BoardGameController {
         }
         moveSource = null;
         moveDestination = null;
+        if(chessGame.getWinner() != null){
+            showGameOverScreen();
+        }
+    }
+
+    private void showGameOverScreen(){
+        String winner = chessGame.getWinner();
+
+        Stage stage = (Stage) gui.getScene().getWindow();
+        Window owner = gui.getScene().getWindow();
+        Alert gameConfirm = new Alert(Alert.AlertType.CONFIRMATION, "");
+        gameConfirm.initOwner(owner);
+        gameConfirm.initStyle(StageStyle.DECORATED);
+        gameConfirm.getDialogPane().setHeaderText(winner + " is the winner");
+        gameConfirm.setTitle("Game over");
+        gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
+        gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
+        gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
     }
 
     private void sendMoveToServer(BoardIndex moveSrc, BoardIndex moveDes){
@@ -216,7 +241,17 @@ public class ChessController extends BoardGameController {
         ChessMove chessMove = (ChessMove) move;
         makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
         // Player's Turn
+        String inCheck = "";
+        if (playerStatus.equals("Player 1")) {
+            if(chessGame.whiteInCheck()){
+                inCheck = ", you're in Check";
+            }
+        } else {
+            if(chessGame.blackInCheck()){
+                inCheck = ", you're in Check";
+            }
+        }
         gui.getBoard().activate();
-        gui.getGameStatusText().setText("Your Turn");
+        gui.getGameStatusText().setText("Your Turn" + inCheck);
     }
 }

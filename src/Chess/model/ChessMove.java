@@ -1,4 +1,4 @@
-package Chess.view;
+package Chess.model;
 
 import app.model.BoardIndex;
 import app.model.Move;

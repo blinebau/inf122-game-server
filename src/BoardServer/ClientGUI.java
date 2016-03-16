@@ -71,7 +71,9 @@ public class ClientGUI extends Application {
         entryScene = drawClientEntry();
         stage.setScene(entryScene);
         stage.initStyle(StageStyle.DECORATED);
+        stage.setOnCloseRequest(e -> System.exit(0));
         stage.show();
+
     }
 
     public Scene drawClientEntry() {
@@ -292,8 +294,7 @@ public class ClientGUI extends Application {
         };
 
         worker.setOnSucceeded(e -> {
-            ChessController chessController = new ChessController(userClient.getPlayerStatus(),
-                    userClient);
+            ChessController chessController = new ChessController(userClient);
             userClient.setBoardGameController(chessController);
             stage.setScene(userClient.getBoardGameController().getMyScene());
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
