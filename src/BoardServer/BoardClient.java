@@ -11,6 +11,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 import Chess.controller.ChessController;
+import Chess.model.Player;
 import javafx.collections.ObservableList;
 import app.controller.BoardGameController;
 import app.model.Move;
@@ -33,9 +34,7 @@ public class BoardClient {
 
     //Server, port and username
     private String server, username;
-    private String playerStatus;
     private Boolean hostStatus;
-    public boolean myTurn;
     private int port;
 
     //Hosted games
@@ -54,18 +53,12 @@ public class BoardClient {
         this.hostClients = hostClients;
         this.clientGUI = clientGUI;
         hostStatus = false;
-        playerStatus = hostStatus ? "Player 1" : "Player 2";
     }
 
     public ClientGUI getClientGUI()
     {
         return clientGUI;
     }
-
-    public String getPlayerStatus() {
-        return playerStatus;
-    }
-
 
     public BoardGameController getBoardGameController() {
         return boardGameController;
@@ -262,11 +255,9 @@ public class BoardClient {
                     case "CHESS":
                         boardGameController = new ChessController(BoardClient.this);
                         clientGUI.getStage().setScene(boardGameController.getMyScene());
+                        String playerStatus = hostStatus ? "Player 1" : "Player 2";
                         clientGUI.getStage().setTitle(username + " : " + playerStatus);
                 }
-                myTurn = message.equals("Player 1");
-                System.out.println(message);
-                playerStatus = message;
             }
         }
     }

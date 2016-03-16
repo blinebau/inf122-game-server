@@ -216,14 +216,18 @@ public class BoardServer {
                                     break;
                                 case "JOIN_HOST":
                                     String hostName = tokens[1].substring(0, tokens[1].indexOf(':')).trim();
+                                    String gameName = tokens[1].substring(tokens[1].indexOf(':') + 1).trim();
                                     for (ClientThread thread : clientThreads)
                                     {
                                         if(thread.userName.equals((hostName)))
                                         {
                                             pairedID = thread.id;
                                             thread.pairedID = id;
-                                            thread.obj_out.writeObject("CHESS");
-                                            obj_out.writeObject("CHESS");
+                                        }
+                                        switch (gameName)
+                                        {
+                                            case "Chess":
+
                                         }
                                     }
                                     break;
