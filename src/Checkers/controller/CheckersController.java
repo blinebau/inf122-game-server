@@ -99,39 +99,15 @@ public class CheckersController extends BoardGameController{
     @Override
     public void tileSelected(BoardIndex pos) {
     	
-    	if(!isMyTurn)
+    	if(!isMyTurn || pieceSelected == null)
     		return;
     	
     	CheckerPiece piece = (CheckerPiece)state.getIndex(pos);
     	
-    	// Clicked on empty space
-    	if(pieceSelected == null && piece == null)
-    		return;
-    	
-    	
     	// A piece is selected
     	if(piece != null) {
     		
-    		if(pieceSelected != null) {
-    			// Clicked on the same piece as last time
-    			if(pos.equals(pieceSelected))
-    				return;
-    			// Change of selection
-    			// Clear highlight
-    			gui.clearHighlight();
-    			closeCaptureCombo();
-    		}
-    		
-    		pieceSelected = pos;
-    		
-    		// Generate valid moves for the selected piece
-    		generateValidMove(pos);
-    		
-    		// Update GUI view to highlight the selected and the valid moves
-    		validMoves.add(pieceSelected);
-    		gui.hightlightTile(validMoves);
-    		validMoves.remove(validMoves.size()-1);
-    		return;
+
     	}
     	
     	// Clicked on empty space. Clear selection
@@ -207,6 +183,32 @@ public class CheckersController extends BoardGameController{
 			isMyTurn = false;
 		}
     }
+    
+    public void pieceSelected(BoardIndex pos) {
+    	if(!isMyTurn)
+    		return;
+    	
+		if(pieceSelected != null) {
+			// Clicked on the same piece as last time
+			if(pos.equals(pieceSelected))
+				return;
+			// Change of selection
+			// Clear highlight
+			gui.clearHighlight();
+			closeCaptureCombo();
+		}
+		
+		pieceSelected = pos;
+		
+		// Generate valid moves for the selected piece
+		generateValidMove(pos);
+		
+		// Update GUI view to highlight the selected and the valid moves
+		validMoves.add(pieceSelected);
+		gui.hightlightTile(validMoves);
+		validMoves.remove(validMoves.size()-1);
+    }
+    
     
     private void generateValidMove(BoardIndex pos) {
     	
