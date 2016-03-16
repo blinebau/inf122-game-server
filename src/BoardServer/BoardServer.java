@@ -173,60 +173,59 @@ public class BoardServer {
                         if(obj instanceof Move) {
                             Move move = (Move) obj;
                             for(ClientThread thread : clientThreads) {
-                                if(thread.id != id)
+/*                                if(thread.id != id)
+                                    thread.obj_out.writeObject(move);*/
+                                if(pairedID == thread.id)
+                                {
                                     thread.obj_out.writeObject(move);
-//                                if(pairedID == thread.id)
-//                                {
-//                                    thread.obj_out.writeObject(move);
-//                                }
+                                }
                             }
                         }
                         else if(obj instanceof String)
                         {
                             String message = (String) obj;
+                            String[] tokens = message.split(";");
                             echo(message);
-                            switch(message)
-                            {
-                                case "Checkers":
-
-                                case "TicTacToe":
-                                    if(id == clientThreads.get(0).id) {
+                            switch(tokens[0]) {
+/*                                case "TICTACTOE":
+*//*                                    if(id == clientThreads.get(0).id) {
                                         obj_out.writeObject("Player 1");
                                         obj_out.flush();
                                     }
                                     else
                                     {
                                         clientThreads.get(id - 1).obj_out.writeObject("Player 2");
-                                    }
-                                    break;
+                                    }*//*
+
+                                    break;*/
                                 case "Chess":
-                                    if(id == clientThreads.get(0).id) {
+                                    if (id == clientThreads.get(0).id) {
                                         obj_out.writeObject("Player 1");
                                         obj_out.flush();
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         clientThreads.get(id - 1).obj_out.writeObject("Player 2");
                                     }
                                     break;
                                 case "NEW_HOST":
-                                    for(ClientThread thread : clientThreads)
-                                    {
-                                        if(thread.id != id)
-                                        {
-                                            thread.obj_out.writeObject("NEW_HOST" + userName);
+                                case "CANCEL_HOST":
+                                    for (ClientThread thread : clientThreads) {
+                                        if (thread.id != id) {
+                                            thread.obj_out.writeObject(message);
                                         }
                                     }
                                     break;
-                                default:
-                                    for(ClientThread thread : clientThreads)
+                                case "JOIN_HOST":
+                                    String hostName = tokens[1].substring(0, tokens[1].indexOf(':')).trim();
+                                    for (ClientThread thread : clientThreads)
                                     {
-                                        if(thread.userName.equals(message))
+                                        if(thread.userName.equals((hostName)))
                                         {
                                             pairedID = thread.id;
+                                            thread.pairedID = id;
+                                            thread.obj_out.writeObject("CHESS");
+                                            obj_out.writeObject("CHESS");
                                         }
                                     }
-                                    echo(userName + "is now paired with" + message);
                                     break;
                             }
                             /*if(message.equals("TicTacToe") || message.equals("Chess"))

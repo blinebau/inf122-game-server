@@ -9,6 +9,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+
+import Chess.controller.ChessController;
 import javafx.collections.ObservableList;
 import app.controller.BoardGameController;
 import app.model.Move;
@@ -32,6 +34,7 @@ public class BoardClient {
     //Server, port and username
     private String server, username;
     private String playerStatus;
+    private Boolean hostStatus;
     public boolean myTurn;
     private int port;
 
@@ -50,6 +53,8 @@ public class BoardClient {
         this.username = username;
         this.hostClients = hostClients;
         this.clientGUI = clientGUI;
+        playerStatus = hostStatus ? "Player 1" : "Player 2";
+        hostStatus = false;
     }
 
     public ClientGUI getClientGUI()
@@ -78,6 +83,16 @@ public class BoardClient {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setHostStatus(boolean host)
+    {
+        hostStatus = host;
+    }
+
+    public boolean getHostStatus()
+    {
+        return hostStatus;
     }
 
     //start the client dialog
@@ -235,8 +250,20 @@ public class BoardClient {
                 boardGameController.moveReceived(move);
             } else if (serverMessage instanceof String) {
                 String message = (String) serverMessage;
-                if(message.substring(0, 8).equals("NEW_HOST"))
-                    hostClients.add(message.substring(8));
+                String[] tokens = message.split(";");
+                switch (tokens[0])
+                {
+                    case "NEW_HOST":
+                        hostClients.add(tokens[1] + " : " + tokens[2]);
+                        break;
+                    case "CANCEL_HOST":
+                        hostClients.remove(hostClients.get(hostClients.indexOf(tokens[1])));
+                        break;
+                    case "CHESS":
+                        boardGameController = new ChessController(BoardClient.this);
+                        clientGUI.getStage().setScene(boardGameController.getMyScene());
+                        clientGUI.getStage().setTitle(message + " - " + playerStatus + ": " + username);
+                }
                 myTurn = message.equals("Player 1");
                 System.out.println(message);
                 playerStatus = message;
@@ -244,5 +271,3 @@ public class BoardClient {
         }
     }
 }
-
-
