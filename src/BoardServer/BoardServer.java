@@ -131,6 +131,9 @@ public class BoardServer {
         //unique id for this client thread, easier to send messages and disconnect
         int id;
 
+        //unique id for this client's paired client
+        int pairedID;
+
         //user of the client
         String userName;
 
@@ -143,8 +146,6 @@ public class BoardServer {
             id = ++connection_id;
             //socket client connected to
             this.socket = socket;
-
-            System.out.println("Thread attempting to create Object Streams...");
 
             try
             {
@@ -171,15 +172,62 @@ public class BoardServer {
                         Object obj = obj_in.readObject();
                         if(obj instanceof Move) {
                             Move move = (Move) obj;
-                            for(ClientThread thread : clientThreads)
-                                if(thread.id != id)
+                            for(ClientThread thread : clientThreads) {
+/*                                if(thread.id != id)
+                                    thread.obj_out.writeObject(move);*/
+                                if(pairedID == thread.id)
+                                {
                                     thread.obj_out.writeObject(move);
+                                }
+                            }
                         }
                         else if(obj instanceof String)
                         {
                             String message = (String) obj;
                             echo(message);
-                            if(message.equals("TicTacToe") || message.equals("Chess"))
+                            switch(message)
+                            {
+                                case "TicTacToe":
+                                    if(id == clientThreads.get(0).id) {
+                                        obj_out.writeObject("Player 1");
+                                        obj_out.flush();
+                                    }
+                                    else
+                                    {
+                                        clientThreads.get(id - 1).obj_out.writeObject("Player 2");
+                                    }
+                                    break;
+                                case "Chess":
+                                    if(id == clientThreads.get(0).id) {
+                                        obj_out.writeObject("Player 1");
+                                        obj_out.flush();
+                                    }
+                                    else
+                                    {
+                                        clientThreads.get(id - 1).obj_out.writeObject("Player 2");
+                                    }
+                                    break;
+                                case "NEW_HOST":
+                                    for(ClientThread thread : clientThreads)
+                                    {
+                                        if(thread.id != id)
+                                        {
+                                            thread.obj_out.writeObject("NEW_HOST" + userName);
+                                        }
+                                    }
+                                    break;
+                                default:
+                                    for(ClientThread thread : clientThreads)
+                                    {
+                                        if(thread.userName.equals(message))
+                                        {
+                                            pairedID = thread.id;
+                                        }
+                                    }
+                                    echo(userName + "is now paired with" + message);
+                                    break;
+                            }
+                            /*if(message.equals("TicTacToe") || message.equals("Chess"))
                             {
                                 if(id == clientThreads.get(0).id) {
                                     obj_out.writeObject("Player 1");
@@ -190,10 +238,26 @@ public class BoardServer {
                                     clientThreads.get(id - 1).obj_out.writeObject("Player 2");
                                 }
                             }
-                            if(message.equals("Disconnecting Client..."))
+                            else if(message.equals("NEW_HOST"))
                             {
-                                break;
+                                for(ClientThread thread : clientThreads)
+                                {
+                                    if(thread.id != id)
+                                    {
+                                        thread.obj_out.writeObject("NEW_HOST" + userName);
+                                    }
+                                }
                             }
+                            else{
+                                for(ClientThread thread : clientThreads)
+                                {
+                                    if(thread.userName.equals(message))
+                                    {
+                                        pairedID = thread.id;
+                                    }
+                                }
+                                echo(userName + "is now paired with" + message);
+                            }*/
                         }
                 }catch (Exception e) {
                     break;
