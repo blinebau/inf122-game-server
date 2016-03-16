@@ -1,6 +1,8 @@
 package Chess.controller;
 
 import BoardServer.BoardClient;
+import Chess.model.ChessMove;
+import Chess.model.ChessPiece;
 import Chess.model.Game;
 import Chess.view.Display;
 import Chess.view.*;
@@ -9,17 +11,23 @@ import app.model.BoardIndex;
 import app.model.Move;
 import app.model.Piece;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * Created by Luke on 3/5/2016.
+ * The Controller for Chess
  */
 public class ChessController extends BoardGameController {
 
 
-
-    //    BoardGameGridPane board;
-//    app.model.Piece[][] game2DArray
     ChessGUI gui;
     Game chessGame;
     BoardIndex moveSource;
@@ -27,9 +35,9 @@ public class ChessController extends BoardGameController {
     String playerStatus;
 
 
-    public ChessController(String playerStatus, BoardClient client) {
+    public ChessController(BoardClient client) {
         super(client);
-        this.playerStatus = playerStatus;
+        this.playerStatus = client.getPlayerStatus();
         constructGame();
         System.out.println("constructed");
     }
@@ -80,6 +88,7 @@ public class ChessController extends BoardGameController {
             gui.getGameStatusText().setText("Your Turn");
         } else {
             gui.getGameStatusText().setText("Opponent's Turn");
+            gui.getBoard().disable();
         }
         chessGame = new Game();
         myScene = new Scene(gui);
@@ -95,6 +104,7 @@ public class ChessController extends BoardGameController {
     }
 
     public void pieceSelected(BoardIndex pos) {
+
         makeMove(pos);
     }
 
@@ -171,13 +181,33 @@ public class ChessController extends BoardGameController {
 
         if (moveSource == null){
             moveSource = pos;
+            highlightValidMoveTiles();
+//            chessGame.getBoard()[0][0].getPiece().canMoveTo()
+//            gui.getBoard().highlightAssociatedTiles();
         } else if (moveDestination == null){
             moveDestination = pos;
+            gui.getBoard().resetHighlightedTiles();
         }
         if(moveDestination != null) {
             makeChessMove(moveSource, moveDestination, false);
         }
 
+    }
+
+    private void highlightValidMoveTiles(){
+        String chessLocation = boardIndexToChessTile(moveSource);
+        int c = chessGame.fileToIndex(chessLocation.charAt(0));
+        int r = 8 - Character.getNumericValue(chessLocation.charAt(1));
+        ChessPiece piece = chessGame.getBoard()[r][c].getPiece();
+        List<BoardIndex> validMoves = new ArrayList<>();
+        for(int i = 0; i < 8; i++){
+            for(int j = 0; j < 8; j++){
+                if (piece.canMoveTo(chessGame.getBoard()[j][i])){
+                    validMoves.add(new BoardIndex(i,j));
+                }
+            }
+        }
+        gui.getBoard().highlightAssociatedTiles(validMoves);
     }
 
     private void makeChessMove(BoardIndex moveSrc, BoardIndex moveDes, boolean fromServer){
@@ -189,18 +219,35 @@ public class ChessController extends BoardGameController {
             System.out.println("Illegal Move");
         } else {
             Display.showBoard(chessGame);
-            ChessGUI chessGUI = (ChessGUI) gui;
-            Piece movePiece =  chessGUI.copyOfPieceOnBoard(moveSrc);
-            chessGUI.updateGame2DArray(moveSrc, moveDes);
-            chessGUI.getBoard().resetTile(moveSrc);
-            chessGUI.getBoard().addPieceToTile(moveDes, movePiece);
-            chessGUI.getBoard().resetTile(moveSrc);
+            Piece movePiece =  gui.copyOfPieceOnBoard(moveSrc);
+            gui.updateGame2DArray(moveSrc, moveDes);
+            gui.getBoard().resetTile(moveSrc);
+            gui.getBoard().addPieceToTile(moveDes, movePiece);
+            gui.getBoard().resetTile(moveSrc);
             if(!fromServer) {
                 sendMoveToServer(moveSrc, moveDes);
             }
         }
         moveSource = null;
         moveDestination = null;
+        if(chessGame.getWinner() != null){
+            showGameOverScreen();
+        }
+    }
+
+    private void showGameOverScreen(){
+        String winner = chessGame.getWinner();
+
+        Stage stage = (Stage) gui.getScene().getWindow();
+        Window owner = gui.getScene().getWindow();
+        Alert gameConfirm = new Alert(Alert.AlertType.CONFIRMATION, "");
+        gameConfirm.initOwner(owner);
+        gameConfirm.initStyle(StageStyle.DECORATED);
+        gameConfirm.getDialogPane().setHeaderText(winner + " is the winner");
+        gameConfirm.setTitle("Game over");
+        gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
+        gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
+        gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
     }
 
     private void sendMoveToServer(BoardIndex moveSrc, BoardIndex moveDes){
@@ -216,7 +263,17 @@ public class ChessController extends BoardGameController {
         ChessMove chessMove = (ChessMove) move;
         makeChessMove(chessMove.getSource(), chessMove.getDestination(), true);
         // Player's Turn
+        String inCheck = "";
+        if (playerStatus.equals("Player 1")) {
+            if(chessGame.whiteInCheck()){
+                inCheck = ", you're in Check";
+            }
+        } else {
+            if(chessGame.blackInCheck()){
+                inCheck = ", you're in Check";
+            }
+        }
         gui.getBoard().activate();
-        gui.getGameStatusText().setText("Your Turn");
+        gui.getGameStatusText().setText("Your Turn" + inCheck);
     }
 }

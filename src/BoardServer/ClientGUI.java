@@ -1,5 +1,6 @@
 package BoardServer;
 
+import Checkers.controller.CheckersController;
 import Chess.controller.ChessController;
 import TicTacToe.TTTController;
 import javafx.application.Application;
@@ -70,7 +71,9 @@ public class ClientGUI extends Application {
         entryScene = drawClientEntry();
         stage.setScene(entryScene);
         stage.initStyle(StageStyle.DECORATED);
+        stage.setOnCloseRequest(e -> System.exit(0));
         stage.show();
+
     }
 
     public Scene drawClientEntry() {
@@ -233,6 +236,7 @@ public class ClientGUI extends Application {
 
         playChess.setOnAction(event -> playChess());
 
+        playCheckers.setOnAction(event -> playCheckers());
 /*        playCheckers.setOnAction((ActionEvent event) -> {
                 Move move = new Move();
                 userClient.sendMove(move);
@@ -290,10 +294,35 @@ public class ClientGUI extends Application {
         };
 
         worker.setOnSucceeded(e -> {
-            ChessController chessController = new ChessController(userClient.getPlayerStatus(),
-                    userClient);
+            ChessController chessController = new ChessController(userClient);
             userClient.setBoardGameController(chessController);
             stage.setScene(userClient.getBoardGameController().getMyScene());
+            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
+        });
+
+        new Thread(worker).start();
+    }
+
+    public void playCheckers() {
+        String message = "Checkers";
+        Task worker = new Task() {
+            protected Object call() {
+                userClient.sendMessage(message);
+                try {
+                    Thread.sleep(500);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Test");
+                return null;
+            }
+        };
+
+        worker.setOnSucceeded(e -> {
+            CheckersController controller = new CheckersController(userClient);
+            userClient.setBoardGameController(controller);
+            stage.setScene(userClient.getBoardGameController().getMyScene()/*controller.getGameGUI().getScene()*/);
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 
