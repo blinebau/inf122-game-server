@@ -14,6 +14,12 @@ public class Game {
 	private boolean blackInCheck;
 	private boolean whiteInCheck;
 
+    public String getWinner() {
+        return winner;
+    }
+
+    private String winner = null;
+
 	public Game() {
 
 		board = new Square[8][8];
@@ -147,12 +153,14 @@ public class Game {
 				blackInCheck = true;
 				if (black.getKing().checkmate(black.getKing().getLocation())) {
 					System.out.println("White wins.");
+					winner = "White";
 //					System.exit(0);
 				}
 			} else {
 				whiteInCheck = true;
 				if (white.getKing().checkmate(white.getKing().getLocation())) {
 					System.out.println("Black wins.");
+					winner = "Black";
 //					System.exit(0);
 				}
 			}
