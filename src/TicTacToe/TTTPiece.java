@@ -10,6 +10,9 @@ import javafx.scene.shape.Rectangle;
  */
 public class TTTPiece extends Piece {
 
+    /**
+     * Constructor
+     */
     public TTTPiece() {
         this.setImage(null);
     }
