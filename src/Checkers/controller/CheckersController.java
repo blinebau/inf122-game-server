@@ -209,7 +209,7 @@ public class CheckersController extends BoardGameController{
     }
     
     public void pieceSelected(BoardIndex pos) {
-    	if(!isMyTurn)
+    	if(!isMyTurn || oppPieces.contains(pos))
     		return;
     	
 		if(pieceSelected != null) {
