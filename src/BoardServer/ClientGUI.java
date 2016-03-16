@@ -267,7 +267,7 @@ public class ClientGUI extends Application {
         worker.setOnSucceeded(e -> {
             TTTController controller = new TTTController(userClient);
             userClient.setBoardGameController(controller);
-            stage.setScene(controller.getGameGUI().getScene());
+            stage.setScene(userClient.getBoardGameController().getMyScene()/*controller.getGameGUI().getScene()*/);
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 
