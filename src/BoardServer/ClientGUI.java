@@ -2,7 +2,7 @@ package BoardServer;
 
 import Checkers.controller.CheckersController;
 import Chess.controller.ChessController;
-import TicTacToe.TTTController;
+import java.util.List;
 import javafx.application.Application;
 import javafx.stage.StageStyle;
 import javafx.application.Platform;
@@ -179,7 +179,7 @@ public class ClientGUI extends Application {
 
         Button playChess = new Button("Chess");
         Button playCheckers = new Button("Checkers");
-        Button playTicTacToe = new Button("TicTacToe");
+        Button playTicTacToe = new Button("Tic-Tac-Toe");
         Button quitBtn = new Button("Quit to Desktop");
         playChess.setMaxWidth(Double.MAX_VALUE);
         playCheckers.setMaxWidth(Double.MAX_VALUE);
@@ -212,14 +212,15 @@ public class ClientGUI extends Application {
         lobbyLabel.setPadding(new Insets(0, 0, 0, 5));
         lobbyLabel.setTextFill(Color.BLACK);
 
-        Button testAddBtn = new Button("Add a Cell");
+  /*      Button testAddBtn = new Button("Add a Cell");
         testAddBtn.setOnAction(e -> {
+            userClient.setHostStatus(true);
             hostClients.add(userClient.getUsername());
             userClient.sendMessage("NEW_HOST");
         });
-
+*/
         labelBox.getChildren().add(lobbyLabel);
-        labelBox.getChildren().add(testAddBtn);
+//        labelBox.getChildren().add(testAddBtn);
 
         lobbyGrid.add(labelBox, 0, 0);
         lobbyGrid.add(lobby, 0, 1);
@@ -254,32 +255,38 @@ public class ClientGUI extends Application {
 
     public void playTicTacToe()
     {
-        String message = "TicTacToe";
-        Task worker = new Task() {
+        String message = "NEW_HOST;" + userClient.getUsername() + ";Tic-Tac-Toe";
+        userClient.setHostStatus(true);
+        hostClients.add(userClient.getUsername() + " : Tic-Tac-Toe");
+        Platform.runLater(() -> userClient.sendMessage(message) );
+        /*Task worker = new Task() {
             protected Object call() {
                 userClient.sendMessage(message);
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(200);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-                System.out.println("test");
                 return null;
             }
         };
 
         worker.setOnSucceeded(e -> {
-            TTTController controller = new TTTController(userClient);
+*//*            TTTController controller = new TTTController(userClient);
             userClient.setBoardGameController(controller);
-            stage.setScene(userClient.getBoardGameController().getMyScene()/*controller.getGameGUI().getScene()*/);
-            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
+            stage.setScene(userClient.getBoardGameController().getMyScene()*//**//*controller.getGameGUI().getScene()*//**//*);
+            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());*//*
         });
 
-        new Thread(worker).start();
+        new Thread(worker).start();*/
     }
 
     public void playChess(){
-        String message = "Chess";
+        String message = "NEW_HOST;" + userClient.getUsername() + ";Chess";
+        userClient.setHostStatus(true);
+        hostClients.add(userClient.getUsername() + " : Chess");
+        Platform.runLater(() -> userClient.sendMessage(message) );
+        /*String message = "Chess";
         Task worker = new Task() {
             protected Object call() {
                 userClient.sendMessage(message);
@@ -300,7 +307,7 @@ public class ClientGUI extends Application {
             stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
         });
 
-        new Thread(worker).start();
+        new Thread(worker).start();*/
     }
 
     public void playCheckers() {
@@ -333,23 +340,30 @@ public class ClientGUI extends Application {
         HBox cell = new HBox();
         Label label = new Label("empty");
         Pane pane = new Pane();
-        Button button = new Button("Join game");
+        Button lobbyBtn = new Button("empty");
         String lastCell;
 
         public HostCell()
         {
             super();
-            cell.getChildren().addAll(label, pane, button);
-            cell.setHgrow(pane, Priority.ALWAYS);
-            button.setOnAction(e -> {
-                System.out.println(userClient.getUsername() + "attempting to join" + lastCell + "'s game");
-                userClient.sendMessage(lastCell);
+            cell.getChildren().addAll(label, pane, lobbyBtn);
+            HBox.setHgrow(pane, Priority.ALWAYS);
+            lobbyBtn.setOnAction(e -> {
+                if(lobbyBtn.getText().equals("Join Game"))
+                {
+                    userClient.sendMessage("JOIN_HOST;" + lastCell);
+                }
+                else if(lobbyBtn.getText().equals("Cancel Game"))
+                {
+                    userClient.sendMessage("CANCEL_HOST;" + lastCell);
+                    hostClients.remove(hostClients.get(hostClients.indexOf(lastCell)));
+                }
             });
         }
 
-        public void updateItem(String hostName, boolean empty)
+        public void updateItem(String gameInfo, boolean empty)
         {
-            super.updateItem(hostName, empty);
+            super.updateItem(gameInfo, empty);
             setText(null);
             if(empty)
             {
@@ -358,8 +372,14 @@ public class ClientGUI extends Application {
             }
             else
             {
-                lastCell = hostName;
-                label.setText(hostName != null ? hostName + " - Tic-Tac-Toe" : "<null>");
+                String[] tokens = gameInfo.split(" : ");
+                String hostName = tokens[0];
+                if(userClient.getHostStatus() && hostName.equals(userClient.getUsername()))
+                    lobbyBtn.setText("Cancel Game");
+                else
+                    lobbyBtn.setText("Join Game");
+                lastCell = gameInfo;
+                label.setText(gameInfo);
                 setGraphic(cell);
             }
         }
