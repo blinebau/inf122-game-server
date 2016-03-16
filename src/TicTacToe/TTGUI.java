@@ -64,19 +64,19 @@ public class TTGUI {
             }
         }
 
-        // horizontal
-        for (int y = 0; y < 3; y++) {
-            possibleWins.add(new WinCombo(board[0][y], board[1][y], board[2][y]));
-        }
-
-        // vertical
-        for (int x = 0; x < 3; x++) {
-            possibleWins.add(new WinCombo(board[x][0], board[x][1], board[x][2]));
-        }
-
-        // diagonals
-        possibleWins.add(new WinCombo(board[0][0], board[1][1], board[2][2]));
-        possibleWins.add(new WinCombo(board[2][0], board[1][1], board[0][2]));
+//        // horizontal
+//        for (int y = 0; y < 3; y++) {
+//            possibleWins.add(new WinCombo(board[0][y], board[1][y], board[2][y]));
+//        }
+//
+//        // vertical
+//        for (int x = 0; x < 3; x++) {
+//            possibleWins.add(new WinCombo(board[x][0], board[x][1], board[x][2]));
+//        }
+//
+//        // diagonals
+//        possibleWins.add(new WinCombo(board[0][0], board[1][1], board[2][2]));
+//        possibleWins.add(new WinCombo(board[2][0], board[1][1], board[0][2]));
 
         return root;
     }
@@ -110,19 +110,19 @@ public class TTGUI {
      * @param combo
      */
     private static void playWinAnimation(WinCombo combo) {
-        Line line = new Line();
-        line.setStartX(combo.getTile(0).getCenterX());
-        line.setStartY(combo.getTile(0).getCenterY());
-        line.setEndX(combo.getTile(0).getCenterX());
-        line.setEndY(combo.getTile(0).getCenterY());
-
-        root.getChildren().add(line);
-
-        Timeline timeline = new Timeline();
-        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1),
-                new KeyValue(line.endXProperty(), combo.getTile(2).getCenterX()),
-                new KeyValue(line.endYProperty(), combo.getTile(2).getCenterY())));
-        timeline.play();
+//        Line line = new Line();
+//        line.setStartX(combo.getTile(0).getCenterX());
+//        line.setStartY(combo.getTile(0).getCenterY());
+//        line.setEndX(combo.getTile(0).getCenterX());
+//        line.setEndY(combo.getTile(0).getCenterY());
+//
+//        root.getChildren().add(line);
+//
+//        Timeline timeline = new Timeline();
+//        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1),
+//                new KeyValue(line.endXProperty(), combo.getTile(2).getCenterX()),
+//                new KeyValue(line.endYProperty(), combo.getTile(2).getCenterY())));
+//        timeline.play();
         winnersCombo = combo;
 
         String endingStatus;

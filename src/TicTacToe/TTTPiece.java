@@ -9,7 +9,13 @@ import javafx.scene.shape.Rectangle;
  * Created by Sophia on 3/12/2016.
  */
 public class TTTPiece extends Piece {
+
+    public TTTPiece() {
+        this.setImage(null);
+    }
+
     public TTTPiece(Image image) {
         this.setImage(image);
     }
+
 }
