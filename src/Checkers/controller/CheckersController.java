@@ -129,14 +129,6 @@ public class CheckersController extends BoardGameController{
     	if(!isMyTurn || pieceSelected == null)
     		return;
     	
-    	CheckerPiece piece = (CheckerPiece)state.getIndex(pos);
-    	
-    	// A piece is selected
-    	if(piece != null) {
-    		
-
-    	}
-    	
     	// Clicked on empty space. Clear selection
     	if(!validMoves.contains(pos)) {
     		
@@ -199,7 +191,7 @@ public class CheckersController extends BoardGameController{
     		
     	// Check if the piece can become the king
 		if(canBecomeKing(pos)) {
-			CheckerPiece p = (CheckerPiece) state.getIndex(pos);
+			CheckerPiece p = (CheckerPiece) state.getPiece(pos);
 			p.toKing();
 		}
     	
@@ -243,7 +235,7 @@ public class CheckersController extends BoardGameController{
 
     	int col = pos.getColumnIndex();
     	int row = pos.getRowIndex();
-    	boolean isKing = ((CheckerPiece) state.getIndex(pos)).isKing();
+    	boolean isKing = ((CheckerPiece) state.getPiece(pos)).isKing();
     	BoardIndex newPos;
     	
     	for(int i = 0; i < 2 || (isKing && i < 4); ++i) {
@@ -254,7 +246,7 @@ public class CheckersController extends BoardGameController{
         		newPos = new BoardIndex(x, y);
         		
         		// Normal move
-        		if(state.getIndex(newPos) == null)
+        		if(state.getPiece(newPos) == null)
         			validMoves.add(newPos);
         		
         		// Adjacent to opponent's piece
@@ -264,7 +256,7 @@ public class CheckersController extends BoardGameController{
         			if(isValidIndex(x, y)) {
         	    		newPos = new BoardIndex(x, y);
         	    		// Capture move
-            			if(state.getIndex(newPos) == null)
+            			if(state.getPiece(newPos) == null)
             				validMoves.add(newPos);
         			}
         		}
@@ -289,7 +281,7 @@ public class CheckersController extends BoardGameController{
 		
 		// Check if the piece can become a king
 		if(canBecomeKing(dest)) {
-			CheckerPiece piece = (CheckerPiece) state.getIndex(dest);
+			CheckerPiece piece = (CheckerPiece) state.getPiece(dest);
 			piece.toKing();
 		}
 		
@@ -362,7 +354,7 @@ public class CheckersController extends BoardGameController{
 	}
 	
 	private boolean canBecomeKing(BoardIndex pos) {
-		CheckerPiece piece = (CheckerPiece) state.getIndex(pos);
+		CheckerPiece piece = (CheckerPiece) state.getPiece(pos);
 		if(piece.isKing())
 			return false;
 		boolean hasReachedOther = (myPieces.contains(pos) && pos.getRowIndex() == 0)
