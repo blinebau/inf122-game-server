@@ -1,6 +1,7 @@
 package Checkers.view;
 import java.util.List;
 
+import BoardServer.BoardClient;
 import Checkers.controller.CheckersController;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
@@ -8,12 +9,17 @@ import app.model.Piece;
 import app.view.*;
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 
 /**
  * Created by Roy on 3/8/16.
@@ -54,6 +60,27 @@ public class CheckersGUI extends GameGUI {
 		// TODO: Shows a popup window says "Your Turn"
 		
 	}
+
+    public void showGameOverScreen(boolean winner, BoardClient client){
+        String msg;
+        if (winner) {
+            msg = "You win!";
+        }
+        else {
+            msg = "You lose!";
+        }
+
+        Stage stage = (Stage) getScene().getWindow();
+        Window owner = getScene().getWindow();
+        Alert gameConfirm = new Alert(Alert.AlertType.CONFIRMATION, "");
+        gameConfirm.initOwner(owner);
+        gameConfirm.initStyle(StageStyle.DECORATED);
+        gameConfirm.getDialogPane().setHeaderText(msg);
+        gameConfirm.setTitle("Game over");
+        gameConfirm.getDialogPane().setContentText("Select 'Ok' to return to the Game Lobby");
+        gameConfirm.getDialogPane().getButtonTypes().remove(ButtonType.CANCEL);
+        gameConfirm.showAndWait().ifPresent(result -> stage.setScene(client.getClientGUI().drawTitleMenu()));
+    }
 
     @Override
     public void handleMouseEvent(MouseEvent event) {
