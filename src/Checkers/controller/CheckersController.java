@@ -7,7 +7,6 @@ import Checkers.model.CheckersMove;
 import Checkers.view.CheckersGUI;
 import app.controller.BoardGameController;
 import app.model.*;
-import com.sun.tools.javac.comp.Check;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -315,6 +314,9 @@ public class CheckersController extends BoardGameController{
 
     private void closeCaptureCombo() {
 		
+    	if(lastMove == null)
+    		return;
+    	
 		if(!lastMove.isTurnOver()) {
 			// Dummy move, only to indicate that the turn is over.
 			CheckersMove move = new CheckersMove(lastMove.getDest(), lastMove.getDest(), true); 
