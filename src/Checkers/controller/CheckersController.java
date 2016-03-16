@@ -8,8 +8,6 @@ import Checkers.view.CheckersGUI;
 import app.controller.BoardGameController;
 import app.model.*;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import sun.security.krb5.internal.crypto.Des;
 
 /**
  * Created by Roy on 3/8/16.
@@ -193,6 +191,7 @@ public class CheckersController extends BoardGameController{
 		if(canBecomeKing(pos)) {
 			CheckerPiece p = (CheckerPiece) state.getPiece(pos);
 			p.toKing();
+			gui.updateImgForPiece(pos, p);
 		}
     	
     	// Check winning condition: no more valid moves for each piece in oppPieces
@@ -233,6 +232,7 @@ public class CheckersController extends BoardGameController{
     	
     	List<BoardIndex> moves = new ArrayList<>();
     	List<BoardIndex> other = checkMine ? oppPieces : myPieces;
+    	int sign = checkMine ? 1 : -1;
     	
     	int col = pos.getColumnIndex();
     	int row = pos.getRowIndex();
@@ -240,8 +240,8 @@ public class CheckersController extends BoardGameController{
     	BoardIndex newPos;
     	
     	for(int i = 0; i < 2 || (isKing && i < 4); ++i) {
-    		int x = col + directions[i][0];
-    		int y = row + directions[i][1];
+    		int x = col + sign * directions[i][0];
+    		int y = row + sign * directions[i][1];
     		
     		if(isValidIndex(x, y)) {
         		newPos = new BoardIndex(x, y);
@@ -252,8 +252,8 @@ public class CheckersController extends BoardGameController{
         		
         		// Adjacent to opponent's piece
         		else if(other.contains(newPos)) {
-        			x += directions[i][0];
-        			y += directions[i][1];
+        			x += sign * directions[i][0];
+        			y += sign * directions[i][1];
         			if(isValidIndex(x, y)) {
         	    		newPos = new BoardIndex(x, y);
         	    		// Capture move
@@ -285,6 +285,7 @@ public class CheckersController extends BoardGameController{
 		if(canBecomeKing(dest)) {
 			CheckerPiece piece = (CheckerPiece) state.getPiece(dest);
 			piece.toKing();
+			gui.updateImgForPiece(dest, piece);
 		}
 		
 		isMyTurn = move.isTurnOver();

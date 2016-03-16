@@ -3,6 +3,7 @@ import java.util.List;
 
 import BoardServer.BoardClient;
 import Checkers.controller.CheckersController;
+import Checkers.model.CheckerPiece;
 import app.controller.BoardGameController;
 import app.model.BoardIndex;
 import app.model.Piece;
@@ -59,6 +60,10 @@ public class CheckersGUI extends GameGUI {
 	public void showMyTurn() {
 		// TODO: Shows a popup window says "Your Turn"
 		
+	}
+	
+	public void updateImgForPiece(BoardIndex pos, CheckerPiece piece) {
+		board.addPieceToTile(pos, piece);
 	}
 
     public void showGameOverScreen(boolean winner, BoardClient client){
