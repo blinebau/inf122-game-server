@@ -230,7 +230,6 @@ public class ChessController extends BoardGameController {
             gui.updateGame2DArray(moveSrc, moveDes, movePiece);
             gui.getBoard().resetTile(moveSrc);
             gui.getBoard().addPieceToTile(moveDes, movePiece);
-//            gui.getBoard().resetTile(moveSrc);
             if(!fromServer) {
                 sendMoveToServer(moveSrc, moveDes);
             }
