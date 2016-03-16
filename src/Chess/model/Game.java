@@ -81,7 +81,7 @@ public class Game {
 
 	public Square[][] getBoard() { return board; }
 
-	public Player getCurrentPlayer() { return turn; } 
+	public Player getCurrentPlayer() { return turn; }
 
 	public boolean move(String s, String d, String p) {
 
@@ -195,7 +195,7 @@ public class Game {
 		}
 	}
 
-	private int fileToIndex(char file) {
+	public int fileToIndex(char file) {
 
 		switch (file) {
 
