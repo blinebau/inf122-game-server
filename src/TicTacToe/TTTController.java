@@ -26,14 +26,20 @@ public class TTTController extends BoardGameController {
 
 //    private GameState gameState = new GameState(3, 3);
     TTTGUI gameGUI;
+//    TTGUI gameGUI;
 
     public TTTGUI getGameGUI() {
         return gameGUI;
     }
 
+//    public TTGUI getGameGUI() {
+//        return gameGUI;
+//    }
+
     public TTTController(BoardClient client){
         super(client);
         state = new GameState(3,3);
+
         gameGUI = new TTTGUI(this, state.getBoard());
 //        gui = gameGUI;
         playerStatus = client.getPlayerStatus();
