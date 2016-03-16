@@ -30,7 +30,15 @@ public class CheckerPiece extends Piece{
     }
     
     public void toKing() {
+
     	this.king = true;
+        if (color == CheckersController.PieceColor.BLACK) {
+            setImage(new Image("Checkers/img/black_king.png"));
+        }
+        else {
+            setImage(new Image("Checkers/img/white_king.png"));
+        }
+
     }
     
     public boolean isKing() {
