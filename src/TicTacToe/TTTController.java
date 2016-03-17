@@ -30,11 +30,11 @@ import java.util.List;
  */
 public class TTTController extends BoardGameController {
 
-    private final Image mortalKombatX = new Image("TicTacToe/MortalKombatX.jpg");
-    private final Image mortalKombatO = new Image("TicTacToe/MortalKombatO.jpg");
+    private final Image MORTALKOMBATX = new Image("TicTacToe/MortalKombatX.jpg");
+    private final Image MORTALKOMBATO = new Image("TicTacToe/MortalKombatO.jpg");
 
-    private TTTPiece X = new TTTPiece(mortalKombatX);
-    private TTTPiece O = new TTTPiece(mortalKombatO);
+    private TTTPiece X = new TTTPiece(MORTALKOMBATX);
+    private TTTPiece O = new TTTPiece(MORTALKOMBATO);
 
     private boolean host;
     private boolean myTurn;
@@ -116,10 +116,10 @@ public class TTTController extends BoardGameController {
     public void tileSelected(BoardIndex pos) {
         if(myTurn) {
             if(host) {
-                state.getPiece(pos).setImage(mortalKombatX);
+                state.getPiece(pos).setImage(MORTALKOMBATX);
                 ((TTTPiece)state.getPiece(pos)).setShape("X");
             } else {
-                state.getPiece(pos).setImage(mortalKombatO);
+                state.getPiece(pos).setImage(MORTALKOMBATO);
                 ((TTTPiece)state.getPiece(pos)).setShape("O");
             }
             makeMove(pos);
@@ -132,10 +132,10 @@ public class TTTController extends BoardGameController {
      */
     public void moveReceived(Move move) {
         if(host) {
-            state.getPiece(move.getDest()).setImage(mortalKombatO);
+            state.getPiece(move.getDest()).setImage(MORTALKOMBATO);
             ((TTTPiece)state.getPiece(move.getDest())).setShape("O");
         } else {
-            state.getPiece(move.getDest()).setImage(mortalKombatX);
+            state.getPiece(move.getDest()).setImage(MORTALKOMBATX);
             ((TTTPiece)state.getPiece(move.getDest())).setShape("X");
         }
         updateBoard(move);
