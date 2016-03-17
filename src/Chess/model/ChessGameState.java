@@ -1,7 +1,9 @@
 package Chess.model;
 
 
-public class Game {
+import app.model.GameState;
+
+public class ChessGameState extends GameState {
 
 	private Square[][] board;
 	private ChessPiece[] capturedWhite;
@@ -20,7 +22,8 @@ public class Game {
 
     private String winner = null;
 
-	public Game() {
+	public ChessGameState() {
+		super(8,8);
 
 		board = new Square[8][8];
 		black = new Player(PlayerColor.BLACK);
@@ -79,7 +82,7 @@ public class Game {
 
 	}
 
-	public Square[][] getBoard() { return board; }
+	public Square[][] getGameBoard() { return board; }
 
 	public Player getCurrentPlayer() { return turn; }
 

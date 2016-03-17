@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 
 /**
  * Created by Luke on 3/5/2016.
+ * Queen image piece for chess
  */
 public class QueenPiece extends app.model.Piece {
 

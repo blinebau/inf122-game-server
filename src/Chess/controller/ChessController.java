@@ -3,7 +3,7 @@ package Chess.controller;
 import BoardServer.BoardClient;
 import Chess.model.ChessMove;
 import Chess.model.ChessPiece;
-import Chess.model.Game;
+import Chess.model.ChessGameState;
 import Chess.view.Display;
 import Chess.view.*;
 import app.controller.BoardGameController;
@@ -29,7 +29,7 @@ public class ChessController extends BoardGameController {
 
 
     ChessGUI gui;
-    Game chessGame;
+    ChessGameState chessGameState;
     BoardIndex moveSource;
     BoardIndex moveDestination;
     boolean playerStatus;
@@ -41,10 +41,6 @@ public class ChessController extends BoardGameController {
         constructGame();
         System.out.println("constructed");
     }
-
-//    public static void main(String[] args) {
-//        launch(args);
-//    }
 
     private void constructGame(){
         // Set up the game's state
@@ -90,11 +86,10 @@ public class ChessController extends BoardGameController {
             gui.getGameStatusText().setText("Opponent's Turn");
             gui.getBoard().disable();
         }
-        chessGame = new Game();
+        chessGameState = new ChessGameState();
         myScene = new Scene(gui);
 
     }
-
 
     public void tileSelected(BoardIndex pos) {
 
@@ -107,7 +102,6 @@ public class ChessController extends BoardGameController {
 
         makeMove(pos);
     }
-
 
     // Take the boardIndex and change it to a chess location (4,6) = e2
     private String boardIndexToChessTile(BoardIndex pos){
@@ -194,13 +188,13 @@ public class ChessController extends BoardGameController {
 
     private void highlightValidMoveTiles(){
         String chessLocation = boardIndexToChessTile(moveSource);
-        int c = chessGame.fileToIndex(chessLocation.charAt(0));
+        int c = chessGameState.fileToIndex(chessLocation.charAt(0));
         int r = 8 - Character.getNumericValue(chessLocation.charAt(1));
-        ChessPiece piece = chessGame.getBoard()[r][c].getPiece();
+        ChessPiece piece = chessGameState.getGameBoard()[r][c].getPiece();
         List<BoardIndex> validMoves = new ArrayList<>();
         for(int i = 0; i < 8; i++){
             for(int j = 0; j < 8; j++){
-                if (piece.canMoveTo(chessGame.getBoard()[j][i])){
+                if (piece.canMoveTo(chessGameState.getGameBoard()[j][i])){
                     validMoves.add(new BoardIndex(i,j));
                 }
             }
@@ -213,10 +207,10 @@ public class ChessController extends BoardGameController {
         String chessDestination = boardIndexToChessTile(moveDes);
         System.out.println("Make move: " + chessSource + " " + chessDestination);
         //TODO: deal with 3rd parameter which deals with promotions
-        if(!chessGame.move(chessSource, chessDestination, null)){
+        if(!chessGameState.move(chessSource, chessDestination, null)){
             System.out.println("Illegal Move");
         } else {
-            Display.showBoard(chessGame);
+            Display.showBoard(chessGameState);
             Piece movePiece =  gui.copyOfPieceOnBoard(moveSrc);
             // This handles Pawn promotion to queen
             if(movePiece instanceof PawnPiece) {
@@ -236,13 +230,13 @@ public class ChessController extends BoardGameController {
         }
         moveSource = null;
         moveDestination = null;
-        if(chessGame.getWinner() != null){
+        if(chessGameState.getWinner() != null){
             showGameOverScreen();
         }
     }
 
     private void showGameOverScreen(){
-        String winner = chessGame.getWinner();
+        String winner = chessGameState.getWinner();
 
         Stage stage = (Stage) gui.getScene().getWindow();
         Window owner = gui.getScene().getWindow();
@@ -271,11 +265,11 @@ public class ChessController extends BoardGameController {
         // Player's Turn
         String inCheck = "";
         if (playerStatus) {
-            if(chessGame.whiteInCheck()){
+            if(chessGameState.whiteInCheck()){
                 inCheck = ", you're in Check";
             }
         } else {
-            if(chessGame.blackInCheck()){
+            if(chessGameState.blackInCheck()){
                 inCheck = ", you're in Check";
             }
         }

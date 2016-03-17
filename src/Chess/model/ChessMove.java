@@ -5,6 +5,7 @@ import app.model.Move;
 
 /**
  * Created by Luke on 3/9/2016.
+ * Move object sent through socket
  */
 public class ChessMove extends Move {
 

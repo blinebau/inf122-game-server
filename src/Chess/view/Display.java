@@ -3,14 +3,14 @@ package Chess.view;
 import Chess.model.ChessPiece;
 import Chess.model.PlayerColor;
 import Chess.model.Square;
-import Chess.model.Game;
+import Chess.model.ChessGameState;
 
 //initial thoughts -- after performing game logic associated with a move in Game, this class would display the results of this logic 
 public class Display {
 
-	public static void showBoard(Game game) {
+	public static void showBoard(ChessGameState chessGameState) {
 
-		Square[][] board = game.getBoard();
+		Square[][] board = chessGameState.getGameBoard();
 		int i, j;
 		for (i = 0; i < 8; i++) {
 			for (j = 0; j < 8; j++) {
