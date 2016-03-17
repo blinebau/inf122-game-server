@@ -114,13 +114,6 @@ public class BoardServer {
         }
     }
 
-    public static void main(String [] arg)
-    {
-        int portNumber = 4242;
-        BoardServer server = new BoardServer(portNumber);
-        server.start();
-    }
-
     class ClientThread extends Thread {
 
         //socket to listen and write
