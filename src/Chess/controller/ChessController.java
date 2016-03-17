@@ -42,10 +42,6 @@ public class ChessController extends BoardGameController {
         System.out.println("constructed");
     }
 
-//    public static void main(String[] args) {
-//        launch(args);
-//    }
-
     private void constructGame(){
         // Set up the game's state
         app.model.Piece[][] game2DArray = new Piece[8][8];
@@ -95,7 +91,6 @@ public class ChessController extends BoardGameController {
 
     }
 
-
     public void tileSelected(BoardIndex pos) {
 
         if (moveSource != null) {
@@ -107,7 +102,6 @@ public class ChessController extends BoardGameController {
 
         makeMove(pos);
     }
-
 
     // Take the boardIndex and change it to a chess location (4,6) = e2
     private String boardIndexToChessTile(BoardIndex pos){
