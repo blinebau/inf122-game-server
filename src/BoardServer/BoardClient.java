@@ -68,8 +68,6 @@ public class BoardClient {
         this.boardGameController = boardGameController;
     }
 
-
-
     public void setUsername(String name) {
         username = name;
     }
@@ -115,17 +113,10 @@ public class BoardClient {
             return false;
         }
 
+        //create thread that listens to server
+        //connection and stream successfully created
         new listenToServer().start();
 
-        //create thread that listens to server
-
-/*        try {
-            //send the
-            obj_out.writeObject(username);
-        }catch (Exception e){
-            e.printStackTrace();
-        }*/
-        //connection and stream successfully created
         return true;
     }
 
@@ -209,17 +200,6 @@ public class BoardClient {
             e.printStackTrace();
             System.exit(1);
         }
-    }
-
-    public static void main(String[] args) {
-/*        int portNumber = 4242;
-        String serverAddress = "localhost";
-        String userName = "Anonymous";
-        BoardClient client = new BoardClient(serverAddress, portNumber, userName);
-
-        if(!client.start())
-            return;*/
-
     }
 
     //waits for messages and then acts on the message (Move eventually)

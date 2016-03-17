@@ -21,9 +21,7 @@ import java.security.Key;
  * Created by Bryan on 3/1/2016.
  */
 public class ServerGUI extends Application {
-    //future gui for server goes here
-    //server would contains a display of connected user
-    //start and stop button
+
     private BoardServer server;
     private TextArea eventLog;
 

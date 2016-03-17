@@ -1,21 +1,17 @@
 package BoardServer;
 
 import javafx.application.Application;
+import javafx.scene.control.*;
 import javafx.stage.StageStyle;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
+import java.util.Arrays;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -25,6 +21,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Group;
+import javafx.stage.Window;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Bryan on 2/28/2016.
@@ -193,10 +195,9 @@ public class ClientGUI extends Application {
         menuTitle.setFill(Color.BLACK);
 
         //Sub title of the menu
-        Text menuSubTitle = new Text("Please select a game to play.");
+        Text menuSubTitle = new Text("Current User: " + userClient.getUsername());
         menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 30));
         menuSubTitle.setFill(Color.BLACK);
-        //menuSubTitle.setId("menuSubTitle");
         menuTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 35));
         menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 15));
         menuText.getChildren().addAll(menuTitle, menuSubTitle);
@@ -205,17 +206,12 @@ public class ClientGUI extends Application {
 
         VBox gameBtn = new VBox(10);
 
-        //Game buttons for hosting a particular game
-        Button playChess = new Button("Chess");
-        Button playCheckers = new Button("Checkers");
-        Button playTicTacToe = new Button("Tic-Tac-Toe");
         //Closes client and disconnects from server
+        Button startDialog = new Button("Create a Game");
+        startDialog.setMaxWidth(Double.MAX_VALUE);
         Button quitBtn = new Button("Quit to Desktop");
-        playChess.setMaxWidth(Double.MAX_VALUE);
-        playCheckers.setMaxWidth(Double.MAX_VALUE);
-        playTicTacToe.setMaxWidth(Double.MAX_VALUE);
         quitBtn.setMaxWidth(Double.MAX_VALUE);
-        gameBtn.getChildren().addAll(playChess,playCheckers,playTicTacToe, quitBtn);
+        gameBtn.getChildren().addAll(startDialog, quitBtn);
 
         titles.add(menuText, 2, 0);
         titles.add(gameBtn, 2, 2);
@@ -234,7 +230,7 @@ public class ClientGUI extends Application {
         lobbyGrid.setPadding(new Insets(25, 25, 25, 15));
         lobbyGrid.getStyleClass().add("lobbyGrid");
 
-        //
+        //CSS style for Game lobby node
         lobbyGrid.setStyle("-fx-background-color: white;-fx-background-radius: 3.0;-fx-border-color: silver;" +
                 "-fx-border-style: solid;-fx-border-width: 5.0");
 
@@ -242,23 +238,17 @@ public class ClientGUI extends Application {
         labelBox.setStyle("-fx-border-color: silver;-fx-border-style: solid;-fx-border-width: 2.0;" +
                 "-fx-background-color: silver;");
 
+        //Title label
         Label lobbyLabel = new Label("Game Lobby");
         lobbyLabel.setPadding(new Insets(0, 0, 0, 5));
         lobbyLabel.setTextFill(Color.BLACK);
 
-  /*      Button testAddBtn = new Button("Add a Cell");
-        testAddBtn.setOnAction(e -> {
-            userClient.setHostStatus(true);
-            hostClients.add(userClient.getUsername());
-            userClient.sendMessage("NEW_HOST");
-        });
-*/
         labelBox.getChildren().add(lobbyLabel);
-//        labelBox.getChildren().add(testAddBtn);
 
         lobbyGrid.add(labelBox, 0, 0);
         lobbyGrid.add(lobby, 0, 1);
 
+        //Inner pane of ListView
         Pane frontPane = new Pane();
         titles.setLayoutX(400);
         titles.setLayoutY(120);
@@ -268,17 +258,38 @@ public class ClientGUI extends Application {
         frontPane.getChildren().addAll(titles, lobbyGrid);
         clientMenu.getChildren().add(frontPane);
 
+        String fileName = "src/BoardServer/ListofGame.txt";
+        List<String> items = readFile(fileName);
 
-        playChess.setOnAction(event -> playChess());
+        ObservableList<String> games = FXCollections.observableArrayList(items);
+        ChoiceDialog<String> dlg = new ChoiceDialog<>("Select a Game", games);
+        Window owner = stage.getScene().getWindow();
+        dlg.initOwner(owner);
+        dlg.initStyle(StageStyle.DECORATED);
+        dlg.getDialogPane().setHeaderText("Select a Game");
+        dlg.setTitle("Host a Game");
+        dlg.getDialogPane().setContentText("Select 'Ok' after choosing the game to Host");
 
-        playCheckers.setOnAction(event -> playCheckers());
-/*        playCheckers.setOnAction((ActionEvent event) -> {
-                Move move = new Move();
-                userClient.sendMove(move);
-        });*/
+        //Determine which game was selected to play
+        startDialog.setOnAction(e -> {
+            dlg.showAndWait().ifPresent(result -> {
+                String gameChoice = dlg.getSelectedItem();
+                switch (gameChoice)
+                {
+                    case "Chess":
+                        playChess();
+                        break;
+                    case "Checkers":
+                        playCheckers();
+                        break;
+                    case "Tic-Tac-Toe":
+                        playTicTacToe();
+                        break;
+                }
+            });
+        });
 
-        playTicTacToe.setOnAction(event -> playTicTacToe());
-
+        //Quit action
         quitBtn.setOnAction((ActionEvent event) -> {
             userClient.disconnect();
             Platform.exit();
@@ -287,93 +298,52 @@ public class ClientGUI extends Application {
         return new Scene(clientMenu, 800, 600);
     }
 
+    //Reading from text file of available games on the Board Server
+    public List<String> readFile(String fileName)
+    {
+        List<String> items = new ArrayList<>();
+        try {
+            FileReader fr = new FileReader(fileName);
+            BufferedReader fileScan = new BufferedReader(fr);
+            String buf;
+            while((buf = fileScan.readLine()) != null)
+            {
+                String[] tokens = buf.split(",");
+                items = Arrays.asList(tokens);
+            }
+            fileScan.close();
+        }catch (Exception ex){
+            System.out.println("File not found exception");
+        }
+        return items;
+    }
+
+    //Sends message to Server stating the Client wants to host a Tic-Tac-Toe game
     public void playTicTacToe()
     {
         String message = "NEW_HOST;" + userClient.getUsername() + ";Tic-Tac-Toe";
         userClient.setHostStatus(true);
         hostClients.add(userClient.getUsername() + " : Tic-Tac-Toe");
         Platform.runLater(() -> userClient.sendMessage(message) );
-        /*Task worker = new Task() {
-            protected Object call() {
-                userClient.sendMessage(message);
-                try {
-                    Thread.sleep(200);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        };
-
-        worker.setOnSucceeded(e -> {
-*//*            TTTController controller = new TTTController(userClient);
-            userClient.setBoardGameController(controller);
-            stage.setScene(userClient.getBoardGameController().getMyScene()*//**//*controller.getGameGUI().getScene()*//**//*);
-            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());*//*
-        });
-
-        new Thread(worker).start();*/
     }
 
+    //Sends message to Server stating the Client wants to host a Chess game
     public void playChess(){
         String message = "NEW_HOST;" + userClient.getUsername() + ";Chess";
         userClient.setHostStatus(true);
         hostClients.add(userClient.getUsername() + " : Chess");
         Platform.runLater(() -> userClient.sendMessage(message) );
-        /*String message = "Chess";
-        Task worker = new Task() {
-            protected Object call() {
-                userClient.sendMessage(message);
-                try {
-                    Thread.sleep(500);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-                System.out.println("test");
-                return null;
-            }
-        };
-
-        worker.setOnSucceeded(e -> {
-            ChessController chessController = new ChessController(userClient);
-            userClient.setBoardGameController(chessController);
-            stage.setScene(userClient.getBoardGameController().getMyScene());
-            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
-        });
-
-        new Thread(worker).start();*/
     }
 
+    //Sends message to Server stating the Client wants to host a Checkers game
     public void playCheckers() {
         String message = "NEW_HOST;" + userClient.getUsername() + ";Checkers";
         userClient.setHostStatus(true);
         hostClients.add(userClient.getUsername() + " : Checkers");
         Platform.runLater(() -> userClient.sendMessage(message) );
-/*        String message = "Checkers";
-        Task worker = new Task() {
-            protected Object call() {
-                userClient.sendMessage(message);
-                try {
-                    Thread.sleep(500);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                System.out.println("Test");
-                return null;
-            }
-        };
-
-        worker.setOnSucceeded(e -> {
-            CheckersController controller = new CheckersController(userClient);
-            userClient.setBoardGameController(controller);
-            stage.setScene(userClient.getBoardGameController().getMyScene()*//*controller.getGameGUI().getScene()*//*);
-            stage.setTitle(message + " - " + userClient.getPlayerStatus() + ": " + userClient.getUsername());
-        });
-
-        new Thread(worker).start();*/
     }
 
+    //Inner class for creating ListView cells
     class HostCell extends ListCell<String> {
         HBox cell = new HBox();
         Label label = new Label("empty");
@@ -390,6 +360,7 @@ public class ClientGUI extends Application {
                 if(lobbyBtn.getText().equals("Join Game"))
                 {
                     userClient.sendMessage("JOIN_HOST;" + lastCell);
+                    hostClients.remove(hostClients.get(hostClients.indexOf(lastCell)));
                 }
                 else if(lobbyBtn.getText().equals("Cancel Game"))
                 {

@@ -173,8 +173,6 @@ public class BoardServer {
                         if(obj instanceof Move) {
                             Move move = (Move) obj;
                             for(ClientThread thread : clientThreads) {
-/*                                if(thread.id != id)
-                                    thread.obj_out.writeObject(move);*/
                                 if(pairedID == thread.id)
                                 {
                                     thread.obj_out.writeObject(move);
@@ -185,19 +183,7 @@ public class BoardServer {
                         {
                             String message = (String) obj;
                             String[] tokens = message.split(";");
-                            echo(message);
                             switch(tokens[0]) {
-/*                                case "TICTACTOE":
-*//*                                    if(id == clientThreads.get(0).id) {
-                                        obj_out.writeObject("Player 1");
-                                        obj_out.flush();
-                                    }
-                                    else
-                                    {
-                                        clientThreads.get(id - 1).obj_out.writeObject("Player 2");
-                                    }*//*
-
-                                    break;*/
                                 case "NEW_HOST":
                                 case "CANCEL_HOST":
                                     for (ClientThread thread : clientThreads) {
@@ -220,37 +206,6 @@ public class BoardServer {
                                     }
                                     break;
                             }
-                            /*if(message.equals("TicTacToe") || message.equals("Chess"))
-                            {
-                                if(id == clientThreads.get(0).id) {
-                                    obj_out.writeObject("Player 1");
-                                    obj_out.flush();
-                                }
-                                else
-                                {
-                                    clientThreads.get(id - 1).obj_out.writeObject("Player 2");
-                                }
-                            }
-                            else if(message.equals("NEW_HOST"))
-                            {
-                                for(ClientThread thread : clientThreads)
-                                {
-                                    if(thread.id != id)
-                                    {
-                                        thread.obj_out.writeObject("NEW_HOST" + userName);
-                                    }
-                                }
-                            }
-                            else{
-                                for(ClientThread thread : clientThreads)
-                                {
-                                    if(thread.userName.equals(message))
-                                    {
-                                        pairedID = thread.id;
-                                    }
-                                }
-                                echo(userName + "is now paired with" + message);
-                            }*/
                         }
                 }catch (Exception e) {
                     break;
