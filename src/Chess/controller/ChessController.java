@@ -81,7 +81,12 @@ public class ChessController extends BoardGameController {
         game2DArray[7][0] = new RookPiece("Black");
         game2DArray[0][0] = new RookPiece("Black");
 
+        initGuiAndScene(game2DArray);
+        chessGameState = new ChessGameState();
+    }
 
+    @Override
+    protected void initGuiAndScene(Piece[][] game2DArray) {
         // Set up the encompassing gui, which uses the array to set up the board
         gui = new ChessGUI(this, game2DArray);
         if (playerStatus) {
@@ -90,11 +95,8 @@ public class ChessController extends BoardGameController {
             gui.getGameStatusText().setText("Opponent's Turn");
             gui.getBoard().disable();
         }
-        chessGameState = new ChessGameState();
         myScene = new Scene(gui);
-
     }
-
 
     public void tileSelected(BoardIndex pos) {
 
