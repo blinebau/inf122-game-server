@@ -70,7 +70,6 @@ public class TTTController extends BoardGameController {
             }
         }
 
-        gameGUI = new TTTGUI(this, state.getBoard());
         host = client.getHostStatus();
         if(host) {
             myTurn = true;
@@ -78,7 +77,7 @@ public class TTTController extends BoardGameController {
             myTurn = false;
         }
 
-        myScene = new Scene(gameGUI);
+        initGuiAndScene(state.getBoard());
 
         //populates the attribute possibleWins with all the possible winning combinations
         //horizontal
@@ -102,6 +101,12 @@ public class TTTController extends BoardGameController {
         possibleWins.add(new WinCombo((TTTPiece)state.getPiece(new BoardIndex(2, 0)),
                 (TTTPiece)state.getPiece(new BoardIndex(1, 1)),
                 (TTTPiece)state.getPiece(new BoardIndex(0, 2))));
+    }
+
+    @Override
+    protected void initGuiAndScene(Piece[][] game2DArray) {
+        gameGUI = new TTTGUI(this, game2DArray);
+        myScene = new Scene(gameGUI);
     }
 
     /**

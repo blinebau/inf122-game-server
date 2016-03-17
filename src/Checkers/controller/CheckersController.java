@@ -22,7 +22,7 @@ public class CheckersController extends BoardGameController{
 	
 	private final PieceColor MY_COLOR;
 	private final PieceColor OPP_COLOR;
-	private final CheckersGUI gui;
+	private CheckersGUI gui;
 	
     private BoardIndex pieceSelected;
     private CheckersMove lastMove;
@@ -48,10 +48,7 @@ public class CheckersController extends BoardGameController{
     	
     	initStateAndLists();
     	initDir();
-    	
-    	gui = new CheckersGUI(this, state.getBoard());
-    	myScene = new Scene(gui);
-        gui.showMyTurn(isMyTurn);
+		initGuiAndScene(state.getBoard());
     }
     
     private void initStateAndLists() {
@@ -93,8 +90,15 @@ public class CheckersController extends BoardGameController{
     	directions[2][0] = -1;	directions[2][1] = 1;
     	directions[3][0] = 1;	directions[3][1] = 1;
     }
-    
-    // Called by GUI component
+
+	@Override
+	protected void initGuiAndScene(Piece[][] game2DArray) {
+		gui = new CheckersGUI(this, game2DArray);
+		myScene = new Scene(gui);
+		gui.showMyTurn(isMyTurn);
+	}
+
+	// Called by GUI component
     @Override
     public void tileSelected(BoardIndex pos) {
     	
