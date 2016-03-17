@@ -1,8 +1,5 @@
 package BoardServer;
 
-import Checkers.controller.CheckersController;
-import Chess.controller.ChessController;
-import java.util.List;
 import javafx.application.Application;
 import javafx.stage.StageStyle;
 import javafx.application.Platform;
@@ -34,19 +31,34 @@ import javafx.scene.Group;
  */
 public class ClientGUI extends Application {
 
+    //Primary JavaFX Stage: Window of the Application
     private Stage stage;
+
+    //Beginning Scene of the Application, Login screen the user first sees
     private Scene entryScene;
 
+    //User's Client
     private BoardClient userClient;
+
+    //Hosting Server's identifying name
     private String defHost;
+
+    //Local port in which to connect to Server
     private int defPort;
 
+    //Tabular view of currently hosted games in the Game Lobby
     private ListView<String> lobby = new ListView<>();
+
+    //Collection holdings the values of hosted games: Host's username and the game's name
     private ObservableList<String> hostClients = FXCollections.observableArrayList();
+
+    //Height of each cell in the ListView
     private final int ROW_HEIGHT = 48;
 
+    //Background Image of the Application Window
     private final String background = "BoardServer/background.jpg";
 
+    //Default Constructor
     public ClientGUI()
     {
         defHost = "localhost";
@@ -54,17 +66,13 @@ public class ClientGUI extends Application {
         userClient = new BoardClient(defHost, defPort, hostClients, this);
     }
 
+    //Accessor of Stage attribute
     public Stage getStage()
     {
         return stage;
     }
 
-/*    public ClientGUI(String hostName, int port) {
-        defHost = hostName;
-        defPort = port;
-        userClient = new BoardClient("localhost", defPort, self);
-    }*/
-
+    //Overriding start(Stage stage) method of JavaFx.Application, starting point of Application thread
     public void start(Stage stage)
     {
         this.stage = stage;
@@ -76,6 +84,7 @@ public class ClientGUI extends Application {
 
     }
 
+    //Produces the Scene representing the entry point of the program: Login screen
     public Scene drawClientEntry() {
         //Create client window
         stage.setTitle("Board Game Application");
@@ -88,16 +97,18 @@ public class ClientGUI extends Application {
         GraphicsContext gClient = cClient.getGraphicsContext2D();
         gClient.drawImage(new Image(background), 0, 0);
 
+        //Outer root of the form nodes
         Group formGroup = new Group();
 
-        //Create form nodes
         //Create form title
         Text formTitle = new Text("Welcome to Board Game Server!");
         formTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 40));
         formTitle.setId("formTitle");
 
+        //Add title to root
         formGroup.getChildren().add(formTitle);
 
+        //Create form layouts
         GridPane formGrid = new GridPane();
         formGrid.setVgap(10);
         formGrid.setHgap(10);
@@ -119,13 +130,16 @@ public class ClientGUI extends Application {
         formBtn.getChildren().addAll(signIn,clearForm);
         formGrid.add(formBtn, 1, 1);
 
+        //Add nodes to root -> root to layout StackPane
         formGroup.getChildren().add(formGrid);
         clientPortal.getChildren().add(formGroup);
 
-
+        //Initialize Scene to StackPane Parent node
         Scene portalScene = new Scene(clientPortal, 800, 600);
 
-        signIn.setOnAction(event -> {
+        //EventHandler for Sign in button interaction
+        //Sign user into BoardServer under a entered username
+        signIn.setOnAction(e -> {
                 if (playerNameTextField.getText() != null && !playerNameTextField.getText().isEmpty()) {
                     String userName = playerNameTextField.getText();
                     userClient.setUsername(userName);
@@ -136,37 +150,49 @@ public class ClientGUI extends Application {
                 }
             });
 
-        clearForm.setOnAction(event -> playerNameTextField.clear());
+        //EventHandler for Clear Form button interaction
+        //Clear form of current entry value
+        clearForm.setOnAction(e -> playerNameTextField.clear());
 
+        //Return generated Scene
         return portalScene;
     }
 
+    //Produces the Scene representing the main lobby of the program: Title menu
+    //User will host and join games from this screen returning to it after a game is completed
     public Scene drawTitleMenu() {
 
+        //Clears the Game Lobby of hosted games after a game is completed
         hostClients.clear();
 
+        //Parent layout of the Scene
         StackPane clientMenu = new StackPane();
+        //Canvas layout used to draw a background image
         Canvas cClient = new Canvas(800, 600);
         clientMenu.getChildren().add(cClient);
         GraphicsContext gClient = cClient.getGraphicsContext2D();
         gClient.drawImage(new Image(background), 0, 0);
 
+        //Node used to hold text titles for the Title Menu options
         GridPane titles = new GridPane();
         titles.setAlignment(Pos.CENTER_RIGHT);
         titles.setVgap(10);
         titles.setHgap(10);
         titles.setPadding(new Insets(5, 18, 25, 0));
 
+        //CSS Style of the title Node
         titles.setStyle("-fx-background-color: white;-fx-background-radius: 3.0;-fx-border-color: silver;" +
                 "-fx-border-style: solid;-fx-border-width: 5.0");
 
         VBox menuText = new VBox(5);
 
+        //Main title of the menu
         Text menuTitle = new Text("Board Game Server");
         menuTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 40));
         menuTitle.setStroke(Color.BLACK);
         menuTitle.setFill(Color.BLACK);
-        //menuTitle.setId("menuTitle");
+
+        //Sub title of the menu
         Text menuSubTitle = new Text("Please select a game to play.");
         menuSubTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 30));
         menuSubTitle.setFill(Color.BLACK);
@@ -179,9 +205,11 @@ public class ClientGUI extends Application {
 
         VBox gameBtn = new VBox(10);
 
+        //Game buttons for hosting a particular game
         Button playChess = new Button("Chess");
         Button playCheckers = new Button("Checkers");
         Button playTicTacToe = new Button("Tic-Tac-Toe");
+        //Closes client and disconnects from server
         Button quitBtn = new Button("Quit to Desktop");
         playChess.setMaxWidth(Double.MAX_VALUE);
         playCheckers.setMaxWidth(Double.MAX_VALUE);
@@ -192,17 +220,21 @@ public class ClientGUI extends Application {
         titles.add(menuText, 2, 0);
         titles.add(gameBtn, 2, 2);
 
+        //Placeholder text indicating an empty listview
         lobby.setPlaceholder(new Label("No Currently Hosted Games"));
         lobby.setItems(hostClients);
         lobby.setPrefHeight(4 * ROW_HEIGHT);
-        //lobby.setPrefHeight(hostClients.size() * ROW_HEIGHT);
+
+        //Factory for creating each Cell and it's properties
         lobby.setCellFactory(param -> new HostCell());
 
+        //Node for Game Lobby list and Border
         GridPane lobbyGrid = new GridPane();
         lobbyGrid.setAlignment(Pos.CENTER_LEFT);
         lobbyGrid.setPadding(new Insets(25, 25, 25, 15));
         lobbyGrid.getStyleClass().add("lobbyGrid");
 
+        //
         lobbyGrid.setStyle("-fx-background-color: white;-fx-background-radius: 3.0;-fx-border-color: silver;" +
                 "-fx-border-style: solid;-fx-border-width: 5.0");
 
