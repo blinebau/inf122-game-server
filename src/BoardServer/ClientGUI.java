@@ -102,7 +102,7 @@ public class ClientGUI extends Application {
 
         //Create form title
         Text formTitle = new Text("Welcome to Board Game Server!");
-        formTitle.setFont(Font.font("Courier Regular", FontWeight.NORMAL, 40));
+        formTitle.setFont(Font.font("Courier Regular", FontWeight.BOLD, 40));
         formTitle.setId("formTitle");
 
         //Add title to root

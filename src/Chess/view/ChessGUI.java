@@ -19,6 +19,7 @@ import javafx.scene.text.Text;
 
 /**
  * Created by jgreene on 3/5/16.
+ * GUI class for Chess
  */
 public class ChessGUI extends GameGUI { // ChessGUI is a Group
 

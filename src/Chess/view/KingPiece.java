@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 
 /**
  * Created by Luke on 3/5/2016.
+ * King image piece for chess
  */
 public class KingPiece extends app.model.Piece{
 

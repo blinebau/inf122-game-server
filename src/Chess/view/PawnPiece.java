@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 
 /**
  * Created by Luke on 3/5/2016.
+ * Pawn image piece for chess
  */
 public class PawnPiece extends app.model.Piece {
 
