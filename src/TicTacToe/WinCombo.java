@@ -24,22 +24,25 @@ public class WinCombo {
 //        return tiles[i];
 //    }
 
-    private Piece[] tiles;
+    private TTTPiece[] tiles;
 
-    public WinCombo(Piece... tiles) {
+    public WinCombo(TTTPiece... tiles) {
         this.tiles = tiles;
     }
 
     public boolean isComplete() {
-        if (tiles[0].getImage().equals(null)) {
+
+        if (tiles[0].getShape().isEmpty()) {
             return false;
         }
+        boolean temp = tiles[0].getShape().equals(tiles[1].getShape()) &&
+                tiles[0].getShape().equals(tiles[2].getShape());
 
-        return tiles[0].getImage().equals(tiles[1].getImage()) &&
-                tiles[0].getImage().equals(tiles[2].getImage());
+        System.out.println(temp);
+        return temp;
     }
 
-    public Piece getTile(int i) {
+    public TTTPiece getTile(int i) {
         return tiles[i];
     }
 }
