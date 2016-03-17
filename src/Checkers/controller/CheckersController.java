@@ -107,7 +107,7 @@ public class CheckersController extends BoardGameController{
     		// Clear highlight
     		gui.clearHighlight();
     		closeCaptureCombo();
-    		
+    		isMyTurn = false;
     		pieceSelected = null;
     		return;
     	}
@@ -296,6 +296,7 @@ public class CheckersController extends BoardGameController{
 			lastMove = move;
 			// Send move to server
 			client.sendMessage(move);
+			gui.showMyTurn(false);
 		}
     }
     
