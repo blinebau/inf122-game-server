@@ -72,8 +72,7 @@ public class BoardGameGridPane extends GridPane{
         initTiles(eventClass);
     }
 
-    private void initTiles(EventHandler<Event> eventClass) { // Add the board's tiles and empty imageViews to represent the pieces / board objects
-                                                                 // and record the imageviews so that they can be altered easily
+    private void initTiles(EventHandler<Event> eventClass) { // Initializes the board’s Rectangles and ImageViews that fill each space of the grid.
         int order = 0;
 
 
@@ -119,7 +118,7 @@ public class BoardGameGridPane extends GridPane{
         return new BoardIndex(getColumnIndex(element), getRowIndex(element));
     }
 
-    public void addPieceToTile(BoardIndex index, Piece piece) {  // Set the corresponding imageview's image to the boardObject's image
+    public void addPieceToTile(BoardIndex index, Piece piece) {  // Set the corresponding imageview's image to the Piece's image
         imgViewArray[index.getColumnIndex()][index.getRowIndex()].setImage(piece.getImage());
     }
 
@@ -127,7 +126,7 @@ public class BoardGameGridPane extends GridPane{
         imgViewArray[index.getColumnIndex()][index.getRowIndex()].setImage(null);
     }
 
-    public void setPieceStartingLayout(Piece[][] piece2DArray) {   // The images of the array's boardObjects will be used to set the image of their
+    public void setPieceStartingLayout(Piece[][] piece2DArray) {   // The images of the array's pieces will be used to set the image of their
                                                                                 // corresponding imageviews
         for (int c = 0; c < columns; c++) {
             for (int r = 0; r < rows; r++) {
