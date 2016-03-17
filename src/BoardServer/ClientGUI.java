@@ -143,6 +143,8 @@ public class ClientGUI extends Application {
 
     public Scene drawTitleMenu() {
 
+        hostClients.clear();
+
         StackPane clientMenu = new StackPane();
         Canvas cClient = new Canvas(800, 600);
         clientMenu.getChildren().add(cClient);
